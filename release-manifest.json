@@ -1,0 +1,636 @@
+{
+  "version": "0.2.1",
+  "generatedAt": "2026-06-11T14:24:16.416Z",
+  "files": [
+    {
+      "path": "metadata.json",
+      "checksum": "d5fea25016f06400af0ee171622e15b5a47dc835e6db812a67b8177a69194d7b",
+      "size": 508,
+      "lastModified": "2026-06-11T11:41:18Z"
+    },
+    {
+      "path": "skills/clio-artifact/SKILL.md",
+      "checksum": "eb57e8d00e0015aee8f9ca637abdf0ef8996e2e2f1f332a2fec70229d8689c13",
+      "size": 7299,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/clio-artifact/data/mcp-config-snippet.json",
+      "checksum": "f1e3368a87a7fe0c1aebf38eeb67cc32e85c71bd1a9da6453b4239035b10ad29",
+      "size": 183,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/clio-artifact/references/generate-content-approach.md",
+      "checksum": "4c47771d69c5abec621f7dd83e889a78809c3c40758fddc83ab61ed626ad8ac4",
+      "size": 11178,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/clio-artifact/references/generate-content-benefits.md",
+      "checksum": "90117be801ae00f1ae87fd59428792dff979a2ade6f5a67240009e5060c7c9ff",
+      "size": 9082,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/clio-artifact/references/generate-content-flow.md",
+      "checksum": "1996905a9b639e9b3a980638833f3ff6a8254c50e9352baf2b4007010875e41f",
+      "size": 16276,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/clio-artifact/references/generate-content-overview.md",
+      "checksum": "1825414ba6102dd5e0c87e03b25cc82a0075b9b69fa45e3f293c3732702a4866",
+      "size": 20014,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/clio-artifact/references/generate-content-technical.md",
+      "checksum": "537090f40c35dee52836d95cedd92e0ee9fa71129d6f208d418b515441cf4d7e",
+      "size": 39590,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/clio-artifact/references/generate-pptx.md",
+      "checksum": "91e7811a1ee9ed9c503b432789b1f22d878ed3e0520fde4200e16f6a57680556",
+      "size": 2486,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/clio-artifact/scripts/gen-md.py",
+      "checksum": "235249ec6c613b36a5fef238f842ae621e55ed73b15f3cb8496a433456991d31",
+      "size": 8122,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/clio-artifact/scripts/gen-slide.py",
+      "checksum": "3b68c007067d38467929eeb949cb8649abd30b9b48f8f74b7b8c30c6d0bb5b34",
+      "size": 2040,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/clio-artifact/scripts/generate_pptx.py",
+      "checksum": "276459e6614d168a008d807c3d7eaedc26059f3c19abf359947ebc05ad4c0088",
+      "size": 6991,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/clio-artifact/scripts/lib/__init__.py",
+      "checksum": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/clio-artifact/scripts/lib/generator.py",
+      "checksum": "f903ad4b29b87e73059b58281af86132aaa9f26416210c4419091bfe376ab886",
+      "size": 4141,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/clio-artifact/scripts/lib/parser.py",
+      "checksum": "77a16a9223bd3d556cbd9e83e3902eb6de4a9a600055c82307599a82f996cc46",
+      "size": 10309,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/clio-artifact/scripts/lib/profile_parser.py",
+      "checksum": "3aa2113759b59053d2f69d288cce08a31b2c96079ca005921db944096ba551a0",
+      "size": 9392,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/clio-artifact/scripts/lib/profile_schema.py",
+      "checksum": "ddc18543d82b30276fa171b28f30c36abce95fccd15d4a6cf7b36858580be788",
+      "size": 5750,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/clio-artifact/scripts/lib/renderer.py",
+      "checksum": "4414f4f2baa47a268741d073ca1a1f39b99804676958202d74252c085b2b6cb6",
+      "size": 54642,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/clio-artifact/scripts/lib/schemas.py",
+      "checksum": "bf44935d28b201f0fc61c8d23f24fe8f831e761a23b552f27798791278a69d18",
+      "size": 1447,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/clio-artifact/scripts/lib/shape_discovery.py",
+      "checksum": "e00d66fe2a646c2136310822b35fc52beb559e6400b7db875ba54876443a698c",
+      "size": 7166,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/clio-artifact/scripts/lib/templates/__init__.py",
+      "checksum": "6c32a6d999d0e081dba3394b2bdb9bf393441a1cf3604f5810f4c9b351f6b1f6",
+      "size": 85,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/clio-artifact/scripts/lib/templates/base.py",
+      "checksum": "e8feea1475337d34fd9804c838a37b674b544f1fea66ce324688a415fc71a9d7",
+      "size": 6138,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/clio-artifact/scripts/lib/templates/svn.py",
+      "checksum": "65a79e904c21174ca0b1689a9628d3e899e6d43110bb3a4291c10405a9b5a1ee",
+      "size": 13953,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/clio-artifact/scripts/requirements.txt",
+      "checksum": "234aae491813ec88e4be8fca10aa6f53081e918d42f8c4b425d0233788b796aa",
+      "size": 46,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/clio-artifact/templates/[SVN] Proposal Menu.pptx",
+      "checksum": "1d116a77fe55fc5d84ac6e560cf6e0761a4774900b80fb060cd25d38c2c6cd4e",
+      "size": 11849150,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/SKILL.md",
+      "checksum": "5d0d1c95685bae6d27c8e6c0d33cee451e20dea88532874dd735508b32facf71",
+      "size": 6211,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/screen_descriptions.json",
+      "checksum": "9ca9c697528db47c2da2be0423cfa8d784028402f11e16ca8b2cd75bb0e59fb2",
+      "size": 14318,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Animation.json",
+      "checksum": "189b47a79a203beb69535706c0b687fda1db13368c8dd44371fadd85d76a6668",
+      "size": 5434,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Audio_Recorder.json",
+      "checksum": "1f0dc63e9b6406904bcf5dd8c46aba1bef1209cc620248764350c6c2e503212b",
+      "size": 20785,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Audio_bar_status.json",
+      "checksum": "08790919f509fe074c89683624d7c26e199cf45562b0f9e4ec5b2a81f294eede",
+      "size": 26862,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Bootstrap_datepicker.json",
+      "checksum": "666aa1b6c45d8dfbeae292addacfe2082003da98e1b592216217135a01d9e63c",
+      "size": 5945,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Carousel.json",
+      "checksum": "711cd96b4f3dd59d49e4585636294f5ffe91f5cbeb1a021e7ddeac310a52dd6a",
+      "size": 12761,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Change_password.json",
+      "checksum": "7849ca76c1169bef79dfd657ba04da783c45ef2fbfa0fea0649f011f55fb4969",
+      "size": 4726,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Chart.json",
+      "checksum": "ff066907e8bc4327772143677066c56f600c44fb0d505f66a84df373034ee403",
+      "size": 13094,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Chatbox.json",
+      "checksum": "71b6a9c972aed32dd34d4eba876a470aae3981e7c86a63f2b9f0892df72da523",
+      "size": 77833,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Checkbox.json",
+      "checksum": "fa36877a88d9c69b38800908377065d0dea441873571caa4429e3adfe16e6646",
+      "size": 9391,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Client_server.json",
+      "checksum": "dd1f57fc70cda626938ef51acd37544b7f455bbc92951d00516992478d38b183",
+      "size": 5594,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Combo_box.json",
+      "checksum": "e05e344672c3146fe3cfee96853f17eba962ab3b925b0f70ff6880673f7c459f",
+      "size": 12885,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Csv.json",
+      "checksum": "51dba4244289878769371475cb77860f097db641b9fc4d336909c8a6f86248dc",
+      "size": 10257,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Daterange_picker.json",
+      "checksum": "32007310784828dcf6a4e9cfb66aa8620a85f7274c3b7fc563ce61fab0b22533",
+      "size": 8131,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Daterange_picker_with_options.json",
+      "checksum": "65fcd0ff394e0a3b9068c508fc98ebb683b50df4b51ca637c20c9fa8383969d3",
+      "size": 12106,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Dialog_popup.json",
+      "checksum": "f9c8cb80cb30c25d6c234706f8c00e458a91561a8f8063f8fe09911559834576",
+      "size": 6485,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Download_File.json",
+      "checksum": "3202b21c6ffab1ef39ed2432f7128b0ca61206322c5abe4cc2726c99b8377199",
+      "size": 5322,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Download_Image.json",
+      "checksum": "b1a88f59c0f73d2089bff6daada48ef52f45ba85bfe1a75e6e9de1ed92a7499f",
+      "size": 4191,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Dynamic_Pagination.json",
+      "checksum": "6ad641351910fe84db92ecf9c886d479e86df9d32a9508cdf9c4eb6296c9a3d6",
+      "size": 2853,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Fixed_Navigation.json",
+      "checksum": "f7039cd7f639a3234e78df406cf158da89514e8527ac03f117be3e85532924a0",
+      "size": 5605,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Forgot_password.json",
+      "checksum": "d516f7ccb72e9556a1c2a170c4d4cd4bf0feb0d35ce98d05808c1dcb5a0b9139",
+      "size": 9978,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Galery.json",
+      "checksum": "fe6bb6638d1400e3b3b15069ad786b47c09666fdc0e923a6cc08c06c838f8032",
+      "size": 21137,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Global_navigation.json",
+      "checksum": "937733de894e62449c1a80c506be07bda30b4dc89471cc7e04ad43d6b28d0991",
+      "size": 3224,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Image.json",
+      "checksum": "914a910533026e97fd04ec89dadf9ef649c028643b054d20cafa4fa9501f4e7e",
+      "size": 5176,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/InputBox.json",
+      "checksum": "32fcacad8385495afe8d7a1bf1915da22263c97b3a862f034900b7e0de139b15",
+      "size": 27712,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Links.json",
+      "checksum": "ee6c007814a2063b1d2e337d84b99a66ef2a1395f907d95f713cc0f7aa9c21ed",
+      "size": 2840,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/List_Management.json",
+      "checksum": "b85f08c3089d126d3c985ba65002408254f949df2eabecb5b71221914d722391",
+      "size": 7044,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Login.json",
+      "checksum": "758020659bec4d85b4f7f3f68061d9e312055132067571b4e5ffa36a2a7b5a1f",
+      "size": 15242,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Map.json",
+      "checksum": "3e288c2ac98bbcb5a205608d6514088b1f6fb0813b904dc8ce18c7147fb2165d",
+      "size": 14905,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Notification.json",
+      "checksum": "206769a167dc0fa524af32f4f3ffb9e59ce2f637f1a47857695b1eec370e7e90",
+      "size": 12865,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Permission.json",
+      "checksum": "0751cc7c3959a11290d68f882aca99c4c395d021be6be1249257f37b83239baa",
+      "size": 4282,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Print.json",
+      "checksum": "0d50c6644298cf544a028c4c4bcae5aef41ab509445c235ff004f5b8a71f1880",
+      "size": 4062,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Quiz_Admin.json",
+      "checksum": "84fae3829866d90053b606288b828b4fdd5c872d20140be79aa10d1c9e3fe8b5",
+      "size": 12769,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Quiz_User.json",
+      "checksum": "cc4a498bf2c80324c8bd88dd5320c074af865e490f6c7ae8d8127a84e2b85455",
+      "size": 10503,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Radio_button.json",
+      "checksum": "0f4beb7438a2f833d0e537e37b2d1fa14d2c3e246a2237817de14942e1fabd8c",
+      "size": 5142,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Ranking.json",
+      "checksum": "07c796f728009b678fe4acfcedac35dd687d068f3e32ca3039d64608044b2d59",
+      "size": 9192,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/RichTextBox_Markdown.json",
+      "checksum": "4fe79235ce28bf568499722c680f258c58e947debc3d0437d2d6f0b1d19fc953",
+      "size": 13274,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Run_Batch_Process.json",
+      "checksum": "ae8e09bd0ffc61a86d92f2043998cfc3a09750673be22301cf357674407471ff",
+      "size": 12564,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Scrollbar.json",
+      "checksum": "3ba475bacf5d0f6b681836a3b6f5fcb3e8b407f2b22028158868dd37be2799e9",
+      "size": 8644,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Search.json",
+      "checksum": "02be53297aa8a84c846def53bf5a0e3b6053c1a5532167bbc706e34b9563c471",
+      "size": 35483,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Select_box.json",
+      "checksum": "d90d4dddff6dce522b77b82abff04f3058e52dbd5240781acaadbce5e9b9778a",
+      "size": 7586,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Send_email.json",
+      "checksum": "dedcf65badaf2ce6026747b8fd7b6ac8ccb20f245027a109a3e4db3948a802ef",
+      "size": 10997,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Share_to_Facebook.json",
+      "checksum": "717f109a36155c4c129f38ddfcec931a21366200b325d43d13e02fefe741fe62",
+      "size": 4890,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Shortcut_keys_Hot_Keys.json",
+      "checksum": "bd08bc213753ff05db471c077c9b45db7cc662daf4e09c712dd68989b1be407a",
+      "size": 6762,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Sidebar.json",
+      "checksum": "774e76e333f1c9d0d0c7f556bc58f1556db10dac8dee8e54540c10748b17cef3",
+      "size": 7270,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Sign_up.json",
+      "checksum": "c9b06c1d21afb619a3bd4a2b9ffe23a50e97d84a7358fab190d0570e6159b21c",
+      "size": 10356,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Sorting.json",
+      "checksum": "8b05d4502781340ef3515de04d4245ae3b2f67fb461c26ee1dd7a2664860aa99",
+      "size": 7344,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Static_Pagination.json",
+      "checksum": "041fa0c6cbdca7b7b2ffba0a213afcc2e60e17c064358a94804e7e7933dbb18d",
+      "size": 5934,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Statistic.json",
+      "checksum": "1aaeaab4f0408696155c8f87f4e18b0d0cf901263789910a1efed36f06b59d94",
+      "size": 17299,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Tags.json",
+      "checksum": "e37f80631d051a22db5dcc341d6a6217064b7c357976d7e876c08383c21b94b5",
+      "size": 10337,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Text_only.json",
+      "checksum": "99b1afce5bc78e9924cc47b971e6814e2e3f1077d7927fe3b2f3869b7c6f15ff",
+      "size": 3755,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Textarea.json",
+      "checksum": "bb4daadf902413ad36dd38c765eec210a9d30f4014ee3bef39ac9809beed25fa",
+      "size": 6965,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Update.json",
+      "checksum": "bf86a2c1c6cac7e3f6a6492070b27f765c1c964b0cabe6754690193f22cd545f",
+      "size": 13871,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Upload_File.json",
+      "checksum": "c5ea73b3237888eb9b4d4ea9c1119402939438b9908cdc69ba15ab1a96441371",
+      "size": 8945,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Upload_Image.json",
+      "checksum": "ec211bf24ce2c2f02ce8a7cf6c95e2e6abb84b1ceb7b2d7a65f3675192496446",
+      "size": 11457,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/data/viewpoints_description/Video.json",
+      "checksum": "3802760bd4e7a30dc19f8bbb1983849336f3b4aea1f633bf1d4220df89d4e1b9",
+      "size": 17341,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/references/momorph/category-and-format-rules.md",
+      "checksum": "7b551631c1e465f4e1eb06fb8a5ce82c1e243dcefb876bb0c7fab53d99d40ffa",
+      "size": 7615,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/references/momorph/common-rules.md",
+      "checksum": "03ad4872f03ada688dca63b05277e7aaafb02ad0fa2097b2b1173ce8967816d1",
+      "size": 4319,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/references/momorph/create-mode.md",
+      "checksum": "c48281d704842725df54e9c6ceab053276968c4231a1c8632965848544795ae1",
+      "size": 5619,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/references/momorph/update-mode.md",
+      "checksum": "e8547cc57a2c825d08a8e5958bf9e43148fa19f407f2e5ab69b9752b06b6bae9",
+      "size": 4169,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/references/rebuild-spec/category-and-format-rules.md",
+      "checksum": "842f702b6810dbcc70a3872ab130abbd5d80d72c08510716d5cf0d337978872c",
+      "size": 9644,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/references/rebuild-spec/common-rules.md",
+      "checksum": "d98bdde06c311609f199b5309263ed8719b5b7c71b58c7b8944521ea979222bd",
+      "size": 8608,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/references/rebuild-spec/context-objective.md",
+      "checksum": "c0d8f791dcf7a0f36234b2037e009a08ba8f8ca05be0c91fa4e8ff61eca95250",
+      "size": 3601,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/references/rebuild-spec/create-mode.md",
+      "checksum": "19bbe1ad1f97939998df155ef2fa70b55eedb16494a539702f937acdfcaeaacc",
+      "size": 8608,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/references/rebuild-spec/ticket-rules.md",
+      "checksum": "8fbe2f525362418d90c27a77af7a96611a7b167dfb5aae98f317990fe8458296",
+      "size": 4383,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/generate-testcases/references/rebuild-spec/update-mode.md",
+      "checksum": "37a59eaa134f3c828fbe2f2ebd4a628f4e9f86b3fb90289facd80cea92b66881",
+      "size": 6666,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/momorph-implement-design/SKILL.md",
+      "checksum": "db714cf0233f835a2812dffea31cf31f58f8398d866f46a23142316b21adc38e",
+      "size": 13977,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/momorph-implement-design/references/code-rules.md",
+      "checksum": "b9ada29e58bcc5233f8522acb0b3d0718d350639c82d5a5c56f23790d70c527c",
+      "size": 11058,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/momorph-implement-design/references/mcp-template.json",
+      "checksum": "822897583d5631686aa388e05b3862b3669d19dd89823b84581a97883bd6d0fa",
+      "size": 183,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/momorph-implement-design/references/polish-rules.md",
+      "checksum": "b20f0181c9791b0bccc6d613b3f946be81e99946480b440fef98c73fcdc14190",
+      "size": 6496,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/momorph-implement-design/references/subagent-prompt-template.md",
+      "checksum": "66c427539f50b99620b5694be2129deccc20bd6720097a24b9a6a379535ed6a2",
+      "size": 8483,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/momorph-implement-design/scripts/README.md",
+      "checksum": "a76f0cffebe1e766471bccac76ce68e4081eac0def341e431d417192577cef37",
+      "size": 2536,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/momorph-implement-design/scripts/asset_downloader.py",
+      "checksum": "3f97f2412f86101235e02d615db8371bb505085a51bf2cda0b3a9d6a08390051",
+      "size": 9930,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": "skills/momorph-implement-design/scripts/validate_coverage.py",
+      "checksum": "4a81ab4c975cb145bafe47f57c1efc46574530ee305c48953b612c166d4f112c",
+      "size": 3151,
+      "lastModified": "2026-06-11T17:47:32+07:00"
+    },
+    {
+      "path": ".gitignore",
+      "checksum": "8c3f9f33ac7fed805680754c7b53247508b85ec9d3edba6800a5f0304e65c226",
+      "size": 799,
+      "lastModified": "2026-06-11T16:51:16+07:00"
+    },
+    {
+      "path": ".repomixignore",
+      "checksum": "9ba7e159120b02522a7dc06799bdb5a953e8d8db71335fee14e550a8b56a6d4a",
+      "size": 210,
+      "lastModified": "2026-06-11T16:51:16+07:00"
+    },
+    {
+      "path": "CLAUDE.md",
+      "checksum": "69c2d21da993496d636645dd5168a517c5e6ce7d1226fa07b37d8347bcd8b963",
+      "size": 2265,
+      "lastModified": "2026-06-11T16:51:16+07:00"
+    },
+    {
+      "path": "AGENTS.md",
+      "checksum": "7aae19b686cd9e7b16d1b3aa6a4d333fb078202045f459a05c03c340ed26f0cc",
+      "size": 817,
+      "lastModified": "2026-06-11T16:51:16+07:00"
+    },
+    {
+      "path": "README.md",
+      "checksum": "b5b736200943e95525751e423a71b291299f01702f65c5440602162006aef854",
+      "size": 2987,
+      "lastModified": "2026-06-11T16:51:16+07:00"
+    }
+  ]
+}

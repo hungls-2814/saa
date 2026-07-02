@@ -1,0 +1,25 @@
+{
+  "commands": [
+    {
+      "command": "npm test",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "vitest run — 7 files, 119 tests passed (incl. open-redirect regression tests)",
+      "ts": "2026-07-02T05:14:00Z"
+    },
+    {
+      "command": "npx tsc --noEmit",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "TypeScript typecheck clean, no errors",
+      "ts": "2026-07-02T05:14:10Z"
+    },
+    {
+      "command": "npx eslint app lib i18n proxy.ts next.config.ts",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "ESLint clean on application source, 0 errors/warnings",
+      "ts": "2026-07-02T05:14:20Z"
+    }
+  ]
+}

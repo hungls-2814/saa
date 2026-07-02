@@ -1,0 +1,20 @@
+Collecting python-pptx>=1.0.0
+  Downloading python_pptx-1.0.2-py3-none-any.whl.metadata (2.5 kB)
+Collecting Pillow>=3.3.2 (from python-pptx>=1.0.0)
+  Downloading pillow-12.3.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (9.1 kB)
+Collecting XlsxWriter>=0.5.7 (from python-pptx>=1.0.0)
+  Downloading xlsxwriter-3.2.9-py3-none-any.whl.metadata (2.7 kB)
+Collecting lxml>=3.1.0 (from python-pptx>=1.0.0)
+  Downloading lxml-6.1.1-cp312-cp312-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl.metadata (3.5 kB)
+Requirement already satisfied: typing-extensions>=4.9.0 in ./.venv/lib/python3.12/site-packages (from python-pptx>=1.0.0) (4.15.0)
+Downloading python_pptx-1.0.2-py3-none-any.whl (472 kB)
+Downloading lxml-6.1.1-cp312-cp312-manylinux_2_26_x86_64.manylinux_2_28_x86_64.whl (5.2 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 5.2/5.2 MB 8.2 MB/s  0:00:00
+Downloading pillow-12.3.0-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (6.9 MB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 6.9/6.9 MB 8.1 MB/s  0:00:00
+Downloading xlsxwriter-3.2.9-py3-none-any.whl (175 kB)
+Installing collected packages: XlsxWriter, Pillow, lxml, python-pptx
+
+Successfully installed Pillow-12.3.0 XlsxWriter-3.2.9 lxml-6.1.1 python-pptx-1.0.2
+Requirement already satisfied: Pillow>=11.0.0 in ./.venv/lib/python3.12/site-packages (12.3.0)
+Requirement already satisfied: lxml>=5.0.0 in ./.venv/lib/python3.12/site-packages (6.1.1)

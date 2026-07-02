@@ -1,0 +1,32 @@
+{
+  "task": "Implement the SAA 2025 login page (/login) with Google OAuth via Supabase and full VN/EN i18n, from MoMorph screen GzbNeVGJHz.",
+  "mode": "interactive",
+  "acceptanceCriteria": [
+    "Unauthenticated user sees the Login screen matching the design.",
+    "Authenticated user visiting /login is redirected to /todo.",
+    "Unauthenticated user visiting /todo is redirected to /login.",
+    "Google login succeeds, session is set, and the user lands on /todo.",
+    "Login failure or cancel shows a localized toast and the user stays on /login.",
+    "Language selector toggles VN/EN, content updates, and the choice persists via the NEXT_LOCALE cookie.",
+    "Login button shows loading and disabled state during the OAuth flow."
+  ],
+  "touchpoints": [
+    "app/login/**",
+    "app/todo/**",
+    "app/auth/callback/route.ts",
+    "app/layout.tsx",
+    "proxy.ts",
+    "lib/supabase/**",
+    "lib/auth/**",
+    "lib/i18n/set-locale.ts",
+    "i18n/**",
+    "messages/**",
+    "next.config.ts"
+  ],
+  "blastRadius": "Root layout now wraps all routes in NextIntlClientProvider; proxy.ts runs on every non-asset, non-/auth request. Both verified: / and /login return 200, /todo guards to /login, no proxy crash when Supabase is unconfigured.",
+  "contracts": [
+    "GoogleLoginButton props { onClick, loading, disabled, label }",
+    "setLocale(locale) Server Action sets NEXT_LOCALE cookie",
+    "OAuth callback validates same-origin next, defaults /todo"
+  ]
+}
