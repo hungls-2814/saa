@@ -40,3 +40,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Takumi agent kit (run tkm init locally)
+.claude/
+release-manifest.json
