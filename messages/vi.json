@@ -1,0 +1,18 @@
+{
+  "Login": {
+    "subtitle": "Bắt đầu hành trình của bạn cùng SAA 2025.",
+    "tagline": "Đăng nhập để khám phá!",
+    "cta": "LOGIN With Google",
+    "errorToast": "Đăng nhập không thành công. Vui lòng thử lại."
+  },
+  "Common": {
+    "footer": "Bản quyền thuộc về Sun* © 2025",
+    "langVi": "Tiếng Việt",
+    "langEn": "English"
+  },
+  "Todo": {
+    "title": "Việc cần làm",
+    "signedInAs": "Đã đăng nhập với {email}",
+    "signOut": "Đăng xuất"
+  }
+}
