@@ -1,0 +1,18 @@
+{
+  "Login": {
+    "subtitle": "Start your journey with SAA 2025.",
+    "tagline": "Log in to explore!",
+    "cta": "LOGIN With Google",
+    "errorToast": "Login failed. Please try again."
+  },
+  "Common": {
+    "footer": "Copyright © Sun* 2025",
+    "langVi": "Tiếng Việt",
+    "langEn": "English"
+  },
+  "Todo": {
+    "title": "To-Do",
+    "signedInAs": "Signed in as {email}",
+    "signOut": "Sign out"
+  }
+}

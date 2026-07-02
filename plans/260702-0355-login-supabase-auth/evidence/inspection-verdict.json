@@ -1,0 +1,23 @@
+{
+  "score": 9.5,
+  "criticalCount": 0,
+  "decision": "SEALED",
+  "acceptanceCovered": [
+    "Unauthenticated user sees the Login screen matching the design. — GET /login returns 200; UI built pixel-faithful from MoMorph design.",
+    "Authenticated user visiting /login is redirected to /todo. — proxy.ts guard, covered by proxy.test.ts.",
+    "Unauthenticated user visiting /todo is redirected to /login. — verified live (307 → /login) and in proxy.test.ts.",
+    "Google login succeeds, session is set, and the user lands on /todo. — callback exchange→/todo unit-tested in route.test.ts; full OAuth round-trip requires a live Supabase project (manual, see docs/setup/supabase-google-oauth.md).",
+    "Login failure or cancel shows a localized toast and the user stays on /login. — login-toast.test.tsx; /auth/callback with no code → /login?error verified live.",
+    "Language selector toggles VN/EN, content updates, and the choice persists via the NEXT_LOCALE cookie. — set-locale.test.ts; NEXT_LOCALE=en renders English copy verified live.",
+    "Login button shows loading and disabled state during the OAuth flow. — google-login-button.test.tsx (spinner, disabled, aria-busy)."
+  ],
+  "regressionChecked": [
+    "Root layout NextIntlClientProvider wraps all routes — / and /login return 200.",
+    "proxy.ts runs on every request — guards work and no crash when Supabase unconfigured (fail-closed).",
+    "Client/server boundary — i18n/config.ts split prevents next/headers leaking into client bundle (/login 200 after fix)."
+  ],
+  "contractStatus": "OK",
+  "refuted": [],
+  "unproven": [],
+  "reachableRegressions": []
+}
