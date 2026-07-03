@@ -4,9 +4,10 @@ import { updateSession } from "@/lib/supabase/middleware";
 // Next 16 renamed middleware.ts -> proxy.ts (exported `proxy`, nodejs runtime).
 // Refreshes the Supabase session and enforces route guards.
 
-// No protected routes yet — the homepage is public. Kept as the extension
-// point for future auth-gated pages (e.g. /profile).
-const PROTECTED_PATHS: string[] = [];
+// The homepage is public; /he-thong-giai (Awards System detail page) is the
+// first auth-gated route. Kept as the extension point for future
+// auth-gated pages (e.g. /profile).
+const PROTECTED_PATHS: string[] = ["/he-thong-giai"];
 const AUTH_PATHS = ["/login"];
 
 export async function proxy(request: NextRequest) {

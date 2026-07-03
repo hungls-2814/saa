@@ -58,7 +58,7 @@ export async function HeroSection() {
 
         <div className="flex flex-wrap items-center gap-10">
           <a
-            href="/awards-information"
+            href="/he-thong-giai"
             className="rounded-lg px-6 py-4 text-base font-bold text-[#00101A] transition-all duration-200 ease-out bg-[#FFEA9E] hover:-translate-y-0.5 hover:bg-[#FFF8E1] hover:shadow-lg"
           >
             {t("ctaAbout")}

@@ -1,0 +1,32 @@
+{
+  "commands": [
+    {
+      "command": "npm run typecheck",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "tsc --noEmit clean",
+      "ts": "2026-07-03T11:45:00Z"
+    },
+    {
+      "command": "npm run lint",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "0 errors, 10 warnings after adding eslint-disable to new test files + ignoring .claude/plans in eslint config",
+      "ts": "2026-07-03T11:45:30Z"
+    },
+    {
+      "command": "npx vitest run",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "246/246 tests pass across 21 files (+60 F003 tests: sidebar, scroll-spy hook, detail sections + dual-prize, hero, data integrity, proxy guard, homepage link rewires)",
+      "ts": "2026-07-03T11:46:00Z"
+    },
+    {
+      "command": "npm run build",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "next build succeeds; /he-thong-giai registered as a dynamic route; curl confirms 307->/login unauth, / still 200",
+      "ts": "2026-07-03T11:46:30Z"
+    }
+  ]
+}

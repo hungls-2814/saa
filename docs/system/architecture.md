@@ -19,14 +19,17 @@ When Supabase env is unset, `isSupabaseConfigured()` makes the app fail closed (
 ### Request flow
 ```
 Browser → proxy.ts (session refresh + route guard) → route/page
-  /login : authenticated → / (home) ; else render login
-  /      : public homepage, renders regardless of auth (header UI adapts)
-  /home  : always → redirect("/") (convenience alias for older/typed links)
+  /login          : authenticated → / (home) ; else render login
+  /               : public homepage, renders regardless of auth (header UI adapts)
+  /he-thong-giai  : unauthenticated → /login (PROTECTED_PATHS); else render (defense-in-depth getUser() in page)
+  /home           : always → redirect("/") (convenience alias for older/typed links)
 OAuth: login button → signInWithOAuth(google, redirectTo=/auth/callback)
        → Google → /auth/callback (exchangeCodeForSession) → validated same-origin redirect (default /)
 ```
 `proxy.ts` (Next 16 renamed `middleware.ts` → `proxy.ts`, nodejs runtime) matches all routes
 except `_next/*`, static assets, and `/auth/*` (the callback runs its own code exchange).
+`PROTECTED_PATHS = ["/he-thong-giai"]` — the first authenticated-only route (F003); see
+`docs/system/permissions.md` for the full guard matrix.
 
 ## Directory shape
 ```
@@ -35,7 +38,13 @@ app/
   (home)/                     # public homepage route group — renders at `/`
     page.tsx                  # reads Supabase user server-side for auth-aware header
     components/                # section components (header, hero, countdown, awards, footer, ...)
+                               # SiteHeader takes an `active` NavKey prop (e.g. "home" | "awards")
+                               # to mark the current nav item across pages
     data/awards-data.ts        # award category content (slugs, copy)
+  he-thong-giai/              # Awards System detail page (F003) — auth-gated, renders at `/he-thong-giai`
+    page.tsx                  # server component; getUser() → redirect("/login") if unauthenticated
+    components/                # hero, scroll-spy sidebar (use-active-section.ts), award detail section, icons
+    data/awards-detail-data.ts # per-award title/description/quantity/prize content
   components/                 # shared cross-feature components (e.g. language-selector.tsx)
   login/                      # login screen (page + components) — authed visitor redirected → /
   home/page.tsx               # convenience alias — redirect("/") for older/typed /home links
@@ -52,6 +61,10 @@ messages/{vi,en}.json         # translation catalogs
 `app/components/` holds components shared across route groups (e.g. `language-selector.tsx`,
 used by both the homepage header and the login header) — distinct from `app/(home)/components/`,
 which is homepage-section-specific.
+
+## Lint
+`eslint.config.mjs` overrides `eslint-config-next`'s default ignores to also exclude `.claude/**`
+and `plans/**` (agent-kit tooling and workspace artifacts, not application source).
 
 ## Env / config
 - `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` (client-safe). Template in `.env.local.example`.

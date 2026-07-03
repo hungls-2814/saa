@@ -1,0 +1,22 @@
+{
+  "score": 9.5,
+  "criticalCount": 0,
+  "decision": "SEALED",
+  "contractStatus": "HONORED",
+  "acceptanceCovered": [
+    "/he-thong-giai renders for authenticated users and redirects unauthenticated users to /login — proxy.test.ts (protected route → 307 /login) + server page getUser redirect; curl confirms 307 unauth",
+    "Sidebar lists 6 awards in order with gold+underline active state and click scroll-spy — awards-sidebar.test.tsx + use-active-section.test.ts",
+    "6 award detail sections render with correct title quantity and prize and each has a slug anchor — award-detail-section.test.tsx (23 tests incl. dual-prize) verified byte-for-byte vs spec",
+    "Deep-link hash slug from the homepage scrolls to the matching section — use-active-section.test.ts (mount hash sync + scrollIntoView)",
+    "Homepage award cards nav and footer now point to /he-thong-giai — award-card/site-header/hero-section/site-footer tests updated; grep confirms zero leftover /awards-information in app code"
+  ],
+  "regressionChecked": [
+    "Existing suite green after homepage link rewires (246/246, incl. updated homepage tests)",
+    "SiteHeader active prop defaults to home — homepage unchanged; awards page passes active=awards",
+    "proxy guard: /he-thong-giai protected, / still public (curl 200), /login auth-redirect unaffected",
+    "eslint config now ignores .claude/plans — npm run lint 0 errors; feature surface 0 errors"
+  ],
+  "refuted": [],
+  "unproven": [],
+  "reachableRegressions": []
+}

@@ -15,11 +15,13 @@ a route guard.
 - [x] Fail-closed behavior when Supabase env is unconfigured
 - [x] Setup guide for Supabase + Google OAuth (`docs/setup/supabase-google-oauth.md`)
 
-## Phase 2 — Core app features — IN PROGRESS (2026-07-02)
+## Phase 2 — Core app features — IN PROGRESS (2026-07-03)
 
 - [x] F002 — Public homepage (`/`) — hero/countdown, awards grid, Sun* Kudos promo,
       auth-aware header, VN/EN i18n
-- [ ] `/awards-information` — award detail page (homepage cards link to `#<slug>` anchors there)
+- [x] F003 — `/he-thong-giai` Awards System detail page — hero, scroll-spy sidebar,
+      6 award detail sections, auth-gated (first protected route); homepage links
+      rewired from `/awards-information` to `/he-thong-giai(#slug)`
 - [ ] `/kudos` — Sun* Kudos detail page
 - [ ] `/standards` — footer "Tiêu chuẩn chung" target page
 - [ ] Real Todo feature (data model, CRUD, persistence) behind the existing guard
