@@ -31,6 +31,9 @@ export default async function RootLayout({
     <html
       lang={locale}
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      // Browser extensions commonly mutate <html> attributes before React
+      // hydrates; suppress the resulting benign attribute-mismatch warning.
+      suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col">
         {/* NextIntlClientProvider auto-infers locale + messages from the request config. */}

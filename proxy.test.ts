@@ -18,36 +18,6 @@ describe('proxy(request)', () => {
     mockUpdateSession = vi.mocked(updateSession);
   });
 
-  describe('unauthenticated user on protected route (/todo)', () => {
-    beforeEach(() => {
-      mockUpdateSession.mockResolvedValue({
-        supabaseResponse: new Response(),
-        user: null,
-      });
-    });
-
-    it('redirects to /login when accessing /todo without auth', async () => {
-      const request = new NextRequest('http://localhost:3000/todo');
-      const response = await proxy(request);
-
-      expect(response.status).toBe(307); // Redirect status
-      expect(response.headers.get('location')).toContain('/login');
-    });
-
-    it('does not redirect for authenticated access to /todo', async () => {
-      mockUpdateSession.mockResolvedValue({
-        supabaseResponse: new Response(null, { status: 200 }),
-        user: { id: 'user-123', email: 'test@example.com' },
-      });
-
-      const request = new NextRequest('http://localhost:3000/todo');
-      const response = await proxy(request);
-
-      // Non-redirect response (200 or similar)
-      expect(response.status).not.toBe(307);
-    });
-  });
-
   describe('authenticated user on login page (/login)', () => {
     beforeEach(() => {
       mockUpdateSession.mockResolvedValue({
@@ -56,12 +26,12 @@ describe('proxy(request)', () => {
       });
     });
 
-    it('redirects to /todo when authenticated user accesses /login', async () => {
+    it('redirects to / (home) when authenticated user accesses /login', async () => {
       const request = new NextRequest('http://localhost:3000/login');
       const response = await proxy(request);
 
       expect(response.status).toBe(307);
-      expect(response.headers.get('location')).toContain('/todo');
+      expect(new URL(response.headers.get('location')!).pathname).toBe('/');
     });
 
     it('allows unauthenticated users to access /login', async () => {
@@ -77,7 +47,7 @@ describe('proxy(request)', () => {
     });
   });
 
-  describe('general flow-through routes', () => {
+  describe('public routes (no protected routes currently)', () => {
     beforeEach(() => {
       mockUpdateSession.mockResolvedValue({
         supabaseResponse: new Response(null, { status: 200 }),
@@ -85,17 +55,25 @@ describe('proxy(request)', () => {
       });
     });
 
-    it('allows access to public routes like /about when unauthenticated', async () => {
+    it('allows access to / (home) when unauthenticated', async () => {
+      const request = new NextRequest('http://localhost:3000/');
+      const response = await proxy(request);
+
+      expect(response.status).toBe(200);
+    });
+
+    it('allows access to arbitrary public routes when unauthenticated', async () => {
       const request = new NextRequest('http://localhost:3000/about');
       const response = await proxy(request);
 
       expect(response.status).toBe(200);
     });
 
-    it('allows access to / when unauthenticated', async () => {
-      const request = new NextRequest('http://localhost:3000/');
+    it('does not gate the former /todo path — it is no longer protected', async () => {
+      const request = new NextRequest('http://localhost:3000/todo');
       const response = await proxy(request);
 
+      // /todo was removed; unauthenticated access now flows through, not redirected.
       expect(response.status).toBe(200);
     });
 
@@ -112,7 +90,7 @@ describe('proxy(request)', () => {
     });
   });
 
-  describe('edge cases', () => {
+  describe('session refresh + pass-through', () => {
     it('calls updateSession for every request', async () => {
       mockUpdateSession.mockResolvedValue({
         supabaseResponse: new Response(),
@@ -123,43 +101,6 @@ describe('proxy(request)', () => {
       await proxy(request);
 
       expect(mockUpdateSession).toHaveBeenCalledWith(request);
-    });
-
-    it('preserves query parameters when redirecting', async () => {
-      mockUpdateSession.mockResolvedValue({
-        supabaseResponse: new Response(),
-        user: null,
-      });
-
-      const request = new NextRequest('http://localhost:3000/todo?page=1&sort=asc');
-      const response = await proxy(request);
-
-      const location = response.headers.get('location');
-      expect(location).toContain('/login');
-    });
-
-    it('handles paths with trailing slashes', async () => {
-      mockUpdateSession.mockResolvedValue({
-        supabaseResponse: new Response(),
-        user: null,
-      });
-
-      const request = new NextRequest('http://localhost:3000/todo/');
-      const response = await proxy(request);
-
-      expect(response.status).toBe(307);
-    });
-
-    it('redirects /todo to /login even with trailing slash', async () => {
-      mockUpdateSession.mockResolvedValue({
-        supabaseResponse: new Response(),
-        user: null,
-      });
-
-      const request = new NextRequest('http://localhost:3000/todo/');
-      const response = await proxy(request);
-
-      expect(response.headers.get('location')).toContain('/login');
     });
 
     it('returns supabaseResponse from updateSession for pass-through', async () => {
@@ -173,35 +114,6 @@ describe('proxy(request)', () => {
       const response = await proxy(request);
 
       expect(response).toBe(mockResponse);
-    });
-  });
-
-  describe('multiple protected routes', () => {
-    it('protects /todo path and subpaths', async () => {
-      mockUpdateSession.mockResolvedValue({
-        supabaseResponse: new Response(),
-        user: null,
-      });
-
-      const request = new NextRequest('http://localhost:3000/todo/123');
-      const response = await proxy(request);
-
-      expect(response.status).toBe(307);
-      expect(response.headers.get('location')).toContain('/login');
-    });
-
-    it('protects /todo and any paths starting with /todo', async () => {
-      mockUpdateSession.mockResolvedValue({
-        supabaseResponse: new Response(null, { status: 200 }),
-        user: null,
-      });
-
-      const request = new NextRequest('http://localhost:3000/todoitem');
-      const response = await proxy(request);
-
-      // /todoitem starts with /todo so it is protected
-      expect(response.status).toBe(307);
-      expect(response.headers.get('location')).toContain('/login');
     });
   });
 });

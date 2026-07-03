@@ -41,9 +41,10 @@ Restart the dev server (`npm run dev`). Env changes require a restart.
 
 ## 5. Verify end-to-end
 1. Open <http://localhost:3000/login> → click **LOGIN With Google**.
-2. Complete Google sign-in → you land on `/todo` showing your email + a sign-out button.
-3. Visit `/login` while signed in → redirected to `/todo`.
-4. Sign out → back to `/login`. Visit `/todo` while signed out → redirected to `/login`.
+2. Complete Google sign-in → you land on `/` (homepage), header now shows notification
+   bell + account menu instead of the login link.
+3. Visit `/login` while signed in → redirected to `/`.
+4. Sign out (from the account menu) → back to `/login`.
 
 ## How it fits together
 - Route guards + session refresh: `proxy.ts` → `lib/supabase/middleware.ts` (Next 16 renamed `middleware.ts` → `proxy.ts`).

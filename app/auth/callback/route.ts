@@ -8,7 +8,7 @@ import { LOGIN_ERROR_PATH } from "@/lib/auth/constants";
  */
 function safeNext(next: string | null): string {
   if (next && next.startsWith("/") && !next.startsWith("//")) return next;
-  return "/todo";
+  return "/";
 }
 
 /**

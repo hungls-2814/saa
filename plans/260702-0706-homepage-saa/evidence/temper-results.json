@@ -1,0 +1,25 @@
+{
+  "commands": [
+    {
+      "command": "npm run typecheck",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "tsc --noEmit clean after fixing phone:null->undefined in test mocks",
+      "ts": "2026-07-02T07:53:00Z"
+    },
+    {
+      "command": "npx eslint app/(home) app/components lib/event",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "0 lint errors on the homepage feature surface",
+      "ts": "2026-07-02T07:53:10Z"
+    },
+    {
+      "command": "npx vitest run",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "184/184 tests pass across 16 files after fixing the awards MISSING_MESSAGE bug (keys now include items.) + adding a real-messages key-resolution guard test, plus the post-login flow change (login->/, /todo removed) and the design-spacing refinement pass",
+      "ts": "2026-07-02T08:49:36Z"
+    }
+  ]
+}
