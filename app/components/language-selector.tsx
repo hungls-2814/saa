@@ -11,6 +11,8 @@ import { SUPPORTED_LOCALES, type Locale } from "@/i18n/config";
  * Functional language selector (flag + code + chevron trigger, dropdown menu).
  * Switching writes the NEXT_LOCALE cookie via a Server Action, then
  * router.refresh() re-renders Server Components with the new locale — no URL change.
+ *
+ * Shared across routes (login, homepage) — do not fork a per-route copy.
  */
 export function LanguageSelector() {
   const activeLocale = useLocale() as Locale;

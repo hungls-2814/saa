@@ -3,6 +3,64 @@
 All notable changes to this project are recorded here. Format loosely follows
 [Keep a Changelog](https://keepachangelog.com/); dates are `YYYY-MM-DD`.
 
+## 2026-07-02 — Flow: post-login lands on homepage; /todo removed
+
+Supersedes the `/todo`-centric flow described in the F001 entry below: the placeholder
+`/todo` page never became the real Todo feature, so it was removed rather than kept as
+dead weight.
+
+### Changed
+- **Post-login landing is now `/`** — `app/auth/callback/route.ts` `safeNext()` default
+  changed from `/todo` to `/`; `proxy.ts` redirects an authenticated user hitting `/login`
+  to `/` instead of `/todo`.
+- **No protected routes** — `proxy.ts`'s `PROTECTED_PATHS` is now empty; the homepage is
+  public for everyone, auth only toggles header UI (bell + account menu).
+- **`app/layout.tsx`** — `<html>` now has `suppressHydrationWarning` (guards against
+  browser-extension attribute-mismatch warnings).
+
+### Removed
+- **`/todo` route** (`app/todo/**`) — deleted along with its guard logic.
+
+### Added
+- **`/home` alias** (`app/home/page.tsx`) — server `redirect("/")`, so older or typed
+  `/home` links land on the homepage instead of 404.
+
+### Notes
+- Tests updated: `proxy.test.ts` (rewritten for no-protected-routes + `/login` → `/`),
+  `app/auth/callback/route.test.ts` (default redirect `/todo` → `/`). All green
+  (tsc, lint, 170 tests, `next build`).
+- See `docs/system/architecture.md`, `docs/system/permissions.md`, and
+  `docs/features/F001-login/overview.md` for the updated flow/spec.
+
+## 2026-07-02 — F002: Homepage SAA 2025
+
+Public landing page at `/`, replacing the Next.js scaffold. Built to the MoMorph spec
+(screen `i87tDx10uM`).
+
+### Added
+- **Homepage** (`app/(home)/**`) — auth-aware header (nav, language selector,
+  notification bell + account menu for signed-in users), hero with event countdown,
+  Root Further content section, awards grid (6 category cards linking to
+  `/awards-information#<slug>`), Sun* Kudos promo, footer, floating quick-action widget.
+- **Countdown util** (`lib/event/countdown.ts`) — pure day/hour/minute calculation
+  reading `NEXT_PUBLIC_EVENT_DATETIME` (ISO-8601, defaults to `2026-12-26T18:30:00+07:00`);
+  invalid/missing value falls back to the "ended" (hidden) state instead of crashing.
+- **Shared `LanguageSelector`** (`app/components/language-selector.tsx`) — extracted from
+  the login header so the homepage header can reuse it; login header now re-imports it.
+- **VN/EN i18n** — new `Home` namespace in `messages/{vi,en}.json`.
+
+### Known deviations
+- Best Manager / Signature 2025 - Creator / MVP award cards share identical placeholder
+  description copy, reproduced verbatim from the design.
+- Decorative bitmap art (hero + Kudos key visuals) recreated as CSS/SVG — MoMorph asset
+  URLs were `null` and the Figma-image API returned 500 at implementation time.
+
+### Notes
+- `/awards-information`, `/kudos`, `/standards` are linked but not yet built (404 for now).
+- No role/permission gating on the header yet — see `docs/system/permissions.md`.
+
+See `docs/features/F002-homepage/overview.md` for the full feature spec.
+
 ## 2026-07-02 — F001: Login (Google OAuth via Supabase)
 
 First feature shipped on this project. Establishes the auth foundation everything

@@ -11,17 +11,25 @@
 ## Access tiers (this iteration)
 | Tier | Meaning | Routes |
 |------|---------|--------|
-| Anonymous | No valid Supabase session | `/login` only; protected routes → `/login` |
-| Authenticated | Valid Supabase session | `/todo` (+ future app routes); `/login` → `/todo` |
+| Anonymous | No valid Supabase session | `/login`, `/` (public); `/login` stays on login |
+| Authenticated | Valid Supabase session | `/` (+ future app routes); `/login` → `/` |
 
 No finer-grained roles yet — add a roles table + policy layer when per-user authorization is needed.
+There are currently no protected routes: the homepage is public for everyone, and auth only
+changes header UI (notification bell + account menu), not access.
 
 ## Route guard matrix
 | Route | Anonymous | Authenticated |
 |-------|-----------|---------------|
-| `/login` | render login | redirect `/todo` |
-| `/todo` | redirect `/login` | render |
-| `/auth/callback` | exchange code → validated redirect (default `/todo`) | (same) |
+| `/` | render homepage (public) | render homepage, header adds notification bell + account menu |
+| `/login` | render login | redirect `/` |
+| `/home` | redirect `/` (alias, unconditional) | redirect `/` (alias, unconditional) |
+| `/auth/callback` | exchange code → validated redirect (default `/`) | (same) |
+
+`/` is public — no guard in `proxy.ts` (`PROTECTED_PATHS` is currently empty). The homepage
+reads the Supabase user server-side (`getUser()`) purely to toggle header UI (bell + account
+menu), not to gate access. No roles/Admin-Dashboard menu item yet — deferred until a roles
+layer exists (see F002 overview, `docs/features/F002-homepage/overview.md`).
 
 ## Notes
 - Enforcement: `proxy.ts` (guards) + defense-in-depth `getUser()` check in protected pages.

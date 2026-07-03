@@ -26,13 +26,13 @@ describe('GET /auth/callback', () => {
       });
     });
 
-    it('redirects to /todo when code exchange succeeds', async () => {
+    it('redirects to / (home) when code exchange succeeds', async () => {
       const url = 'http://localhost:3000/auth/callback?code=auth_code_123';
       const request = new Request(url);
       const response = await GET(request);
 
       expect(response.status).toBe(307);
-      expect(response.headers.get('location')).toContain('/todo');
+      expect(response.headers.get('location')).toBe('http://localhost:3000/');
     });
 
     it('redirects to custom next parameter when provided', async () => {
@@ -139,7 +139,7 @@ describe('GET /auth/callback', () => {
   });
 
   describe('redirect URL construction', () => {
-    it('defaults next parameter to /todo when not provided', async () => {
+    it('defaults next parameter to / (home) when not provided', async () => {
       mockCreateClient.mockResolvedValue({
         auth: {
           exchangeCodeForSession: vi.fn().mockResolvedValue({ error: null }),
@@ -150,7 +150,7 @@ describe('GET /auth/callback', () => {
       const request = new Request(url);
       const response = await GET(request);
 
-      expect(response.headers.get('location')).toContain('/todo');
+      expect(response.headers.get('location')).toBe('http://localhost:3000/');
     });
 
     it('uses next parameter when provided', async () => {
@@ -166,10 +166,9 @@ describe('GET /auth/callback', () => {
 
       const location = response.headers.get('location');
       expect(location).toContain('/dashboard');
-      expect(location).not.toContain('/todo');
     });
 
-    it('rejects an absolute-URL next (open redirect) and falls back to /todo', async () => {
+    it('rejects an absolute-URL next (open redirect) and falls back to / (home)', async () => {
       mockCreateClient.mockResolvedValue({
         auth: {
           exchangeCodeForSession: vi.fn().mockResolvedValue({ error: null }),
@@ -182,11 +181,11 @@ describe('GET /auth/callback', () => {
       const response = await GET(request);
 
       const location = response.headers.get('location');
-      expect(location).toBe('http://localhost:3000/todo');
+      expect(location).toBe('http://localhost:3000/');
       expect(location).not.toContain('evil.com');
     });
 
-    it('rejects a protocol-relative next (//host) and falls back to /todo', async () => {
+    it('rejects a protocol-relative next (//host) and falls back to / (home)', async () => {
       mockCreateClient.mockResolvedValue({
         auth: {
           exchangeCodeForSession: vi.fn().mockResolvedValue({ error: null }),
@@ -199,7 +198,7 @@ describe('GET /auth/callback', () => {
       const response = await GET(request);
 
       const location = response.headers.get('location');
-      expect(location).toBe('http://localhost:3000/todo');
+      expect(location).toBe('http://localhost:3000/');
       expect(location).not.toContain('evil.com');
     });
 

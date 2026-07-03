@@ -1,0 +1,24 @@
+{
+  "task": "Implement the SAA 2025 Homepage (F002) from MoMorph screen i87tDx10uM: header, hero+countdown, Root Further content, awards grid, Sun* Kudos, footer, floating widget — localized VN/EN and auth-aware.",
+  "mode": "interactive",
+  "acceptanceCriteria": [
+    "Homepage renders at / for anonymous and authenticated users",
+    "Authenticated header shows notification bell and account menu; anonymous does not",
+    "Countdown reads env datetime, 0-pads, zeroes out and hides Coming soon at target, invalid does not crash",
+    "Awards grid links each card to /awards-information#slug",
+    "VN/EN language switch updates copy and persists via NEXT_LOCALE cookie"
+  ],
+  "touchpoints": [
+    "app/(home)/page.tsx",
+    "app/(home)/components/*.tsx",
+    "app/(home)/data/awards-data.ts",
+    "app/components/language-selector.tsx",
+    "lib/event/countdown.ts",
+    "messages/vi.json",
+    "messages/en.json",
+    ".env.local.example",
+    "app/login/components/login-header.tsx"
+  ],
+  "blastRadius": "New / route group replaces the Next scaffold (removed app/page.tsx); LanguageSelector moved to app/components and re-imported by the login header; new NEXT_PUBLIC_EVENT_DATETIME env var. No change to auth guards (proxy.ts) or Supabase libs.",
+  "contracts": "Homepage is a Server Component reading the Supabase session and passing user to SiteHeader; Countdown (client) consumes pure lib/event/countdown.ts; all copy via next-intl Home namespace (vi+en in sync); routing hrefs and award slugs fixed per spec."
+}

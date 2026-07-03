@@ -19,10 +19,11 @@ When Supabase env is unset, `isSupabaseConfigured()` makes the app fail closed (
 ### Request flow
 ```
 Browser → proxy.ts (session refresh + route guard) → route/page
-  /login : authenticated → /todo ; else render login
-  /todo  : authenticated → render ; else → /login
+  /login : authenticated → / (home) ; else render login
+  /      : public homepage, renders regardless of auth (header UI adapts)
+  /home  : always → redirect("/") (convenience alias for older/typed links)
 OAuth: login button → signInWithOAuth(google, redirectTo=/auth/callback)
-       → Google → /auth/callback (exchangeCodeForSession) → validated same-origin redirect (default /todo)
+       → Google → /auth/callback (exchangeCodeForSession) → validated same-origin redirect (default /)
 ```
 `proxy.ts` (Next 16 renamed `middleware.ts` → `proxy.ts`, nodejs runtime) matches all routes
 except `_next/*`, static assets, and `/auth/*` (the callback runs its own code exchange).
@@ -31,17 +32,30 @@ except `_next/*`, static assets, and `/auth/*` (the callback runs its own code e
 ```
 app/
   layout.tsx                  # root: NextIntlClientProvider + <html lang>
-  login/                      # login screen (page + components) — guarded → /todo when authed
-  todo/                       # protected placeholder — guarded → /login when anon
+  (home)/                     # public homepage route group — renders at `/`
+    page.tsx                  # reads Supabase user server-side for auth-aware header
+    components/                # section components (header, hero, countdown, awards, footer, ...)
+    data/awards-data.ts        # award category content (slugs, copy)
+  components/                 # shared cross-feature components (e.g. language-selector.tsx)
+  login/                      # login screen (page + components) — authed visitor redirected → /
+  home/page.tsx               # convenience alias — redirect("/") for older/typed /home links
   auth/callback/route.ts      # OAuth code exchange → validated redirect
 lib/supabase/{client,server,middleware,config}.ts
 lib/auth/{sign-out,constants}.ts
+lib/event/countdown.ts        # pure countdown calc helpers (homepage hero timer)
 lib/i18n/set-locale.ts        # Server Action: set NEXT_LOCALE cookie
 proxy.ts                      # route guards + session refresh
 i18n/{request,config}.ts      # next-intl config + client-safe constants
 messages/{vi,en}.json         # translation catalogs
 ```
 
+`app/components/` holds components shared across route groups (e.g. `language-selector.tsx`,
+used by both the homepage header and the login header) — distinct from `app/(home)/components/`,
+which is homepage-section-specific.
+
 ## Env / config
 - `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` (client-safe). Template in `.env.local.example`.
 - Supabase dashboard: Google provider enabled; redirect + site URLs whitelisted. See `docs/setup/supabase-google-oauth.md`.
+- `NEXT_PUBLIC_EVENT_DATETIME` (client-safe, ISO-8601) — homepage hero countdown target;
+  defaults to `2026-12-26T18:30:00+07:00` in code when unset. Invalid values fall back to the
+  "ended" (hidden) display via `lib/event/countdown.ts#parseEventDate`.

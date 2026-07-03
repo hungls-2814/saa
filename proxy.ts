@@ -4,7 +4,9 @@ import { updateSession } from "@/lib/supabase/middleware";
 // Next 16 renamed middleware.ts -> proxy.ts (exported `proxy`, nodejs runtime).
 // Refreshes the Supabase session and enforces route guards.
 
-const PROTECTED_PATHS = ["/todo"];
+// No protected routes yet — the homepage is public. Kept as the extension
+// point for future auth-gated pages (e.g. /profile).
+const PROTECTED_PATHS: string[] = [];
 const AUTH_PATHS = ["/login"];
 
 export async function proxy(request: NextRequest) {
@@ -21,10 +23,10 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // Authenticated user on the login page -> app.
+  // Authenticated user on the login page -> home.
   if (user && isAuthPage) {
     const url = request.nextUrl.clone();
-    url.pathname = "/todo";
+    url.pathname = "/";
     return NextResponse.redirect(url);
   }
 

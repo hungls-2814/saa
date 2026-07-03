@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { LanguageSelector } from "./language-selector";
+import { LanguageSelector } from "@/app/components/language-selector";
 
 /**
  * Fixed top header: Sun* Annual Awards 2025 logo (left) + language selector (right).

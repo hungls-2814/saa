@@ -1,0 +1,22 @@
+{
+  "score": 9.5,
+  "criticalCount": 0,
+  "decision": "SEALED",
+  "contractStatus": "HONORED",
+  "acceptanceCovered": [
+    "Homepage renders at / for anonymous and authenticated users — single / route confirmed by next build route table; page.tsx server-reads the Supabase session; tests render both states",
+    "Authenticated header shows notification bell and account menu; anonymous does not — proven by site-header.test.tsx (bell only with user) and account-menu.test.tsx (menu vs guest login)",
+    "Countdown reads env datetime, 0-pads, zeroes out and hides Coming soon at target, invalid does not crash — proven by countdown util tests + Countdown component tests (pre-event, ended, invalid datetime)",
+    "Awards grid links each card to /awards-information#slug — proven by award-card.test.tsx across all six slugs (top-talent..mvp)",
+    "VN/EN language switch updates copy and persists via NEXT_LOCALE cookie — shared LanguageSelector uses the setLocale server action writing NEXT_LOCALE; vi/en Home namespaces verified in sync"
+  ],
+  "regressionChecked": [
+    "Login page still works after LanguageSelector moved to app/components (import updated; tsc+lint+tests green)",
+    "Only one / route resolves — old app/page.tsx removed, next build route table confirms",
+    "Auth guards unchanged (proxy.ts untouched); / remains public",
+    "Full suite 184/184 green after awards MISSING_MESSAGE fix (award-card keys now resolve under Home.awards.items.*, guarded by a real-messages test) + post-login flow change (login lands on /, /todo removed, /home redirect alias) + design-spacing refinement (hero artifact removed, section rhythm/gaps aligned to node-tree px)"
+  ],
+  "refuted": [],
+  "unproven": [],
+  "reachableRegressions": []
+}
