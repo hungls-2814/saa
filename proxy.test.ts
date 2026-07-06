@@ -87,6 +87,33 @@ describe('proxy(request)', () => {
     });
   });
 
+  describe('protected routes (/kudos)', () => {
+    it('redirects to /login when unauthenticated user accesses /kudos', async () => {
+      mockUpdateSession.mockResolvedValue({
+        supabaseResponse: new Response(null, { status: 200 }),
+        user: null,
+      });
+
+      const request = new NextRequest('http://localhost:3000/kudos');
+      const response = await proxy(request);
+
+      expect(response.status).toBe(307);
+      expect(new URL(response.headers.get('location')!).pathname).toBe('/login');
+    });
+
+    it('allows authenticated user to access /kudos', async () => {
+      mockUpdateSession.mockResolvedValue({
+        supabaseResponse: new Response(null, { status: 200 }),
+        user: { id: 'user-123', email: 'test@example.com' },
+      });
+
+      const request = new NextRequest('http://localhost:3000/kudos');
+      const response = await proxy(request);
+
+      expect(response.status).toBe(200);
+    });
+  });
+
   describe('public routes', () => {
     beforeEach(() => {
       mockUpdateSession.mockResolvedValue({
