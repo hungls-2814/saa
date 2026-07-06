@@ -22,6 +22,8 @@ a route guard.
 - [x] F003 — `/he-thong-giai` Awards System detail page — hero, scroll-spy sidebar,
       6 award detail sections, auth-gated (first protected route); homepage links
       rewired from `/awards-information` to `/he-thong-giai(#slug)`
+- [x] F004 — `/prelaunch` countdown page + pre-launch redirect gate (`proxy.ts`): every
+      route locks to the countdown until `NEXT_PUBLIC_EVENT_DATETIME`, then unlocks to `/`
 - [ ] `/kudos` — Sun* Kudos detail page
 - [ ] `/standards` — footer "Tiêu chuẩn chung" target page
 - [ ] Real Todo feature (data model, CRUD, persistence) behind the existing guard

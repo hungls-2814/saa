@@ -8,6 +8,14 @@
 - **Fail-closed:** when Supabase env is unset (`isSupabaseConfigured()` false), every request is
   treated as unauthenticated — the guard never accidentally grants access.
 
+## Pre-launch gate (time-based, precedes auth)
+Until `now` reaches `NEXT_PUBLIC_EVENT_DATETIME` (`proxy.ts` + `lib/event/countdown.ts`), every
+route below — regardless of the access tier — redirects to the public `/prelaunch` countdown
+page; only `/prelaunch` itself, `/auth/*`, and static assets are exempt. This check runs before
+the auth guards described in this document, so the tiers/matrix below only take effect **after**
+launch. See `docs/features/F004-countdown-prelaunch/overview.md` and
+`docs/system/architecture.md` for details.
+
 ## Access tiers (this iteration)
 | Tier | Meaning | Routes |
 |------|---------|--------|
@@ -26,6 +34,7 @@ the first route that requires authentication.
 | `/login` | render login | redirect `/` |
 | `/home` | redirect `/` (alias, unconditional) | redirect `/` (alias, unconditional) |
 | `/auth/callback` | exchange code → validated redirect (default `/`) | (same) |
+| `/prelaunch` | render countdown page (public) | render countdown page (same, public) |
 
 `/` is public — no guard in `proxy.ts`. `/he-thong-giai` is the sole entry in
 `PROTECTED_PATHS`: unauthenticated requests are redirected to `/login` by `proxy.ts`, with a

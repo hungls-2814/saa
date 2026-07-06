@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { NextRequest } from 'next/server';
 import { proxy } from './proxy';
 
@@ -10,12 +10,25 @@ vi.mock('@/lib/supabase/middleware', () => ({
 
 import { updateSession } from '@/lib/supabase/middleware';
 
+// A launch datetime safely in the PAST so the prelaunch gate is open
+// (isBeforeLaunch === false) and the auth-guard behaviour below is exercised.
+const PAST_LAUNCH = '2000-01-01T00:00:00+07:00';
+// A launch datetime safely in the FUTURE for exercising the prelaunch gate.
+const FUTURE_LAUNCH = '2999-12-26T18:30:00+07:00';
+
 describe('proxy(request)', () => {
   let mockUpdateSession: any;
 
   beforeEach(() => {
     vi.clearAllMocks();
+    // Default the whole suite to "after launch" so existing route-guard
+    // expectations hold; the prelaunch-gate block overrides this to a future date.
+    process.env.NEXT_PUBLIC_EVENT_DATETIME = PAST_LAUNCH;
     mockUpdateSession = vi.mocked(updateSession);
+  });
+
+  afterEach(() => {
+    delete process.env.NEXT_PUBLIC_EVENT_DATETIME;
   });
 
   describe('authenticated user on login page (/login)', () => {
@@ -141,6 +154,61 @@ describe('proxy(request)', () => {
       const response = await proxy(request);
 
       expect(response).toBe(mockResponse);
+    });
+  });
+
+  describe('prelaunch gate (before SAA launch)', () => {
+    beforeEach(() => {
+      process.env.NEXT_PUBLIC_EVENT_DATETIME = FUTURE_LAUNCH;
+      mockUpdateSession.mockResolvedValue({
+        supabaseResponse: new Response(null, { status: 200 }),
+        user: null,
+      });
+    });
+
+    it.each(['/', '/home', '/login', '/he-thong-giai', '/about'])(
+      'redirects %s to /prelaunch before launch',
+      async (path) => {
+        const request = new NextRequest(`http://localhost:3000${path}`);
+        const response = await proxy(request);
+
+        expect(response.status).toBe(307);
+        expect(new URL(response.headers.get('location')!).pathname).toBe(
+          '/prelaunch',
+        );
+      },
+    );
+
+    it('serves /prelaunch itself without redirecting (public, no loop)', async () => {
+      const request = new NextRequest('http://localhost:3000/prelaunch');
+      const response = await proxy(request);
+
+      expect(response.status).toBe(200);
+    });
+
+    it('does not call updateSession on the redirect hot path', async () => {
+      const request = new NextRequest('http://localhost:3000/home');
+      await proxy(request);
+
+      expect(mockUpdateSession).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('after launch', () => {
+    beforeEach(() => {
+      process.env.NEXT_PUBLIC_EVENT_DATETIME = PAST_LAUNCH;
+      mockUpdateSession.mockResolvedValue({
+        supabaseResponse: new Response(null, { status: 200 }),
+        user: null,
+      });
+    });
+
+    it('redirects /prelaunch to / once the countdown has ended', async () => {
+      const request = new NextRequest('http://localhost:3000/prelaunch');
+      const response = await proxy(request);
+
+      expect(response.status).toBe(307);
+      expect(new URL(response.headers.get('location')!).pathname).toBe('/');
     });
   });
 });
