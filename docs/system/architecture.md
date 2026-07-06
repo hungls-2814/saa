@@ -4,6 +4,9 @@
 - **Framework:** Next.js 16.2.9 (App Router), React 19.2.4, TypeScript 5.
 - **Styling:** Tailwind CSS v4 (`@import "tailwindcss"`).
 - **Auth / backend:** Supabase Auth (Google OAuth), via `@supabase/ssr`.
+- **Data layer:** Supabase Postgres (first real data layer — F005) — migrations in
+  `supabase/migrations/`, RLS on every table, seeded via `scripts/seed-kudos*.ts`
+  (service-role, `npm run db:seed`).
 - **i18n:** next-intl, cookie-based (`NEXT_LOCALE`), no locale URL prefix. Locales: `vi` (default), `en`.
 - **Tests:** vitest + @testing-library/react (jsdom).
 
@@ -25,6 +28,7 @@ Browser → proxy.ts (pre-launch gate → session refresh + route guard) → rou
   /login          : authenticated → / (home) ; else render login
   /               : public homepage, renders regardless of auth (header UI adapts)
   /he-thong-giai  : unauthenticated → /login (PROTECTED_PATHS); else render (defense-in-depth getUser() in page)
+  /kudos          : unauthenticated → /login (PROTECTED_PATHS); else render (defense-in-depth getUser() in page)
   /home           : always → redirect("/") (convenience alias for older/typed links)
   /prelaunch      : public countdown "coming soon" gate (F004); no auth required
 OAuth: login button → signInWithOAuth(google, redirectTo=/auth/callback)
@@ -34,8 +38,8 @@ OAuth: login button → signInWithOAuth(google, redirectTo=/auth/callback)
 except `_next/*`, static assets, and `/auth/*` (the callback runs its own code exchange). The
 pre-launch gate (`isBeforeLaunch`, `lib/event/countdown.ts`) is checked FIRST, before the
 Supabase session refresh — while the countdown is running it overrides every auth guard below.
-`PROTECTED_PATHS = ["/he-thong-giai"]` — the first authenticated-only route (F003); see
-`docs/system/permissions.md` for the full guard matrix.
+`PROTECTED_PATHS = ["/he-thong-giai", "/kudos"]` — `/kudos` (F005) is the second authenticated-only
+route; see `docs/system/permissions.md` for the full guard matrix.
 
 ## Directory shape
 ```
@@ -54,6 +58,11 @@ app/
   prelaunch/                  # Countdown / "coming soon" gate page (F004) — public, renders at `/prelaunch`
     page.tsx                  # server component; resolves the countdown target via resolveEventTargetIso()
     components/prelaunch-countdown.tsx  # client countdown; redirects to `/` on reaching zero
+  kudos/                      # Sun* Kudos Live board (F005) — auth-gated, renders at `/kudos`
+    page.tsx                  # server component; getUser() → redirect("/login") if unauthenticated;
+                               # fetches BoardData server-side, hands to the client container
+    components/                # highlight carousel, spotlight word-cloud, infinite-scroll feed,
+                               # filter bar, per-user stats sidebar, top-10 gifts sidebar
   components/                 # shared cross-feature components (e.g. language-selector.tsx,
                                # countdown-unit.tsx — LED digits + minute-tick clock shared by
                                # the homepage hero and prelaunch countdowns)
@@ -65,9 +74,15 @@ lib/auth/{sign-out,constants}.ts
 lib/event/countdown.ts        # pure countdown calc + target-resolution helpers (homepage hero,
                                # pre-launch gate, /prelaunch page all share this)
 lib/i18n/set-locale.ts        # Server Action: set NEXT_LOCALE cookie
+lib/kudos/                    # F005 query/logic layer: queries.ts (SSR board data + lookups),
+                               # actions.ts (Server Actions: toggleHeart, loadMoreFeed, applyFilters),
+                               # pure helpers (star-tier, cursor encode/decode, filter, map-card), types.ts
 proxy.ts                      # pre-launch gate + route guards + session refresh
 i18n/{request,config}.ts      # next-intl config + client-safe constants
 messages/{vi,en}.json         # translation catalogs
+supabase/migrations/          # Postgres schema (F005): tables + 2 views + RLS + signup trigger —
+                               # migrations-only; never hand-edit the DB
+scripts/seed-kudos*.ts        # service-role seed script (npm run db:seed) for the kudos data layer
 ```
 
 `app/components/` holds components shared across route groups (e.g. `language-selector.tsx`,
@@ -80,6 +95,8 @@ and `plans/**` (agent-kit tooling and workspace artifacts, not application sourc
 
 ## Env / config
 - `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` (client-safe). Template in `.env.local.example`.
+- `SUPABASE_SERVICE_ROLE_KEY` (server/tooling-only — **never** `NEXT_PUBLIC_`) — used solely by
+  `scripts/seed-kudos*.ts` to seed the Postgres data layer; the app itself never reads it at runtime.
 - Supabase dashboard: Google provider enabled; redirect + site URLs whitelisted. See `docs/setup/supabase-google-oauth.md`.
 - `NEXT_PUBLIC_EVENT_DATETIME` (client-safe, ISO-8601) — the SAA 2025 launch moment. Drives three
   things: the homepage hero countdown, the pre-launch redirect gate (`proxy.ts`), and the
