@@ -1,0 +1,23 @@
+{
+  "score": 9,
+  "criticalCount": 0,
+  "decision": "SEALED",
+  "acceptanceCovered": [
+    "Language dropdown rows show flag + short code VN/EN, selected locale gets gold-tint highlight, no checkmark (VN display code fixed post-review, verified in language-selector.test.tsx)",
+    "EN renders an inline Union Jack SVG flag and VN renders the vn-flag.png asset (SVG ids now per-instance via useId)",
+    "Profile row has a user icon and Logout row has a right chevron icon",
+    "Logout label reads Logout in en and Dang xuat in vi",
+    "Both dropdown containers match design tokens: #00070C background, #998C5F gold border, 8px radius, gold-tint highlight + glow (tokens verified against MoMorph node styles)",
+    "Language trigger chevron has no baked-in background (opaque chevron-down.png replaced with a transparent inline SVG) — root cause proven via pixel inspection (alpha 255), verified by tsc/eslint/23 tests"
+  ],
+  "regressionChecked": [
+    "locale switching (setLocale cookie + router.refresh) unchanged — confirmed by reading lib/i18n/set-locale",
+    "sign-out server action unchanged",
+    "account menu open/close/escape/backdrop unchanged",
+    "full test suite 311/311 pass, no regressions"
+  ],
+  "contractStatus": "OK",
+  "refuted": [],
+  "unproven": [],
+  "reachableRegressions": []
+}

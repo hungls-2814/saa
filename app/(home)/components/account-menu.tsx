@@ -8,8 +8,12 @@ import { signOut } from "@/lib/auth/sign-out";
 
 /**
  * Account affordance in the header. Logged-in: icon button opening a menu
- * with Profile + Sign out (Admin Dashboard omitted — no role system yet).
+ * with Profile + Logout (Admin Dashboard omitted — no role system yet).
  * Logged-out: a direct link to /login.
+ *
+ * Design (MoMorph "Dropdown-profile", z4sCl3_Qtk): gold-bordered dark card;
+ * Profile row carries a user icon, Logout row a right chevron; the hovered/focused
+ * row gets a gold-tint highlight + glow.
  */
 export function AccountMenu({ user }: { user: User | null }) {
   const t = useTranslations("Home.header");
@@ -58,27 +62,25 @@ export function AccountMenu({ user }: { user: User | null }) {
           <ul
             role="menu"
             aria-label={t("accountLabel")}
-            className="absolute right-0 top-full z-20 mt-2 min-w-[168px] overflow-hidden rounded-lg border border-white/10 bg-[#0B0F12] py-1 shadow-xl"
+            className="absolute right-0 top-full z-20 mt-2 flex min-w-[132px] flex-col gap-1 overflow-hidden rounded-lg border border-[#998C5F] bg-[#00070C] p-1.5 shadow-xl"
           >
             <li role="none">
               <Link
                 href="/profile"
                 role="menuitem"
-                className="block px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-white/10"
+                className={ROW}
                 onClick={() => setOpen(false)}
               >
-                {t("profile")}
+                <span>{t("profile")}</span>
+                <UserIcon className="size-5 shrink-0" />
               </Link>
             </li>
             {/* TODO: gate on admin role when a role system exists */}
             <li role="none">
               <form action={signOut}>
-                <button
-                  type="submit"
-                  role="menuitem"
-                  className="block w-full px-4 py-2.5 text-left text-sm font-semibold text-white transition-colors hover:bg-white/10"
-                >
-                  {t("signOut")}
+                <button type="submit" role="menuitem" className={`${ROW} w-full`}>
+                  <span>{t("signOut")}</span>
+                  <ChevronRightIcon className="size-5 shrink-0" />
                 </button>
               </form>
             </li>
@@ -88,6 +90,10 @@ export function AccountMenu({ user }: { user: User | null }) {
     </div>
   );
 }
+
+/** Shared menu-row styling: 56px tall, gold-tint highlight + glow on hover/focus. */
+const ROW =
+  "flex h-14 items-center gap-1 rounded px-4 text-left text-base leading-6 font-bold tracking-[0.15px] text-white transition-colors hover:bg-[rgba(255,234,158,0.1)] hover:[text-shadow:0_4px_4px_rgba(0,0,0,0.25),0_0_6px_#FAE287] focus-visible:bg-[rgba(255,234,158,0.1)] focus-visible:[text-shadow:0_4px_4px_rgba(0,0,0,0.25),0_0_6px_#FAE287] focus-visible:outline-none";
 
 function UserIcon({ className }: { className?: string }) {
   return (
@@ -103,6 +109,23 @@ function UserIcon({ className }: { className?: string }) {
     >
       <circle cx="12" cy="8" r="4" />
       <path d="M4 20c1.5-4 5-6 8-6s6.5 2 8 6" />
+    </svg>
+  );
+}
+
+function ChevronRightIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <path d="M9 6l6 6-6 6" />
     </svg>
   );
 }

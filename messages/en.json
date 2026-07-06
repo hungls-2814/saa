@@ -6,9 +6,7 @@
     "errorToast": "Login failed. Please try again."
   },
   "Common": {
-    "footer": "Copyright © Sun* 2025",
-    "langVi": "Tiếng Việt",
-    "langEn": "English"
+    "footer": "Copyright © Sun* 2025"
   },
   "Todo": {
     "title": "To-Do",
@@ -25,7 +23,7 @@
       "notificationsLabel": "Notifications",
       "accountLabel": "Account",
       "profile": "Profile",
-      "signOut": "Sign out",
+      "signOut": "Logout",
       "guestLogin": "Log in",
       "notificationsEmpty": "No notifications yet"
     },
