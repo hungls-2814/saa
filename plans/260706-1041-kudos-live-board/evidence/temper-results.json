@@ -1,0 +1,32 @@
+{
+  "commands": [
+    {
+      "command": "npm run typecheck",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "tsc --noEmit — 0 errors across the F005 code and the rest of the tree.",
+      "ts": "2026-07-06T14:21:00.000Z"
+    },
+    {
+      "command": "npm run test",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "vitest run — 461 tests passed across 45 files (Track A UI 59 + lib/kudos queries/actions/helpers + proxy + i18n parity + 2 inspection-fix regression tests). No regressions.",
+      "ts": "2026-07-06T14:21:30.000Z"
+    },
+    {
+      "command": "npx eslint app/kudos lib/kudos",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "F005-scope lint clean (0 errors/0 warnings). Pre-existing repo-wide warnings in unrelated test files were left untouched.",
+      "ts": "2026-07-06T14:22:00.000Z"
+    },
+    {
+      "command": "npm run build",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "next build succeeds; /kudos compiles as a dynamic auth-gated route.",
+      "ts": "2026-07-06T14:22:40.000Z"
+    }
+  ]
+}

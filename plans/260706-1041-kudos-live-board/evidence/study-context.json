@@ -1,0 +1,20 @@
+{
+  "task": "F005 — Sun* Kudos Live board: auth-gated /kudos on the repo's first real Supabase Postgres data layer (highlight carousel, spotlight receiver word-cloud, infinite-scroll feed, hashtag+department filters, per-user stats, top-10 gifts, persisted likes).",
+  "mode": "code",
+  "acceptanceCriteria": [
+    "SC1 auth gate: authed renders, unauth redirects to /login",
+    "SC2 highlight carousel top-5, arrows disable at ends, paginator n/min(5,total)",
+    "SC3 spotlight header + receiver word-cloud + search + empty/loading states",
+    "SC4 feed newest-first keyset load-more without dup or skip",
+    "SC5 hashtag+department AND filter re-filters both highlight and feed, resets page 1",
+    "SC6 sidebar shows current-user received/sent/hearts stats",
+    "SC7 sidebar lists top-10 gift recipients newest-first",
+    "SC8 like toggle persists one-per-user, self-like rejected without a 500",
+    "SC9 copy link copies url and shows toast",
+    "SC10 star-tier derives correctly at thresholds 0/9/10/19/20/49/50",
+    "SC11 i18n every visible string resolves in KudosPage vi and en",
+    "SC12 DB migrations and seed authored and reviewed; live apply deferred to manual smoke"
+  ],
+  "blastRadius": "New route /kudos; proxy.ts PROTECTED_PATHS; new lib/kudos/ + app/kudos/ + supabase/ + scripts/ trees; messages/{vi,en}.json; package.json + .env.local.example. No changes to existing login/homepage/awards/prelaunch surfaces beyond the shared header/footer reuse.",
+  "contracts": "lib/kudos/types.ts is the Track A <-> Track B shared contract (BoardData, KudosCard, etc.); server actions return typed discriminated-union results consumed by the client container."
+}
