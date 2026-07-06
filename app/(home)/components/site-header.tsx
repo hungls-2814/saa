@@ -12,8 +12,23 @@ import { AccountMenu } from "./account-menu";
  *
  * Design: 80px tall, semi-transparent dark background (rgba(16,20,23,0.8)).
  */
-export async function SiteHeader({ user }: { user: User | null }) {
+type NavKey = "home" | "awards" | "kudos";
+
+const NAV_ACTIVE =
+  "border-b border-[#FFEA9E] px-4 py-4 text-sm font-bold tracking-[0.1px] text-[#FFEA9E] [text-shadow:0_4px_4px_rgba(0,0,0,0.25),0_0_6px_#FAE287]";
+const NAV_NORMAL =
+  "rounded px-4 py-4 text-sm font-bold tracking-[0.1px] text-white transition-colors duration-200 ease-out hover:bg-white/5";
+
+export async function SiteHeader({
+  user,
+  active = "home",
+}: {
+  user: User | null;
+  /** Which nav item is the current page (gold + underline). Defaults to home. */
+  active?: NavKey;
+}) {
   const t = await getTranslations("Home");
+  const cls = (key: NavKey) => (active === key ? NAV_ACTIVE : NAV_NORMAL);
 
   return (
     <header className="absolute inset-x-0 top-0 z-20 flex h-20 items-center bg-[rgba(16,20,23,0.8)]">
@@ -31,22 +46,13 @@ export async function SiteHeader({ user }: { user: User | null }) {
           </Link>
 
           <nav className="hidden items-center gap-6 md:flex">
-            <Link
-              href="/"
-              className="border-b border-[#FFEA9E] px-4 py-4 text-sm font-bold tracking-[0.1px] text-[#FFEA9E] [text-shadow:0_4px_4px_rgba(0,0,0,0.25),0_0_6px_#FAE287]"
-            >
+            <Link href="/" className={cls("home")}>
               {t("nav.aboutSaa")}
             </Link>
-            <Link
-              href="/awards-information"
-              className="rounded px-4 py-4 text-sm font-bold tracking-[0.1px] text-white transition-colors duration-200 ease-out hover:bg-white/5"
-            >
+            <Link href="/he-thong-giai" className={cls("awards")}>
               {t("nav.awardsInformation")}
             </Link>
-            <Link
-              href="/kudos"
-              className="rounded px-4 py-4 text-sm font-bold tracking-[0.1px] text-white transition-colors duration-200 ease-out hover:bg-white/5"
-            >
+            <Link href="/kudos" className={cls("kudos")}>
               {t("nav.sunKudos")}
             </Link>
           </nav>

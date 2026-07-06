@@ -1,0 +1,24 @@
+{
+  "task": "Implement the Awards System page (Hệ thống giải thưởng, F003) at /he-thong-giai from MoMorph screen zFYDgyj_pD: auth-gated hero + sticky scroll-spy sidebar + 6 award detail sections; rewire homepage links to it. Localized VN/EN.",
+  "mode": "interactive",
+  "acceptanceCriteria": [
+    "/he-thong-giai renders for authenticated users and redirects unauthenticated users to /login",
+    "Sidebar lists 6 awards in order with gold+underline active state and click scroll-spy",
+    "6 award detail sections render with correct title quantity and prize and each has a slug anchor",
+    "Deep-link hash slug from the homepage scrolls to the matching section",
+    "Homepage award cards nav and footer now point to /he-thong-giai"
+  ],
+  "touchpoints": [
+    "app/he-thong-giai/page.tsx",
+    "app/he-thong-giai/components/*.tsx",
+    "app/he-thong-giai/components/use-active-section.ts",
+    "app/he-thong-giai/data/awards-detail-data.ts",
+    "proxy.ts",
+    "messages/vi.json",
+    "messages/en.json",
+    "app/(home)/components/{award-card,site-header,hero-section,site-footer}.tsx",
+    "eslint.config.mjs"
+  ],
+  "blastRadius": "New protected route /he-thong-giai (proxy PROTECTED_PATHS + server getUser redirect). Homepage link targets change /awards-information -> /he-thong-giai. SiteHeader gains an optional active prop (default home, backward-compatible). eslint config now ignores .claude/ and plans/. Built on feat/homepage-saa (reuses its shared components/assets).",
+  "contracts": "Server page reads Supabase session; redirect /login if none. Sidebar + sections consume the useActiveSection scroll-spy hook. All copy via next-intl AwardsPage namespace (vi+en in sync). Slugs match the homepage award anchors."
+}

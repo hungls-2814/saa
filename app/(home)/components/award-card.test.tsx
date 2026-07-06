@@ -63,7 +63,7 @@ describe("AwardCard", () => {
     it(`renders ${award.slug} award card with correct link to #${expectedSlug}`, () => {
       render(<AwardCard award={award} />);
       const link = screen.getByRole("link");
-      expect(link).toHaveAttribute("href", `/awards-information#${expectedSlug}`);
+      expect(link).toHaveAttribute("href", `/he-thong-giai#${expectedSlug}`);
     });
   });
 

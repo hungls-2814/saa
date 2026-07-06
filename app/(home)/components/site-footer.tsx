@@ -11,7 +11,7 @@ export async function SiteFooter() {
 
   const links = [
     { href: "/", label: t("aboutSaa") },
-    { href: "/awards-information", label: t("awardsInformation") },
+    { href: "/he-thong-giai", label: t("awardsInformation") },
     { href: "/kudos", label: t("sunKudos") },
     { href: "/standards", label: t("standards") },
   ];

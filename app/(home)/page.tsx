@@ -31,21 +31,30 @@ export default async function HomePage() {
       <SiteHeader user={user} />
       <main className="relative flex flex-1 flex-col">
         {/*
-         * Design keyvisual (node 2167:9028) is a FULL-WIDTH 1512×1392 art layer
-         * behind the hero + top of the content section (dark on the left where
-         * text sits, colourful on the right, fading to the solid #00101A below).
-         * Rendered here as one full-bleed, aspect-locked background layer so it
-         * spans the header/hero/content-top exactly like the design instead of a
-         * right-side strip. Content sits above it (z-10).
+         * Design keyvisual (clean art node 2167:9028, 1512×1392): a full-width
+         * art layer behind the hero + top of the content section — dark on the
+         * left where the text sits, colourful ribbons sweeping down-and-left on
+         * the right, extending into the "ROOT FURTHER"/intro section. Painted as
+         * one full-bleed, aspect-locked layer + the design's Cover gradient
+         * (node 2167:9029) which fades the lower-left to solid #00101A so the
+         * hero text stays readable. Content sits above it (z-10).
          */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-0 z-0 bg-[length:100%_100%] bg-top bg-no-repeat"
-          style={{
-            aspectRatio: "1512 / 820",
-            backgroundImage: "url(/home/hero-keyvisual.png)",
-          }}
-        />
+        <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 z-0">
+          <div
+            className="w-full bg-cover bg-top bg-no-repeat"
+            style={{
+              aspectRatio: "1512 / 1392",
+              backgroundImage: "url(/home/home-hero-keyvisual.png)",
+            }}
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(12deg, #00101A 23.7%, rgba(0,18,29,0.46) 38.34%, rgba(0,19,32,0) 48.92%)",
+            }}
+          />
+        </div>
         <div className="relative z-10 flex flex-col">
           <HeroSection />
           <RootFurtherSection />

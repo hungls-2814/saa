@@ -3,6 +3,55 @@
 All notable changes to this project are recorded here. Format loosely follows
 [Keep a Changelog](https://keepachangelog.com/); dates are `YYYY-MM-DD`.
 
+## 2026-07-06 — Hero key-visual design alignment (login / home / awards)
+
+Corrected the hero background art on all three key-visual screens to match the MoMorph
+design after review found each was using the wrong or truncated asset.
+
+### Changed
+- **Awards** (`/he-thong-giai`) — use the exported full-width key-visual (node `2167:5138`)
+  at a fixed band height + the design's Cover gradient (fades to `#00101A`); centre the
+  eyebrow/title block; correct hero top padding (`lg:pt-[184px]`).
+- **Homepage** (`/`) — switch from the truncated baked mockup to the clean key-visual
+  (node `2167:9028`, 1512×1392) + Cover gradient, so the art sweeps down-left into the
+  intro section as designed.
+- **Login** (`/login`) — replace the grainy frame-render crop with the clean art
+  (node `662:14389`) beneath the design's two gradient covers (Rectangle 57 + Cover).
+
+### Notes
+- Key-visual PNGs are large (login 14.5 MB, awards 6.4 MB, home 4.5 MB); converting them
+  to WebP before a production launch is recommended.
+
+## 2026-07-03 — F003: Awards System page (`/he-thong-giai`)
+
+Auth-gated detail page for the six SAA 2025 award categories, replacing the placeholder
+`/awards-information` link on the homepage. Built to the MoMorph spec (screen `zFYDgyj_pD`).
+
+### Added
+- **Awards System page** (`app/he-thong-giai/**`) — hero banner (Root Further art +
+  "Hệ thống giải thưởng SAA 2025"), sticky scroll-spy sidebar linking to the 6 award
+  sections, one detail section per award (orb alternating left/right, title, description,
+  quantity, prize value) each with a `#<slug>` anchor, reused Sun* Kudos promo/header/footer.
+- **Scroll-spy hook** (`app/he-thong-giai/components/use-active-section.ts`) — tracks
+  which award section is in view to drive sidebar active state.
+- **First protected route** — `proxy.ts` `PROTECTED_PATHS` now includes `/he-thong-giai`;
+  unauthenticated requests redirect to `/login`, with a defense-in-depth `getUser()` check
+  in the page itself.
+- **`SiteHeader` `active` prop** — marks the current nav item (`"home"` / `"awards"`) so the
+  header highlights correctly on both `/` and `/he-thong-giai`.
+- **VN/EN i18n** — new `AwardsPage` namespace in `messages/{vi,en}.json`.
+
+### Changed
+- **Homepage links rewired** — award cards, header nav, hero CTA, and footer now point to
+  `/he-thong-giai(#slug)` instead of the placeholder `/awards-information`.
+- **Lint** — `eslint.config.mjs` now also ignores `.claude/**` and `plans/**`.
+
+### Notes
+- `/kudos` and `/standards` remain linked but not yet built.
+- See `docs/features/F003-awards-system/overview.md` for the full feature spec, and
+  `docs/system/permissions.md` / `docs/system/architecture.md` for the updated guard matrix
+  and route map.
+
 ## 2026-07-02 — Flow: post-login lands on homepage; /todo removed
 
 Supersedes the `/todo`-centric flow described in the F001 entry below: the placeholder

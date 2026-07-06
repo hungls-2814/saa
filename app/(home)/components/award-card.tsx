@@ -16,7 +16,7 @@ import type { AwardCategory } from "../data/awards-data";
  */
 export function AwardCard({ award }: { award: AwardCategory }) {
   const t = useTranslations("Home.awards");
-  const href = `/awards-information#${award.slug}`;
+  const href = `/he-thong-giai#${award.slug}`;
 
   return (
     <Link

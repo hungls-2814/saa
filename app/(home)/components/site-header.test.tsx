@@ -55,7 +55,7 @@ describe("SiteHeader", () => {
     // Check for presence of expected hrefs
     const hrefs = Array.from(navLinks).map((link) => link.getAttribute("href"));
     expect(hrefs).toContain("/");
-    expect(hrefs).toContain("/awards-information");
+    expect(hrefs).toContain("/he-thong-giai");
     expect(hrefs).toContain("/kudos");
 
     // Check active styling on first link (About SAA 2025)

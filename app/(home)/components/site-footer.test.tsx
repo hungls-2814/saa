@@ -20,10 +20,10 @@ describe("SiteFooter", () => {
     const links = screen.getAllByRole("link");
     const navLinks = links.filter((link) => {
       const href = link.getAttribute("href");
-      return href === "/" || href === "/awards-information" || href === "/kudos" || href === "/standards";
+      return href === "/" || href === "/he-thong-giai" || href === "/kudos" || href === "/standards";
     });
     expect(navLinks.some((l) => l.getAttribute("href") === "/")).toBe(true);
-    expect(navLinks.some((l) => l.getAttribute("href") === "/awards-information")).toBe(true);
+    expect(navLinks.some((l) => l.getAttribute("href") === "/he-thong-giai")).toBe(true);
     expect(navLinks.some((l) => l.getAttribute("href") === "/kudos")).toBe(true);
     expect(navLinks.some((l) => l.getAttribute("href") === "/standards")).toBe(true);
   });
@@ -39,7 +39,7 @@ describe("SiteFooter", () => {
     const allLinks = screen.getAllByRole("link");
     const navLinks = allLinks.filter((link) => {
       const href = link.getAttribute("href");
-      return href === "/" || href === "/awards-information" || href === "/kudos" || href === "/standards";
+      return href === "/" || href === "/he-thong-giai" || href === "/kudos" || href === "/standards";
     });
     // Should have at least 5 links (logo + 4 nav)
     expect(navLinks.length).toBeGreaterThanOrEqual(5);
