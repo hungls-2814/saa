@@ -99,6 +99,9 @@
       "saaRules": "Thể lệ SAA"
     }
   },
+  "Prelaunch": {
+    "title": "Sự kiện sẽ bắt đầu sau"
+  },
   "AwardsPage": {
     "hero": {
       "eyebrow": "Sun* Annual Awards 2025",

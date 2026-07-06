@@ -1,0 +1,21 @@
+{
+  "score": 9.5,
+  "criticalCount": 0,
+  "decision": "SEALED",
+  "acceptanceCovered": [
+    "Public /prelaunch page renders the LED countdown per Figma — app/prelaunch/page.tsx (no auth calls) + prelaunch-countdown.tsx; 9 CountdownUnit + 9 PrelaunchCountdown tests pass; visual-validated at 1512x1077 and mobile widths",
+    "Middleware redirects every route to /prelaunch before launch — proxy.ts pre-launch gate; proxy.test.ts it.each covers / /home /login /he-thong-giai /about all -> 307 /prelaunch, and /prelaunch itself served 200 (no loop)",
+    "After launch /prelaunch redirects to home and routing unlocks — proxy.test.ts 'after launch' block: /prelaunch -> / (307) with past launch date",
+    "Countdown reuses lib/event/countdown.ts and NEXT_PUBLIC_EVENT_DATETIME — resolveEventTarget/isBeforeLaunch/resolveEventTargetIso; page uses resolveEventTargetIso so gate and page share one parse-aware source (critical divergence fixed)",
+    "On reaching zero the page redirects to / — PrelaunchCountdown useEffect calls router.replace('/') when value.ended; covered by prelaunch-countdown.test.tsx"
+  ],
+  "regressionChecked": [
+    "Homepage hero countdown unchanged after CountdownUnit extraction — app/(home)/components/countdown.test.tsx passes",
+    "Full suite 281/281 green after the critical fix",
+    "Existing auth-guard proxy tests pinned to a past launch date still pass (gate does not break prior behavior)"
+  ],
+  "contractStatus": "HONORED",
+  "refuted": [],
+  "unproven": [],
+  "reachableRegressions": []
+}

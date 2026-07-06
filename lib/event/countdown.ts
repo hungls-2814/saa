@@ -54,3 +54,43 @@ export function getCountdown(
 
   return { days, hours, minutes, ended: false };
 }
+
+/**
+ * Resolve the configured event target from the environment
+ * (`NEXT_PUBLIC_EVENT_DATETIME`), falling back to `DEFAULT_EVENT_DATETIME`.
+ * Returns `null` only when neither value parses. Single source of truth for
+ * "when does SAA open" — shared by the prelaunch middleware gate, the
+ * prelaunch page, and the homepage hero countdown.
+ */
+export function resolveEventTarget(): Date | null {
+  return (
+    parseEventDate(process.env.NEXT_PUBLIC_EVENT_DATETIME) ??
+    parseEventDate(DEFAULT_EVENT_DATETIME)
+  );
+}
+
+/**
+ * True while `now` is strictly before the event target — i.e. the prelaunch
+ * gate should still lock the app to the countdown page. An unresolvable target
+ * fails OPEN (returns `false`) so a misconfigured deploy never traps every
+ * visitor behind the countdown.
+ */
+export function isBeforeLaunch(
+  now: Date,
+  target: Date | null = resolveEventTarget(),
+): boolean {
+  return target ? now.getTime() < target.getTime() : false;
+}
+
+/**
+ * The resolved event target as an ISO-8601 string (or `undefined` when
+ * unresolvable). The prelaunch PAGE must derive its countdown target through
+ * this — the SAME parse-aware fallback the middleware gate uses via
+ * `resolveEventTarget` — so the two can never disagree. A raw
+ * `env ?? DEFAULT` on the page would only catch `undefined`, letting an empty
+ * or malformed env value split the gate ("still counting") from the page
+ * ("ended → redirect home") into a site-wide redirect loop.
+ */
+export function resolveEventTargetIso(): string | undefined {
+  return resolveEventTarget()?.toISOString();
+}

@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { updateSession } from "@/lib/supabase/middleware";
+import { isBeforeLaunch } from "@/lib/event/countdown";
 
 // Next 16 renamed middleware.ts -> proxy.ts (exported `proxy`, nodejs runtime).
 // Refreshes the Supabase session and enforces route guards.
@@ -9,10 +10,30 @@ import { updateSession } from "@/lib/supabase/middleware";
 // auth-gated pages (e.g. /profile).
 const PROTECTED_PATHS: string[] = ["/he-thong-giai"];
 const AUTH_PATHS = ["/login"];
+// The public countdown page. Until SAA opens, every route funnels here.
+const PRELAUNCH_PATH = "/prelaunch";
 
 export async function proxy(request: NextRequest) {
-  const { supabaseResponse, user } = await updateSession(request);
   const { pathname } = request.nextUrl;
+
+  // Pre-launch gate: while the countdown is still running, lock the whole app
+  // to the countdown page. `/auth/*` and static assets (incl. the countdown's
+  // own background image) are already excluded by `config.matcher`, so the
+  // OAuth callback and page assets keep working. After launch the countdown
+  // page has no purpose, so it redirects to the homepage instead.
+  if (isBeforeLaunch(new Date())) {
+    if (pathname !== PRELAUNCH_PATH) {
+      const url = request.nextUrl.clone();
+      url.pathname = PRELAUNCH_PATH;
+      return NextResponse.redirect(url);
+    }
+  } else if (pathname === PRELAUNCH_PATH) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/";
+    return NextResponse.redirect(url);
+  }
+
+  const { supabaseResponse, user } = await updateSession(request);
 
   const isProtected = PROTECTED_PATHS.some((p) => pathname.startsWith(p));
   const isAuthPage = AUTH_PATHS.some((p) => pathname.startsWith(p));

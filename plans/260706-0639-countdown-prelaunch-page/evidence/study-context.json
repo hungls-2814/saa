@@ -1,0 +1,28 @@
+{
+  "task": "Implement F004 Countdown/Prelaunch page: a public /prelaunch page with an LED DAYS/HOURS/MINUTES countdown built from the MoMorph design, plus a middleware gate that redirects all routes to it before SAA launch and unlocks to the homepage at zero.",
+  "mode": "interactive",
+  "acceptanceCriteria": [
+    "Public /prelaunch page renders the LED countdown per Figma",
+    "Middleware redirects every route to /prelaunch before launch",
+    "After launch /prelaunch redirects to home and routing unlocks",
+    "Countdown reuses lib/event/countdown.ts and NEXT_PUBLIC_EVENT_DATETIME",
+    "On reaching zero the page redirects to /"
+  ],
+  "touchpoints": [
+    "proxy.ts",
+    "lib/event/countdown.ts",
+    "app/prelaunch/page.tsx",
+    "app/prelaunch/components/prelaunch-countdown.tsx",
+    "app/components/countdown-unit.tsx",
+    "app/(home)/components/countdown.tsx",
+    "messages/en.json",
+    "messages/vi.json",
+    "public/prelaunch/prelaunch-bg.png"
+  ],
+  "blastRadius": "Middleware runs on every non-excluded route, so the gate affects the whole app; the shared CountdownUnit extraction also touches the homepage hero countdown.",
+  "contracts": [
+    "Route path /prelaunch (PRELAUNCH_PATH in proxy.ts)",
+    "Event datetime via NEXT_PUBLIC_EVENT_DATETIME + DEFAULT_EVENT_DATETIME, resolved through resolveEventTarget/resolveEventTargetIso",
+    "On zero: client redirect to /; middleware redirects /prelaunch -> / after launch"
+  ]
+}

@@ -3,6 +3,36 @@
 All notable changes to this project are recorded here. Format loosely follows
 [Keep a Changelog](https://keepachangelog.com/); dates are `YYYY-MM-DD`.
 
+## 2026-07-06 — F004: Countdown / Prelaunch page (`/prelaunch`)
+
+Public full-screen "coming soon" gate shown before the SAA 2025 launch moment. Built to the
+MoMorph spec (screen `8PJQswPZmU`).
+
+### Added
+- **Prelaunch page** (`app/prelaunch/**`) — LED-style DAYS/HOURS/MINUTES countdown over the
+  design's key-visual background; the client redirects to `/` once the countdown reaches zero.
+  Public, no auth required.
+- **Pre-launch redirect gate** (`proxy.ts`) — while `now < NEXT_PUBLIC_EVENT_DATETIME` (or the
+  `DEFAULT_EVENT_DATETIME` fallback), every route except `/prelaunch`, `/auth/*`, and static
+  assets redirects to `/prelaunch`; once launched, `/prelaunch` itself redirects to `/`. This
+  check runs before the Supabase session-refresh/auth-guard logic in the same middleware.
+- **Shared `CountdownUnit` + `useCountdownClock`** (`app/components/countdown-unit.tsx`) —
+  extracted from the homepage hero countdown so both countdowns share one LED-digit render and
+  minute-tick clock implementation (DRY).
+- **`lib/event/countdown.ts` additions** — `resolveEventTarget()` / `resolveEventTargetIso()`
+  (env-or-default target resolution, shared by the gate and the prelaunch page) and
+  `isBeforeLaunch()` (fails **open** — unlocks the app — if the target is unresolvable, so a
+  misconfigured deploy never permanently locks out visitors).
+
+### Notes
+- The homepage hero countdown and the prelaunch gate resolve `NEXT_PUBLIC_EVENT_DATETIME`
+  slightly differently: the hero treats an invalid-but-present env value as "ended" (hidden
+  countdown), while the gate/prelaunch page fall through to `DEFAULT_EVENT_DATETIME` in that
+  case. Both share the same default value and the same "missing env" behavior.
+- See `docs/features/F004-countdown-prelaunch/overview.md` for the full feature spec, and
+  `docs/system/architecture.md` / `docs/system/permissions.md` for the updated request flow,
+  env/config reference, and route guard notes.
+
 ## 2026-07-06 — Hero key-visual design alignment (login / home / awards)
 
 Corrected the hero background art on all three key-visual screens to match the MoMorph

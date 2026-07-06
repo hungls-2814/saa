@@ -1,0 +1,25 @@
+{
+  "commands": [
+    {
+      "command": "npx vitest run",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "281 tests passed across 23 files (18 new: 9 CountdownUnit, 9 PrelaunchCountdown; 34 backend incl. proxy gate + countdown helpers)",
+      "ts": "2026-07-06T07:16:45Z"
+    },
+    {
+      "command": "npm run typecheck",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "tsc --noEmit clean, 0 errors",
+      "ts": "2026-07-06T07:16:45Z"
+    },
+    {
+      "command": "npm run lint",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "eslint 0 errors (10 pre-existing warnings in unrelated he-thong-giai test files)",
+      "ts": "2026-07-06T07:16:45Z"
+    }
+  ]
+}
