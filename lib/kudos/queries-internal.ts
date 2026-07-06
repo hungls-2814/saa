@@ -1,0 +1,119 @@
+/**
+ * Private helpers for `queries.ts`: the shared card `.select()` string,
+ * the two-step hashtag-filter resolution, the batched `likedByMe` fetch, and
+ * row→card composition. Split out purely to keep `queries.ts` under the
+ * NFR3 200-line budget — none of this is a separate public contract.
+ */
+import { createClient } from '@/lib/supabase/server';
+import type { KudosCard } from './types';
+import { mapKudosRowToCard, type KudosRow } from './map-card';
+
+export type SupabaseServerClient = Awaited<ReturnType<typeof createClient>>;
+
+/**
+ * Batched star-tier source: `profile_kudos_stats` is an aggregate view with
+ * no FK back to `kudos`, so it can't be embedded in the card select. One
+ * `.in('profile_id', ids)` query covers every sender AND receiver on a page
+ * (both are `KudosPerson`s and both carry a derived star tier) — no N+1.
+ */
+export async function getSenderStats(profileIds: string[]): Promise<Map<string, number>> {
+  if (profileIds.length === 0) return new Map();
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from('profile_kudos_stats')
+    .select('profile_id, received_count')
+    .in('profile_id', profileIds);
+  if (error) throw error;
+
+  const map = new Map<string, number>();
+  for (const row of (data ?? []) as { profile_id: string; received_count: number }[]) {
+    map.set(row.profile_id, row.received_count);
+  }
+  return map;
+}
+
+const KUDOS_CARD_FIELDS = `
+  id,
+  content,
+  created_at,
+  heart_count,
+  sender:profiles!kudos_sender_id_fkey(id, full_name, avatar_url, title, department:departments(name)),
+  kudos_hashtags(hashtag:hashtags(id, label)),
+  kudos_images(url)
+`;
+
+/**
+ * Builds the `.select()` string for a kudos card query. The receiver embed
+ * needs the `!inner` FK hint only when a department filter is active — a
+ * plain (left) embed would silently return ALL rows regardless of the
+ * `.eq('receiver.department_id', ...)` filter, so `!inner` is load-bearing.
+ */
+export function buildCardSelect(departmentId?: string | null): string {
+  const receiverFk = departmentId
+    ? 'profiles!kudos_receiver_id_fkey!inner'
+    : 'profiles!kudos_receiver_id_fkey';
+  return `${KUDOS_CARD_FIELDS},\n  receiver:${receiverFk}(id, full_name, avatar_url, title, department:departments(name))`;
+}
+
+/**
+ * Resolves which kudos ids carry a given hashtag. Deliberately a separate
+ * query rather than an `!inner`-embedded `.eq()` on `kudos_hashtags`: an
+ * inner-embed filter would also prune the *returned* hashtag rows on
+ * matching kudos, so a card matching the filter would only show the one
+ * filtered hashtag chip instead of all of its hashtags.
+ */
+export async function resolveHashtagKudosIds(
+  supabase: SupabaseServerClient,
+  hashtagId: string,
+): Promise<string[]> {
+  const { data, error } = await supabase
+    .from('kudos_hashtags')
+    .select('kudos_id')
+    .eq('hashtag_id', hashtagId);
+  if (error) throw error;
+  return (data ?? []).map((row: { kudos_id: string }) => row.kudos_id);
+}
+
+async function fetchLikedKudosIds(
+  supabase: SupabaseServerClient,
+  userId: string,
+  kudosIds: string[],
+): Promise<Set<string>> {
+  if (kudosIds.length === 0) return new Set();
+  const { data, error } = await supabase
+    .from('hearts')
+    .select('kudos_id')
+    .eq('user_id', userId)
+    .in('kudos_id', kudosIds);
+  if (error) throw error;
+  return new Set((data ?? []).map((row: { kudos_id: string }) => row.kudos_id));
+}
+
+/**
+ * Folds `likedByMe` + sender/receiver star tier into a page of raw rows.
+ * Both fetches are single batched queries keyed off the page's ids — no
+ * per-card round trips.
+ */
+export async function mapRowsToCards(
+  rows: KudosRow[],
+  userId: string,
+  supabase: SupabaseServerClient,
+): Promise<KudosCard[]> {
+  if (rows.length === 0) return [];
+
+  const kudosIds = rows.map((row) => row.id);
+  const profileIds = Array.from(
+    new Set(
+      rows
+        .flatMap((row) => [row.sender?.id, row.receiver?.id])
+        .filter((id): id is string => Boolean(id)),
+    ),
+  );
+
+  const [likedByMe, receivedCounts] = await Promise.all([
+    fetchLikedKudosIds(supabase, userId, kudosIds),
+    getSenderStats(profileIds),
+  ]);
+
+  return rows.map((row) => mapKudosRowToCard(row, { likedByMe, receivedCounts }));
+}
