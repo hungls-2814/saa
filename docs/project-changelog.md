@@ -3,6 +3,25 @@
 All notable changes to this project are recorded here. Format loosely follows
 [Keep a Changelog](https://keepachangelog.com/); dates are `YYYY-MM-DD`.
 
+## 2026-07-06 — Hero key-visual design alignment (login / home / awards)
+
+Corrected the hero background art on all three key-visual screens to match the MoMorph
+design after review found each was using the wrong or truncated asset.
+
+### Changed
+- **Awards** (`/he-thong-giai`) — use the exported full-width key-visual (node `2167:5138`)
+  at a fixed band height + the design's Cover gradient (fades to `#00101A`); centre the
+  eyebrow/title block; correct hero top padding (`lg:pt-[184px]`).
+- **Homepage** (`/`) — switch from the truncated baked mockup to the clean key-visual
+  (node `2167:9028`, 1512×1392) + Cover gradient, so the art sweeps down-left into the
+  intro section as designed.
+- **Login** (`/login`) — replace the grainy frame-render crop with the clean art
+  (node `662:14389`) beneath the design's two gradient covers (Rectangle 57 + Cover).
+
+### Notes
+- Key-visual PNGs are large (login 14.5 MB, awards 6.4 MB, home 4.5 MB); converting them
+  to WebP before a production launch is recommended.
+
 ## 2026-07-03 — F003: Awards System page (`/he-thong-giai`)
 
 Auth-gated detail page for the six SAA 2025 award categories, replacing the placeholder
