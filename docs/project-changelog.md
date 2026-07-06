@@ -3,7 +3,7 @@
 All notable changes to this project are recorded here. Format loosely follows
 [Keep a Changelog](https://keepachangelog.com/); dates are `YYYY-MM-DD`.
 
-## 2026-07-06 — F004: Countdown / Prelaunch page (`/prelaunch`)
+## 0.2.0 — 2026-07-06 — F004: Countdown / Prelaunch page (`/prelaunch`)
 
 Public full-screen "coming soon" gate shown before the SAA 2025 launch moment. Built to the
 MoMorph spec (screen `8PJQswPZmU`).
