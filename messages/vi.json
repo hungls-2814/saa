@@ -158,5 +158,54 @@
         "prizeValue": "15.000.000 VNĐ"
       }
     }
+  },
+  "KudosPage": {
+    "sectionEyebrow": "Sun* Annual Awards 2025",
+    "banner": {
+      "eyebrow": "Hệ thống ghi nhận và cảm ơn",
+      "sendPrompt": "Hôm nay, bạn muốn gửi lời cảm ơn và ghi nhận đến ai?",
+      "searchSunner": "Tìm kiếm profile Sunner"
+    },
+    "highlight": {
+      "title": "HIGHLIGHT KUDOS",
+      "hashtagFilter": "Hashtag",
+      "departmentFilter": "Phòng ban",
+      "allHashtags": "Tất cả hashtag",
+      "allDepartments": "Tất cả phòng ban",
+      "empty": "Hiện tại chưa có Kudos nào.",
+      "prev": "Kudos trước",
+      "next": "Kudos sau"
+    },
+    "spotlight": {
+      "title": "SPOTLIGHT BOARD",
+      "kudosCount": "{count} KUDOS",
+      "searchPlaceholder": "Tìm kiếm",
+      "zoomIn": "Phóng to",
+      "zoomOut": "Thu nhỏ",
+      "empty": "Hiện tại chưa có Kudos nào."
+    },
+    "feed": {
+      "title": "ALL KUDOS",
+      "empty": "Hiện tại chưa có Kudos nào.",
+      "loadMore": "Xem thêm"
+    },
+    "card": {
+      "copyLink": "Copy Link",
+      "detail": "Xem chi tiết"
+    },
+    "stats": {
+      "received": "Số Kudos bạn nhận được:",
+      "sent": "Số Kudos bạn đã gửi:",
+      "heartsReceived": "Số tim bạn nhận được:"
+    },
+    "gifts": {
+      "title": "10 SUNNER NHẬN QUÀ\nMỚI NHẤT",
+      "empty": "Chưa có dữ liệu"
+    },
+    "toast": {
+      "copyLinkSuccess": "Đã sao chép liên kết — sẵn sàng để chia sẻ!",
+      "selfLike": "Bạn không thể tự thả tim cho Kudos của chính mình.",
+      "error": "Đã có lỗi xảy ra. Vui lòng thử lại."
+    }
   }
 }

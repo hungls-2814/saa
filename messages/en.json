@@ -158,5 +158,54 @@
         "prizeValue": "15.000.000 VNĐ"
       }
     }
+  },
+  "KudosPage": {
+    "sectionEyebrow": "Sun* Annual Awards 2025",
+    "banner": {
+      "eyebrow": "Recognition & Thanks System",
+      "sendPrompt": "Who would you like to send thanks and recognition to today?",
+      "searchSunner": "Search Sunner profile"
+    },
+    "highlight": {
+      "title": "HIGHLIGHT KUDOS",
+      "hashtagFilter": "Hashtag",
+      "departmentFilter": "Department",
+      "allHashtags": "All hashtags",
+      "allDepartments": "All departments",
+      "empty": "No Kudos yet.",
+      "prev": "Previous Kudos",
+      "next": "Next Kudos"
+    },
+    "spotlight": {
+      "title": "SPOTLIGHT BOARD",
+      "kudosCount": "{count} KUDOS",
+      "searchPlaceholder": "Search",
+      "zoomIn": "Zoom in",
+      "zoomOut": "Zoom out",
+      "empty": "No Kudos yet."
+    },
+    "feed": {
+      "title": "ALL KUDOS",
+      "empty": "No Kudos yet.",
+      "loadMore": "Load more"
+    },
+    "card": {
+      "copyLink": "Copy Link",
+      "detail": "View details"
+    },
+    "stats": {
+      "received": "Kudos you received:",
+      "sent": "Kudos you sent:",
+      "heartsReceived": "Hearts you received:"
+    },
+    "gifts": {
+      "title": "TOP 10 RECENT\nGIFT RECIPIENTS",
+      "empty": "No data yet"
+    },
+    "toast": {
+      "copyLinkSuccess": "Link copied — ready to share!",
+      "selfLike": "You can't like your own Kudos.",
+      "error": "Something went wrong. Please try again."
+    }
   }
 }

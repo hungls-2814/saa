@@ -10,7 +10,8 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "db:seed": "tsx scripts/seed-kudos.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.0",
@@ -29,11 +30,14 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^6.0.3",
+    "@vitest/coverage-v8": "^4.1.10",
     "eslint": "^9",
     "eslint-config-next": "16.2.9",
     "happy-dom": "^20.10.6",
     "jsdom": "^29.1.1",
+    "supabase": "^2",
     "tailwindcss": "^4",
+    "tsx": "^4",
     "typescript": "^5",
     "vitest": "^4.1.9"
   }
