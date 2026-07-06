@@ -1,0 +1,20 @@
+# Supabase CLI config — see https://supabase.com/docs/guides/local-development
+# project_id is only used by the CLI to namespace local Docker containers when
+# running `supabase start`; it does not need to match the hosted project ref.
+# `supabase link --project-ref <ref>` is what points the CLI at the real project.
+project_id = "saa-kudos-live-board"
+
+[api]
+enabled = true
+port = 54321
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+port = 54322
+major_version = 15
+
+[studio]
+enabled = true
+port = 54323
