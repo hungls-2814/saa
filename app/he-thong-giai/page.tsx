@@ -35,20 +35,47 @@ export default async function AwardsSystemPage() {
     >
       <SiteHeader user={user} active="awards" />
       <main className="relative flex flex-1 flex-col">
-        <AwardsHero />
+        {/*
+         * Design keyvisual: node 2167:5138 — the 1440×547 full-width art band
+         * that sits directly below the 80px header (design y80–627). Exported
+         * from Figma to /home/awards-hero-keyvisual.png (2880×1094 @2x). Placed
+         * at top-20 (below the header) at the band's native aspect; the Cover
+         * gradient (node 313:8439) fades its lower half to solid #00101A so the
+         * awards content section below blends in. Content sits above (z-10).
+         */}
+        <div aria-hidden className="pointer-events-none absolute inset-x-0 top-20 z-0">
+          <div
+            className="h-[420px] w-full bg-cover bg-top bg-no-repeat sm:h-[480px] lg:h-[547px]"
+            style={{
+              backgroundImage: "url(/home/awards-hero-keyvisual.png)",
+            }}
+          />
+          {/* Cover gradient (node 313:8439): art up top, fading to solid
+              #00101A over the lower half so the content section blends in. */}
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "linear-gradient(0deg, #00101A -4.23%, rgba(0,19,32,0) 52.79%)",
+            }}
+          />
+        </div>
+        <div className="relative z-10 flex flex-col">
+          <AwardsHero />
 
-        <section className="w-full px-6 pb-24 sm:px-10 lg:px-36">
-          <div className="mx-auto flex w-full max-w-[1224px] flex-col gap-16 lg:flex-row lg:items-start lg:gap-20">
-            <AwardsSidebar />
-            <div className="flex flex-1 flex-col gap-16 lg:gap-20">
-              {AWARD_DETAILS.map((detail, index) => (
-                <AwardDetailSection key={detail.slug} detail={detail} index={index} />
-              ))}
+          <section className="w-full px-6 pb-24 sm:px-10 lg:px-36">
+            <div className="mx-auto flex w-full max-w-[1224px] flex-col gap-16 lg:flex-row lg:items-start lg:gap-20">
+              <AwardsSidebar />
+              <div className="flex flex-1 flex-col gap-16 lg:gap-20">
+                {AWARD_DETAILS.map((detail, index) => (
+                  <AwardDetailSection key={detail.slug} detail={detail} index={index} />
+                ))}
+              </div>
             </div>
-          </div>
-        </section>
+          </section>
 
-        <KudosSection />
+          <KudosSection />
+        </div>
       </main>
       <SiteFooter />
     </div>

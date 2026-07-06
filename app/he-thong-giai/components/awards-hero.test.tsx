@@ -51,18 +51,18 @@ describe("AwardsHero", () => {
     expect(eyebrow).toHaveClass("text-white");
   });
 
-  it("has hero section with full-bleed background", async () => {
+  it("has hero section with full width", async () => {
     const { container } = render(await AwardsHero());
     const section = container.querySelector("section");
     expect(section).toHaveClass("w-full");
   });
 
-  it("renders background key-visual with proper aspect ratio", async () => {
+  it("does not paint its own background (handled at page level)", async () => {
     const { container } = render(await AwardsHero());
+    // The key-visual layer lives in page.tsx so it can span header + content;
+    // the hero itself should carry no aria-hidden background div.
     const bgDiv = container.querySelector("[aria-hidden='true']");
-    const style = window.getComputedStyle(bgDiv as Element);
-    // The div should have the background image style
-    expect(bgDiv).toHaveClass("pointer-events-none");
+    expect(bgDiv).toBeNull();
   });
 
   it("renders horizontal divider between eyebrow and title", async () => {
@@ -78,18 +78,23 @@ describe("AwardsHero", () => {
     expect(contentDiv).toBeInTheDocument();
   });
 
-  it("has flex layout for proper alignment", async () => {
+  it("stacks content in a flex column with desktop header clearance", async () => {
     const { container } = render(await AwardsHero());
-    const section = container.querySelector("section");
-    expect(section).toHaveClass("flex");
-    expect(section).toHaveClass("flex-col");
+    const content = container.querySelector(".max-w-\\[1224px\\]");
+    expect(content).toHaveClass("flex", "flex-col", "lg:pt-[184px]");
   });
 
-  it("has responsive padding and text sizes", async () => {
+  it("centres the eyebrow + title block", async () => {
+    const { container } = render(await AwardsHero());
+    const title = screen.getByRole("heading", { level: 1 });
+    const block = title.parentElement;
+    expect(block).toHaveClass("items-center", "text-center");
+  });
+
+  it("has responsive horizontal padding on the banner section", async () => {
     const { container } = render(await AwardsHero());
     const section = container.querySelector("section");
     expect(section).toHaveClass("px-6", "sm:px-10", "lg:px-36");
-    expect(section).toHaveClass("pt-24", "pb-12", "sm:px-10", "lg:pt-24", "lg:pb-16");
   });
 
   it("wordmark image is marked as priority", async () => {
@@ -97,12 +102,6 @@ describe("AwardsHero", () => {
     const wordmark = screen.getByAltText("ROOT FURTHER");
     // Priority is handled by Next.js, but we can verify it's there
     expect(wordmark).toHaveAttribute("src", "/login/root-further-wordmark.png");
-  });
-
-  it("background div has aria-hidden for accessibility", async () => {
-    const { container } = render(await AwardsHero());
-    const bgDiv = container.querySelector("[aria-hidden='true']");
-    expect(bgDiv).toHaveAttribute("aria-hidden", "true");
   });
 
   it("renders content in max-width container", async () => {
@@ -113,7 +112,7 @@ describe("AwardsHero", () => {
 
   it("groups eyebrow and title with gap-4", async () => {
     const { container } = render(await AwardsHero());
-    const groupDiv = container.querySelectorAll(".gap-4")[1]; // Second gap-4 is the text group
+    const groupDiv = container.querySelectorAll(".gap-4")[0]; // the eyebrow+divider+title group
     expect(groupDiv).toBeInTheDocument();
   });
 });

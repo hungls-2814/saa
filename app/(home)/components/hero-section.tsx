@@ -5,13 +5,11 @@ import { DEFAULT_EVENT_DATETIME } from "@/lib/event/countdown";
 
 /**
  * Hero: ROOT FURTHER wordmark, countdown, event info (time/venue/livestream
- * note), and the two CTA buttons. The key-visual art (`/home/hero-keyvisual.png`,
- * a text-free right-side crop) is painted as the section background sized to
- * the hero HEIGHT (`bg-[length:auto_100%]`) and anchored right, so it scales
- * naturally with no zoom/distortion at any width and its alpha-faded left edge
- * blends into the solid #00101A behind the content. Content is centered in the
- * design's 1224px content column (aligned with the awards/kudos sections) and
- * top-aligned below the fixed 80px header.
+ * note), and the two CTA buttons. The key-visual art is painted once at the
+ * page level (see `page.tsx`, clean node 2167:9028 + Cover gradient) so it
+ * spans the hero and the intro section below; this component only renders the
+ * foreground content. Content is centered in the design's 1224px content column
+ * (aligned with the awards/kudos sections) and top-aligned below the 80px header.
  */
 export async function HeroSection() {
   const t = await getTranslations("Home.hero");

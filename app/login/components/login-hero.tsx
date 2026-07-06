@@ -10,10 +10,11 @@ import { GoogleLoginButton } from "./google-login-button";
 
 /**
  * Main hero section for the login screen (MoMorph GzbNeVGJHz). The key-visual
- * is the login design's OWN full-bleed art (`/login/login-keyvisual.png`, a
- * frame-render crop with the left text column pre-masked to solid #00101A) —
- * distinct from the homepage's right-side crop. Content (ROOT FURTHER wordmark,
- * intro copy, compact Google CTA) sits left over the dark-masked area.
+ * is the login design's clean art (`/login/login-keyvisual.png`, exported from
+ * node 662:14389) beneath the design's two gradient covers — Rectangle 57
+ * (node 662:14392, 90deg, darkens the left text column) and Cover (node
+ * 662:14390, 0deg, darkens the bottom). Content (ROOT FURTHER wordmark, intro
+ * copy, compact Google CTA) sits left over the gradient-darkened area.
  *
  * The button triggers the real Supabase Google OAuth flow. On a successful
  * call the browser redirects to Google, so the loading state is left on; a
@@ -44,10 +45,33 @@ export function LoginHero() {
   }, []);
 
   return (
-    <section
-      className="relative flex min-h-[845px] w-full items-start overflow-hidden bg-[#00101A] bg-cover bg-center bg-no-repeat px-6 pt-32 pb-24 sm:px-10 lg:px-36 lg:pt-[200px]"
-      style={{ backgroundImage: "url(/login/login-keyvisual.png)" }}
-    >
+    <section className="relative flex min-h-[845px] w-full items-start overflow-hidden bg-[#00101A] px-6 pt-32 pb-24 sm:px-10 lg:px-36 lg:pt-[200px]">
+      {/*
+       * Keyvisual: clean art (node 662:14389) beneath the design's two gradient
+       * covers — Rectangle 57 (90deg → darkens the left text column) and Cover
+       * (0deg → darkens the bottom). Replaces the old grainy frame-render crop.
+       */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 z-0">
+        <div
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: "url(/login/login-keyvisual.png)" }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(90deg, #00101A 0%, #00101A 25.41%, rgba(0,16,26,0) 100%)",
+          }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(0deg, #00101A 22.48%, rgba(0,19,32,0) 51.74%)",
+          }}
+        />
+      </div>
+
       <div className="relative z-[1] flex max-w-[520px] flex-col items-start gap-20">
         <Image
           src="/login/root-further-wordmark.png"
