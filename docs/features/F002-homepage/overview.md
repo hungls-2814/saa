@@ -41,7 +41,7 @@ bell and account menu in the header.
    KUDOS`, Kudos `Chi tiết` → `/kudos`; footer `Tiêu chuẩn chung` → `/standards`; each
    award card (image/title/`Chi tiết`) → `/awards-information#<slug>`.
 3. **Auth-aware header** — server reads Supabase session; logged-in → notification bell +
-   account menu (Profile, Sign out); logged-out → guest/login affordance. (Roles/Admin
+   account menu (Profile, Logout); logged-out → guest/login affordance. (Roles/Admin
    Dashboard deferred — no role system yet.)
 4. **Language selector** — VN/EN via `NEXT_LOCALE` cookie (shared component, next-intl).
 5. **Interactive menus** — account menu, notification panel, language menu, widget menu:

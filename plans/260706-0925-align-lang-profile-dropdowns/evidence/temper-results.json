@@ -1,0 +1,32 @@
+{
+  "commands": [
+    {
+      "command": "npx tsc --noEmit",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "typecheck clean including chevron inline-SVG change",
+      "ts": "2026-07-06T10:00:46.000Z"
+    },
+    {
+      "command": "npx eslint app/components/language-selector.tsx app/(home)/components/account-menu.tsx",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "lint clean on changed components",
+      "ts": "2026-07-06T10:00:46.000Z"
+    },
+    {
+      "command": "npm test",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "full vitest suite green: 311/311 tests across 24 files, fresh run after chevron fix, no regressions",
+      "ts": "2026-07-06T10:09:51.000Z"
+    },
+    {
+      "command": "npm run build",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "next production build succeeded (RSC/client boundaries OK)",
+      "ts": "2026-07-06T09:38:00.000Z"
+    }
+  ]
+}

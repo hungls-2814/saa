@@ -6,9 +6,7 @@
     "errorToast": "Đăng nhập không thành công. Vui lòng thử lại."
   },
   "Common": {
-    "footer": "Bản quyền thuộc về Sun* © 2025",
-    "langVi": "Tiếng Việt",
-    "langEn": "English"
+    "footer": "Bản quyền thuộc về Sun* © 2025"
   },
   "Todo": {
     "title": "Việc cần làm",
@@ -25,7 +23,7 @@
       "notificationsLabel": "Thông báo",
       "accountLabel": "Tài khoản",
       "profile": "Profile",
-      "signOut": "Sign out",
+      "signOut": "Đăng xuất",
       "guestLogin": "Đăng nhập",
       "notificationsEmpty": "Chưa có thông báo nào"
     },

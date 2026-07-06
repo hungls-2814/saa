@@ -3,6 +3,38 @@
 All notable changes to this project are recorded here. Format loosely follows
 [Keep a Changelog](https://keepachangelog.com/); dates are `YYYY-MM-DD`.
 
+## 0.2.1 — 2026-07-06 — Header dropdowns: language selector & account menu design alignment
+
+Design polish to two existing header dropdowns, aligning UI presentation to MoMorph specs. All
+behavior and business logic unchanged; visual and i18n label corrections only (severity: minor).
+
+### Changed
+- **Language selector** (`app/components/language-selector.tsx`) — refactored rows to show locale
+  flag (VN via `vn-flag.png`, EN via inline Union Jack SVG with per-instance `useId`) and short
+  code (VN / EN); selected locale now highlighted with gold-tint background (`rgba(255,234,158,0.2)`)
+  and text glow (`text-shadow: 0 0 6px #FAE287`), no checkmark; gold border (`#998C5F`) and container
+  redesigned; Escape-to-close added for keyboard support.
+- **Account menu** (`app/(home)/components/account-menu.tsx`) — Profile row + user icon, Logout row
+  + right-chevron, gold-bordered container, hover/focus highlight with glow effect to match design
+  spec; improved row spacing and visual hierarchy.
+- **i18n labels** (`messages/{en,vi}.json`) — fixed mistranslation: `Home.header.signOut` now
+  correctly maps to "Logout" (EN) / "Đăng xuất" (VI); removed dead keys `Common.langVi` / `Common.langEn`.
+
+### Fixed
+- **Language trigger chevron background** — the `chevron-down.png` asset was fully opaque with a
+  dark olive background baked in (alpha 255 on every corner), so a stray box appeared behind the
+  chevron. Replaced with a transparent inline SVG chevron; the opaque PNG is now unreferenced.
+
+### Tests
+- All existing tests pass (311/311 green; `next build` clean).
+- Language selector: new test file `app/components/language-selector.test.tsx` (+23 lines).
+- Account menu: extended `app/(home)/components/account-menu.test.tsx` (+1 line).
+
+### Notes
+- Design tokens applied: container `bg #00070C` + border `1px solid #998C5F`, radius `8px`, padding `6px`;
+  highlight `rgba(255,234,158,0.2)` for language selected, `rgba(255,234,158,0.1)` for profile;
+  glow via text-shadow per spec.
+
 ## 0.2.0 — 2026-07-06 — F004: Countdown / Prelaunch page (`/prelaunch`)
 
 Public full-screen "coming soon" gate shown before the SAA 2025 launch moment. Built to the

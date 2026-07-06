@@ -1,0 +1,29 @@
+{
+  "task": "Re-align the language selector and profile/account dropdowns to their MoMorph designs",
+  "mode": "interactive",
+  "acceptanceCriteria": [
+    "Language dropdown rows show flag + short code VN/EN, selected locale gets gold-tint highlight, no checkmark",
+    "EN renders an inline Union Jack SVG flag and VN renders the vn-flag.png asset",
+    "Profile row has a user icon and Logout row has a right chevron icon",
+    "Logout label reads Logout in en and Dang xuat in vi",
+    "Both dropdown containers match design tokens: #00070C background, #998C5F gold border, 8px radius, gold-tint highlight + glow",
+    "Language trigger chevron has no baked-in background (opaque chevron-down.png replaced with a transparent inline SVG)"
+  ],
+  "touchpoints": [
+    "app/components/language-selector.tsx",
+    "app/(home)/components/account-menu.tsx",
+    "messages/en.json",
+    "messages/vi.json"
+  ],
+  "blastRadius": [
+    "locale switching (setLocale cookie + router.refresh)",
+    "sign-out server action",
+    "header on login and homepage",
+    "account menu open/close/escape/backdrop"
+  ],
+  "contracts": [
+    "Home.header.signOut i18n key (value changed, key preserved)",
+    "setLocale server action signature unchanged",
+    "signOut server action unchanged"
+  ]
+}

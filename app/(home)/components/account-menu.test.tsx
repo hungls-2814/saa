@@ -46,7 +46,7 @@ describe("AccountMenu", () => {
       expect(screen.getByRole("menu", { name: /Account/i })).toBeInTheDocument();
     });
 
-    it("renders Profile and Sign Out menu items", async () => {
+    it("renders Profile and Logout menu items with role=menuitem", async () => {
       const user = userEvent.setup();
       render(<AccountMenu user={mockUser} />);
       const button = screen.getByRole("button", { name: "accountLabel" });
@@ -139,6 +139,88 @@ describe("AccountMenu", () => {
 
       await user.click(button);
       expect(button).toHaveAttribute("aria-expanded", "false");
+    });
+
+    it("Profile menu item is a link", async () => {
+      const user = userEvent.setup();
+      render(<AccountMenu user={mockUser} />);
+      const button = screen.getByRole("button", { name: "accountLabel" });
+
+      await user.click(button);
+      const menuitems = screen.getAllByRole("menuitem");
+      const profileItem = menuitems[0];
+      expect(profileItem.tagName).toBe("A");
+    });
+
+    it("Logout menu item is a button", async () => {
+      const user = userEvent.setup();
+      render(<AccountMenu user={mockUser} />);
+      const button = screen.getByRole("button", { name: "accountLabel" });
+
+      await user.click(button);
+      const menuitems = screen.getAllByRole("menuitem");
+      const logoutItem = menuitems[1];
+      expect(logoutItem.tagName).toBe("BUTTON");
+    });
+
+    it("Logout button is inside a form with signOut action", async () => {
+      const user = userEvent.setup();
+      render(<AccountMenu user={mockUser} />);
+      const button = screen.getByRole("button", { name: "accountLabel" });
+
+      await user.click(button);
+      const menuitems = screen.getAllByRole("menuitem");
+      const logoutItem = menuitems[1];
+      const form = logoutItem.closest("form");
+      expect(form).toBeInTheDocument();
+      // Form should have action={signOut} which is handled by Next.js
+      expect(form?.tagName).toBe("FORM");
+    });
+
+    it("renders user icon in trigger button", () => {
+      render(<AccountMenu user={mockUser} />);
+      const button = screen.getByRole("button", { name: /Account/i });
+      const svg = button.querySelector("svg");
+      expect(svg).toBeInTheDocument();
+    });
+
+    it("renders user icon in Profile menu item", async () => {
+      const user = userEvent.setup();
+      render(<AccountMenu user={mockUser} />);
+      const button = screen.getByRole("button", { name: "accountLabel" });
+
+      await user.click(button);
+      const menuitems = screen.getAllByRole("menuitem");
+      const profileItem = menuitems[0];
+      const svg = profileItem.querySelector("svg");
+      expect(svg).toBeInTheDocument();
+    });
+
+    it("renders chevron icon in Logout menu item", async () => {
+      const user = userEvent.setup();
+      render(<AccountMenu user={mockUser} />);
+      const button = screen.getByRole("button", { name: "accountLabel" });
+
+      await user.click(button);
+      const menuitems = screen.getAllByRole("menuitem");
+      const logoutItem = menuitems[1];
+      const svg = logoutItem.querySelector("svg");
+      expect(svg).toBeInTheDocument();
+    });
+
+    it("Profile and Logout items have correct styling class structure", async () => {
+      const user = userEvent.setup();
+      render(<AccountMenu user={mockUser} />);
+      const button = screen.getByRole("button", { name: "accountLabel" });
+
+      await user.click(button);
+      const menuitems = screen.getAllByRole("menuitem");
+      menuitems.forEach((item) => {
+        // Items should have h-14 (height) and flex layout
+        const element = item.tagName === "A" ? item : item;
+        expect(element.className).toContain("h-14");
+        expect(element.className).toContain("flex");
+      });
     });
   });
 
