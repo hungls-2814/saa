@@ -25,6 +25,7 @@ export interface KudosBoardProps {
   onLoadMore?: () => void;
   onOpenCompose?: () => void;
   onSearchSunner?: () => void;
+  onOpenSecretBox?: () => void;
 }
 
 /**
@@ -47,6 +48,7 @@ export function KudosBoard({
   onLoadMore,
   onOpenCompose,
   onSearchSunner,
+  onOpenSecretBox,
 }: KudosBoardProps) {
   const t = useTranslations("KudosPage");
 
@@ -100,7 +102,7 @@ export function KudosBoard({
               />
             </div>
             <aside className="flex w-full flex-col gap-6 lg:w-[422px] lg:shrink-0">
-              <SidebarStats stats={data.stats} />
+              <SidebarStats stats={data.stats} onOpenSecretBox={onOpenSecretBox} />
               <SidebarGifts gifts={data.gifts} />
             </aside>
           </div>

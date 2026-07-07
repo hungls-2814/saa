@@ -180,8 +180,8 @@
       "title": "SPOTLIGHT BOARD",
       "kudosCount": "{count} KUDOS",
       "searchPlaceholder": "Tìm kiếm",
-      "zoomIn": "Phóng to",
-      "zoomOut": "Thu nhỏ",
+      "expand": "Mở rộng bảng",
+      "collapse": "Thu nhỏ bảng",
       "empty": "Hiện tại chưa có Kudos nào."
     },
     "feed": {
@@ -196,7 +196,8 @@
     "stats": {
       "received": "Số Kudos bạn nhận được:",
       "sent": "Số Kudos bạn đã gửi:",
-      "heartsReceived": "Số tim bạn nhận được:"
+      "heartsReceived": "Số tim bạn nhận được:",
+      "openSecretBox": "Mở Secret Box"
     },
     "gifts": {
       "title": "10 SUNNER NHẬN QUÀ\nMỚI NHẤT",
@@ -205,7 +206,8 @@
     "toast": {
       "copyLinkSuccess": "Đã sao chép liên kết — sẵn sàng để chia sẻ!",
       "selfLike": "Bạn không thể tự thả tim cho Kudos của chính mình.",
-      "error": "Đã có lỗi xảy ra. Vui lòng thử lại."
+      "error": "Đã có lỗi xảy ra. Vui lòng thử lại.",
+      "secretBoxComingSoon": "Tính năng Secret Box sẽ sớm ra mắt."
     }
   }
 }

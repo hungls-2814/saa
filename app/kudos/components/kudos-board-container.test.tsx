@@ -169,4 +169,17 @@ describe("KudosBoardContainer", () => {
       await waitFor(() => expect(screen.getByRole("alert")).toHaveTextContent("error"));
     });
   });
+
+  describe("Mở Secret Box stub", () => {
+    it("shows a coming-soon toast — the Secret Box dialog itself is out of scope", async () => {
+      const user = userEvent.setup();
+      render(<KudosBoardContainer initialData={mockBoardData} />);
+
+      await user.click(screen.getByText("openSecretBox"));
+
+      await waitFor(() =>
+        expect(screen.getByRole("alert")).toHaveTextContent("secretBoxComingSoon"),
+      );
+    });
+  });
 });

@@ -180,8 +180,8 @@
       "title": "SPOTLIGHT BOARD",
       "kudosCount": "{count} KUDOS",
       "searchPlaceholder": "Search",
-      "zoomIn": "Zoom in",
-      "zoomOut": "Zoom out",
+      "expand": "Expand board",
+      "collapse": "Collapse board",
       "empty": "No Kudos yet."
     },
     "feed": {
@@ -196,7 +196,8 @@
     "stats": {
       "received": "Kudos you received:",
       "sent": "Kudos you sent:",
-      "heartsReceived": "Hearts you received:"
+      "heartsReceived": "Hearts you received:",
+      "openSecretBox": "Open Secret Box"
     },
     "gifts": {
       "title": "TOP 10 RECENT\nGIFT RECIPIENTS",
@@ -205,7 +206,8 @@
     "toast": {
       "copyLinkSuccess": "Link copied — ready to share!",
       "selfLike": "You can't like your own Kudos.",
-      "error": "Something went wrong. Please try again."
+      "error": "Something went wrong. Please try again.",
+      "secretBoxComingSoon": "Secret Box is coming soon."
     }
   }
 }

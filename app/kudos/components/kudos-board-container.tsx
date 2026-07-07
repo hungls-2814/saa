@@ -126,6 +126,10 @@ export function KudosBoardContainer({ initialData }: KudosBoardContainerProps) {
     [showError, t],
   );
 
+  // "Mở Secret Box" (FR5/D.1.8) — a stub trigger only, the Secret Box dialog
+  // itself is out of scope for this screen.
+  const handleOpenSecretBox = useCallback(() => setToast(t("secretBoxComingSoon")), [t]);
+
   return (
     <>
       <KudosToast message={toast} onDismiss={() => setToast(null)} />
@@ -136,6 +140,7 @@ export function KudosBoardContainer({ initialData }: KudosBoardContainerProps) {
         onToggleLike={handleToggleLike}
         onCopyLink={handleCopyLink}
         onLoadMore={() => loadMore(data.feedNextCursor, filters)}
+        onOpenSecretBox={handleOpenSecretBox}
       />
     </>
   );

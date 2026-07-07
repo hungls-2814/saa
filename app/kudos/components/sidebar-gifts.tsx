@@ -7,6 +7,9 @@ import { Avatar } from "./avatar";
 /**
  * "10 SUNNER NHẬN QUÀ MỚI NHẤT" sidebar list (FR6): the caller passes an
  * already `awarded_at`-desc, limit-10 list — this component only renders it.
+ * The design's own list box (`D.3` "Frame 547/548") is a FIXED 384px-tall
+ * area — exactly 5 of the 64px rows (5*64 + 4*16 gap = 384) — with the rest
+ * reached by scrolling; the title stays fixed above the scroll area.
  */
 export function SidebarGifts({ gifts }: { gifts: GiftItem[] }) {
   const t = useTranslations("KudosPage.gifts");
@@ -20,7 +23,7 @@ export function SidebarGifts({ gifts }: { gifts: GiftItem[] }) {
       {gifts.length === 0 ? (
         <p className="py-6 text-center text-sm text-white/70">{t("empty")}</p>
       ) : (
-        <ul className="flex flex-col gap-4">
+        <ul className="flex h-[384px] flex-col gap-4 overflow-y-auto pr-1">
           {gifts.map((gift) => (
             <li key={gift.id} className="flex items-center gap-2">
               <Avatar name={gift.recipientName} avatarUrl={gift.recipientAvatarUrl} textSizeClassName="text-sm" />

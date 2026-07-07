@@ -41,7 +41,13 @@ export function KudosCard({
   return (
     <article
       className={`flex w-full flex-col gap-4 rounded-3xl bg-[#FFF8E1] p-6 pb-4 ${
-        isHighlight ? "border-4 border-[#FFEA9E]" : ""
+        // Fixed height (design: 528x525, width stays responsive via the
+        // carousel's own max-w wrapper) so every highlight frame is
+        // identical while navigating — a card with no height of its own
+        // used to resize the whole row per-content on every click.
+        isHighlight
+          ? "h-[525px] overflow-hidden border-4 border-[#FFEA9E]"
+          : ""
       }`}
     >
       <div className="flex items-start justify-between gap-4">

@@ -5,7 +5,7 @@
  * identical stroke weights instead of each component redrawing its own.
  */
 
-type IconProps = { className?: string };
+export type IconProps = { className?: string };
 
 export function HeartIcon({
   className,
@@ -128,42 +128,6 @@ export function SearchIcon({ className }: IconProps) {
     >
       <circle cx="11" cy="11" r="7" />
       <path d="m20 20-3.5-3.5" />
-    </svg>
-  );
-}
-
-export function ZoomInIcon({ className }: IconProps) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      className={className}
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.75"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-    >
-      <circle cx="11" cy="11" r="7" />
-      <path d="m20 20-3.5-3.5M11 8v6M8 11h6" />
-    </svg>
-  );
-}
-
-export function ZoomOutIcon({ className }: IconProps) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      className={className}
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.75"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-    >
-      <circle cx="11" cy="11" r="7" />
-      <path d="m20 20-3.5-3.5M8 11h6" />
     </svg>
   );
 }

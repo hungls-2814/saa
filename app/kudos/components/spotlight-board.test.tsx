@@ -52,8 +52,11 @@ describe("SpotlightBoard", () => {
     expect(onSelectNode).toHaveBeenCalledWith("a");
   });
 
-  it("disables zoom-out at the minimum zoom level", () => {
+  it("toggles the panel between compact (expand affordance) and expanded (collapse affordance)", async () => {
+    const user = userEvent.setup();
     render(<SpotlightBoard totalKudos={388} nodes={nodes} />);
-    expect(screen.getByRole("button", { name: "zoomOut" })).toBeDisabled();
+    const toggle = screen.getByRole("button", { name: "expand" });
+    await user.click(toggle);
+    expect(screen.getByRole("button", { name: "collapse" })).toBeInTheDocument();
   });
 });
