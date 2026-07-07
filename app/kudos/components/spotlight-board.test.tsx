@@ -20,10 +20,10 @@ describe("SpotlightBoard", () => {
     expect(screen.getByText(/kudosCount/)).toHaveTextContent('{"count":388}');
   });
 
-  it("renders one node per receiver", () => {
+  it("renders every receiver as one or more scattered word-cloud instances", () => {
     render(<SpotlightBoard totalKudos={388} nodes={nodes} />);
-    expect(screen.getByText("Đỗ hoàng Hiệp")).toBeInTheDocument();
-    expect(screen.getByText("Nguyễn Bá Chức")).toBeInTheDocument();
+    expect(screen.getAllByText("Đỗ hoàng Hiệp").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Nguyễn Bá Chức").length).toBeGreaterThan(0);
   });
 
   it("shows the empty state when there are no nodes", () => {
@@ -35,8 +35,8 @@ describe("SpotlightBoard", () => {
     const user = userEvent.setup();
     render(<SpotlightBoard totalKudos={388} nodes={nodes} />);
     await user.type(screen.getByPlaceholderText("searchPlaceholder"), "Chức");
-    expect(screen.queryByText("Đỗ hoàng Hiệp")).not.toBeInTheDocument();
-    expect(screen.getByText("Nguyễn Bá Chức")).toBeInTheDocument();
+    expect(screen.queryAllByText("Đỗ hoàng Hiệp")).toHaveLength(0);
+    expect(screen.getAllByText("Nguyễn Bá Chức").length).toBeGreaterThan(0);
   });
 
   it("caps the search input at 100 characters", () => {
@@ -44,11 +44,11 @@ describe("SpotlightBoard", () => {
     expect(screen.getByPlaceholderText("searchPlaceholder")).toHaveAttribute("maxLength", "100");
   });
 
-  it("calls onSelectNode when a node is clicked", async () => {
+  it("calls onSelectNode when a node instance is clicked", async () => {
     const user = userEvent.setup();
     const onSelectNode = vi.fn();
     render(<SpotlightBoard totalKudos={388} nodes={nodes} onSelectNode={onSelectNode} />);
-    await user.click(screen.getByText("Đỗ hoàng Hiệp"));
+    await user.click(screen.getAllByText("Đỗ hoàng Hiệp")[0]);
     expect(onSelectNode).toHaveBeenCalledWith("a");
   });
 
