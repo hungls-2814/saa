@@ -12,11 +12,11 @@ import {
  * stable across server/client renders (no `Math.random`/`Date.now`).
  *
  * The design's cloud reads as a dense fog: many tiny repeats of each
- * receiver name tiled evenly across the whole canvas, with the one
+ * receiver name scattered organically across the whole canvas, with the one
  * highest-weight receiver's first instance standing out larger and in the
  * design's highlight red. Every instance — not just one per node — is
- * placed by the single non-overlapping grid layer in
- * `spotlight-scatter-layers.ts`, built on the shared grid helpers in
+ * placed by the single dart-throwing, non-overlapping layer in
+ * `spotlight-scatter-layers.ts`, built on the shared primitives in
  * `spotlight-scatter-grid.ts`.
  */
 

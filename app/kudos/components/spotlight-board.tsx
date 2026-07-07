@@ -51,9 +51,11 @@ const EXPANDED_ASPECT = "1157 / 822";
  *
  * The design's word-cloud uses many repeated/rescaled text layers to create
  * density and organic scatter; `buildScatterItems` (spotlight-scatter.ts)
- * reproduces that with a single fine jittered-grid placement so no two
- * labels — across the whole board — ever overlap, evenly covering the
- * canvas around the search/header/ticker footprints. Node weight drives
+ * reproduces that with deterministic dart-throwing placement (seeded
+ * candidate positions, accepted only clear of every other label) so no two
+ * labels — across the whole board — ever overlap, while never snapping to
+ * a grid, evenly covering the canvas around the search/header/ticker
+ * footprints. Node weight drives
  * each receiver's first (largest, brightest) instance, and the single
  * top-weight receiver's first instance renders in the design's highlight
  * red (`ScatterItem.isHighlighted`). Seeded by index (no

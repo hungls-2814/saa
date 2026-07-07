@@ -1,55 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { buildScatterItems, type ScatterItem } from "./spotlight-scatter";
-import type { SpotlightNode } from "@/lib/kudos/types";
-
-const nodes: SpotlightNode[] = [
-  { receiverId: "a", name: "Đỗ hoàng Hiệp", weight: 42, lastReceivedAt: "2025-10-30T13:30:00.000Z" },
-  { receiverId: "b", name: "Nguyễn Bá Chức", weight: 20, lastReceivedAt: "2025-10-30T20:30:00.000Z" },
-];
-
-/** Builds `count` synthetic nodes cycling through `names` — used to exercise
- * realistic/large receiver lists without inventing production data. */
-function manyNodes(count: number, names: string[] = ["Nguyễn Hoàng Linh"]): SpotlightNode[] {
-  return Array.from({ length: count }, (_, i) => ({
-    receiverId: `r${i}`,
-    name: names[i % names.length],
-    weight: (i % 6) + 1,
-    lastReceivedAt: new Date(2025, 9, 30, 10, i).toISOString(),
-  }));
-}
-
-/** Estimated bounding box for a rendered label — the same estimate the
- * layout algorithm itself uses to cap every instance's font size (see
- * spotlight-scatter-layers.ts: CHAR_WIDTH_FACTOR / LINE_HEIGHT_FACTOR), so
- * this is the objective pass/fail check for "no two names ever overlap". */
-function boundingBoxOf(item: ScatterItem, canvasWidthPx = 1157, canvasHeightPx = 548) {
-  const boxWidth = item.name.length * item.fontSize * 0.7;
-  const boxHeight = item.fontSize * 1.6;
-  const centerX = (item.leftPct / 100) * canvasWidthPx;
-  const centerY = (item.topPct / 100) * canvasHeightPx;
-  return {
-    left: centerX - boxWidth / 2,
-    right: centerX + boxWidth / 2,
-    top: centerY - boxHeight / 2,
-    bottom: centerY + boxHeight / 2,
-  };
-}
-
-function intersects(a: ReturnType<typeof boundingBoxOf>, b: ReturnType<typeof boundingBoxOf>) {
-  return a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top;
-}
-
-/** Asserts no two items' estimated bounding boxes intersect, across every
- * rendered instance — the core guarantee of the single non-overlapping
- * layer (not just a "primary" subset, as the prior two-layer model had). */
-function expectNoOverlaps(items: ScatterItem[], canvasWidthPx = 1157, canvasHeightPx = 548) {
-  const boxes = items.map((item) => boundingBoxOf(item, canvasWidthPx, canvasHeightPx));
-  for (let i = 0; i < boxes.length; i++) {
-    for (let j = i + 1; j < boxes.length; j++) {
-      expect(intersects(boxes[i], boxes[j])).toBe(false);
-    }
-  }
-}
+import { buildScatterItems } from "./spotlight-scatter";
+import { manyNodes, nodes } from "./spotlight-scatter-test-helpers";
 
 describe("buildScatterItems", () => {
   it("returns no items for an empty node list", () => {
@@ -145,45 +96,6 @@ describe("buildScatterItems", () => {
         expect(repeat.fontSize).toBeLessThanOrEqual(first.fontSize);
         expect(repeat.opacity).toBeLessThan(first.opacity);
       }
-    });
-  });
-
-  describe("no-overlap guarantee across the whole board", () => {
-    it("never intersects any two instances' bounding boxes at realistic density", () => {
-      const names = [
-        "Nguyễn Văn Quy",
-        "Nguyễn Bá Chức",
-        "Đỗ hoàng Hiệp",
-        "Dương thúy An",
-        "Mai phương Thúy",
-        "Lê Kiều Trang",
-        "Nguyễn Hoàng Linh",
-      ];
-      expectNoOverlaps(buildScatterItems(manyNodes(14, names)));
-    });
-
-    it("never intersects at a custom canvas size", () => {
-      expectNoOverlaps(buildScatterItems(nodes, 5, 800, 400), 800, 400);
-    });
-
-    it("never intersects even a large receiver list packed to the density cap", () => {
-      expectNoOverlaps(buildScatterItems(manyNodes(40), 4));
-    });
-  });
-
-  describe("single highlighted (red) instance", () => {
-    it("marks exactly one instance as highlighted, on the top-weight receiver's first instance", () => {
-      const items = buildScatterItems(nodes, 6);
-      const highlighted = items.filter((i) => i.isHighlighted);
-      expect(highlighted).toHaveLength(1);
-      expect(highlighted[0].receiverId).toBe("a"); // node "a" has the higher weight (42 vs 20)
-      expect(highlighted[0].isPrimary).toBe(true);
-    });
-
-    it("stays deterministic (same node highlighted) across repeated calls", () => {
-      const first = buildScatterItems(nodes, 6).find((i) => i.isHighlighted);
-      const second = buildScatterItems(nodes, 6).find((i) => i.isHighlighted);
-      expect(second?.receiverId).toBe(first?.receiverId);
     });
   });
 });
