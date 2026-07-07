@@ -18,7 +18,7 @@ export function SectionHeader({
     <div className="flex w-full flex-col gap-4">
       <p className="text-2xl font-bold leading-8 text-white">{eyebrow}</p>
       <hr className="border-t border-[#2E3940]" />
-      <div className="flex flex-wrap items-center justify-between gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-8">
         <h2 className="text-[32px] font-bold leading-[40px] tracking-[-0.25px] text-[#FFEA9E] sm:text-[57px] sm:leading-[64px]">
           {title}
         </h2>

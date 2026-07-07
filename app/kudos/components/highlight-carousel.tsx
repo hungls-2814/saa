@@ -47,7 +47,7 @@ export function HighlightCarousel({
   const next = highlights[safeIndex + 1];
 
   return (
-    <div className="flex w-full flex-col items-center gap-8">
+    <div className="flex w-full flex-col items-center gap-10">
       <div className="relative flex w-full items-center justify-center gap-6 overflow-hidden">
         {prev && (
           <div

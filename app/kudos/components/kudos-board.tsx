@@ -61,8 +61,8 @@ export function KudosBoard({
     <div className="flex w-full flex-col items-center bg-[#00101A]">
       <KudosBanner onOpenCompose={onOpenCompose} onSearchSunner={onSearchSunner} />
 
-      <div className="flex w-full max-w-[1512px] flex-col gap-16 px-6 py-10 sm:px-10 sm:py-16 lg:gap-[120px] lg:px-36 lg:py-24">
-        <section className="flex flex-col gap-8">
+      <div className="flex w-full max-w-[1440px] flex-col gap-16 px-6 pt-6 pb-10 sm:px-10 sm:pt-8 sm:pb-16 lg:gap-[120px] lg:px-36 lg:pt-8 lg:pb-[120px]">
+        <section className="flex flex-col gap-10">
           <SectionHeader
             eyebrow={t("sectionEyebrow")}
             title={t("highlight.title")}
@@ -83,14 +83,14 @@ export function KudosBoard({
           />
         </section>
 
-        <section className="flex flex-col gap-8">
+        <section className="flex flex-col gap-16">
           <SectionHeader eyebrow={t("sectionEyebrow")} title={t("spotlight.title")} />
           <SpotlightBoard totalKudos={data.spotlight.totalKudos} nodes={data.spotlight.nodes} />
         </section>
 
-        <section className="flex flex-col gap-8">
+        <section className="flex flex-col gap-10">
           <SectionHeader eyebrow={t("sectionEyebrow")} title={t("feed.title")} />
-          <div className="flex flex-col items-start gap-6 lg:flex-row">
+          <div className="flex flex-col items-start gap-6 lg:flex-row lg:gap-20">
             <div className="w-full flex-1">
               <AllKudosFeed
                 feed={data.feed}
