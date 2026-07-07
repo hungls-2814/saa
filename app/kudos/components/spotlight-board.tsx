@@ -129,7 +129,9 @@ export function SpotlightBoard({ totalKudos, nodes, onSelectNode }: SpotlightBoa
                   // largest instance stacked above its own fainter repeats.
                   zIndex: item.isPrimary ? 1 : 0,
                 }}
-                className="absolute -translate-x-1/2 -translate-y-1/2 whitespace-nowrap font-bold text-white transition-colors duration-200 ease-out hover:text-[#FFEA9E]"
+                className={`absolute -translate-x-1/2 -translate-y-1/2 whitespace-nowrap text-white transition-colors duration-200 ease-out hover:text-[#FFEA9E] ${
+                  item.isPrimary || item.isHighlighted ? "font-bold" : "font-medium"
+                }`}
               >
                 {item.name}
               </Link>
