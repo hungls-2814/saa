@@ -8,9 +8,9 @@ const nodes: SpotlightNode[] = [
 ];
 
 /** Estimated bounding box for a rendered label — the same estimate the
- * layout algorithm itself uses to cap font size (see spotlight-scatter.ts:
- * CHAR_WIDTH_FACTOR / LINE_HEIGHT_FACTOR), so this is the objective
- * pass/fail check for "names must not overlap". */
+ * layout algorithm itself uses to cap the primary layer's font size (see
+ * spotlight-scatter.ts: CHAR_WIDTH_FACTOR / LINE_HEIGHT_FACTOR), so this is
+ * the objective pass/fail check for "prominent names must not overlap". */
 function boundingBoxOf(item: ScatterItem, canvasWidthPx = 1157, canvasHeightPx = 548) {
   const boxWidth = item.name.length * item.fontSize * 0.7;
   const boxHeight = item.fontSize * 1.6;
@@ -106,12 +106,53 @@ describe("buildScatterItems", () => {
     const items = buildScatterItems(manyNodes, 4);
     // Every receiver still gets at least its primary instance...
     expect(new Set(items.map((i) => i.receiverId)).size).toBe(40);
-    // ...but repeats are trimmed well below 4x40 to keep cells readable.
+    // ...but repeats are trimmed well below 4x40 to keep the fill layer readable.
     expect(items.length).toBeLessThan(40 * 4);
   });
 
-  describe("no-overlap guarantee (objective done-bar for 'names must not overlap')", () => {
-    it("never intersects any two label bounding boxes at realistic density", () => {
+  describe("word-cloud texture: dense fog of small names + a few prominent ones", () => {
+    it("renders a dense cloud (~80-120 instances) for a realistic receiver count", () => {
+      // Mirrors the production seed data shape: a handful of distinct
+      // receivers (see scripts/seed-kudos-data.ts) — the design tiles these
+      // repeatedly to fake density rather than inventing more names.
+      const sevenNodes: SpotlightNode[] = Array.from({ length: 7 }, (_, i) => ({
+        receiverId: `r${i}`,
+        name: "Nguyễn Hoàng Linh",
+        weight: (i % 5) + 1,
+        lastReceivedAt: new Date(2025, 9, 30, 10, i).toISOString(),
+      }));
+      const items = buildScatterItems(sevenNodes);
+      expect(items.length).toBeGreaterThanOrEqual(80);
+      expect(items.length).toBeLessThanOrEqual(120);
+    });
+
+    it("makes fill instances dominate the cloud and stay small/faint", () => {
+      const items = buildScatterItems(nodes);
+      const fill = items.filter((i) => !i.isPrimary);
+      const primaries = items.filter((i) => i.isPrimary);
+      // Fill instances vastly outnumber the two primaries.
+      expect(fill.length).toBeGreaterThan(primaries.length * 5);
+      for (const item of fill) {
+        expect(item.fontSize).toBeLessThanOrEqual(13);
+        expect(item.opacity).toBeLessThanOrEqual(0.5);
+      }
+    });
+
+    it("makes primary instances distinctly larger and brighter than any fill instance", () => {
+      const items = buildScatterItems(nodes);
+      const fill = items.filter((i) => !i.isPrimary);
+      const primaries = items.filter((i) => i.isPrimary);
+      const maxFillFont = Math.max(...fill.map((i) => i.fontSize));
+      const maxFillOpacity = Math.max(...fill.map((i) => i.opacity));
+      for (const primary of primaries) {
+        expect(primary.fontSize).toBeGreaterThan(maxFillFont);
+        expect(primary.opacity).toBeGreaterThan(maxFillOpacity);
+      }
+    });
+  });
+
+  describe("no-overlap guarantee for the prominent (primary) layer", () => {
+    it("never intersects two primary-instance bounding boxes at realistic density", () => {
       const names = [
         "Nguyễn Văn Quy",
         "Nguyễn Bá Chức",
@@ -129,7 +170,7 @@ describe("buildScatterItems", () => {
       }));
 
       const items = buildScatterItems(manyNodes);
-      const boxes = items.map((item) => boundingBoxOf(item));
+      const boxes = items.filter((i) => i.isPrimary).map((item) => boundingBoxOf(item));
 
       for (let i = 0; i < boxes.length; i++) {
         for (let j = i + 1; j < boxes.length; j++) {
@@ -140,7 +181,7 @@ describe("buildScatterItems", () => {
 
     it("never intersects at a custom canvas size", () => {
       const items = buildScatterItems(nodes, 5, 800, 400);
-      const boxes = items.map((item) => boundingBoxOf(item, 800, 400));
+      const boxes = items.filter((i) => i.isPrimary).map((item) => boundingBoxOf(item, 800, 400));
       for (let i = 0; i < boxes.length; i++) {
         for (let j = i + 1; j < boxes.length; j++) {
           expect(intersects(boxes[i], boxes[j])).toBe(false);

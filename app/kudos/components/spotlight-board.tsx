@@ -114,6 +114,10 @@ export function SpotlightBoard({ totalKudos, nodes, onSelectNode }: SpotlightBoa
                   top: `${item.topPct}%`,
                   fontSize: `${(item.fontSize / SPOTLIGHT_CANVAS_WIDTH_PX) * 100}cqw`,
                   opacity: item.opacity,
+                  // Fill-layer instances may lightly overlap each other (see
+                  // spotlight-scatter.ts); keep the one bright/large primary
+                  // per receiver readable on top of that fog.
+                  zIndex: item.isPrimary ? 1 : 0,
                 }}
                 className="absolute -translate-x-1/2 -translate-y-1/2 whitespace-nowrap font-bold text-white transition-colors duration-200 ease-out hover:text-[#FFEA9E]"
               >
