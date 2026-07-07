@@ -1,7 +1,7 @@
 ---
 title: "F005 — Sun* Kudos Live board"
 description: "Auth-gated /kudos board on the first real Supabase data layer: highlights, spotlight, feed, filters, stats, gifts."
-status: near_complete
+status: complete
 priority: P2
 effort: 20h
 branch: feat/kudos-live-board
@@ -72,10 +72,16 @@ Integration is the single join point.
 Reviewer score: SEALED (0 critical); 2 minor findings fixed during inspection (highlight-carousel
 activeIndex clamp + cursor strict-ISO validation). Both with regression tests.
 
-**Outstanding manual smoke item (deferred to pre-production):** Phase 01 `db push` + `db:seed` ×2
-(idempotency) + anon-key view block verification. SC8 (self-like rejection), SC12 (migrations
-apply), SC4 (keyset load-more), SC1-anon (RLS boundary) require live Supabase. Recommend running
-dev smoke pass before production deployment.
+**DB smoke: PASSED (local + hosted `xfpkhbnwvqwzxvhjhhba`, 2026-07-07).** 5 migrations apply clean;
+`db:seed` idempotent (identical counts on re-run: 4 depts / 3 hashtags / 8 profiles / 12 kudos /
+24 hearts / 10 gifts); signup trigger auto-creates profiles with `full_name`; **anon hard-blocked
+(401) on all 8 tables + 2 views**; authenticated reads the board; **self-like rejected by RLS**
+(SC8), liking others allowed. Two bugs the live smoke caught & fixed: missing DML grants for the
+Supabase roles (`20260706000300_kudos_grants.sql`) and anon base-table SELECT via hosted default
+privileges (`20260706000400_revoke_anon_base_reads.sql`). SC1/SC4/SC8/SC12 now verified live.
+
+**Remaining:** confirm the Google OAuth metadata key (`full_name` vs `name`) at the first real
+sign-in (trigger has a COALESCE fallback either way).
 
 ## Delivery gates
 Compile → tester (100%) → reviewer → project-manager + doc-writer (roadmap/changelog + spec
