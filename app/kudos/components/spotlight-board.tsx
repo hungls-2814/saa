@@ -4,8 +4,9 @@ import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import type { SpotlightNode } from "@/lib/kudos/types";
-import { formatKudosTimestamp } from "./render-helpers";
-import { buildScatterItems } from "./spotlight-scatter";
+import { formatKudosTimestamp, formatTickerTime } from "./render-helpers";
+import { buildActivityTicker } from "./spotlight-activity-ticker";
+import { buildScatterItems, SPOTLIGHT_CANVAS_WIDTH_PX } from "./spotlight-scatter";
 import { SearchIcon } from "./icons";
 import { CollapseIcon, ExpandIcon } from "./icon-controls";
 
@@ -36,17 +37,20 @@ const EXPANDED_ASPECT = "1157 / 822";
  * swirl fading in from the bottom-left corner (composed from this project's
  * own name-free art since the design's isolated background layer has no
  * exportable Figma render; see `public/kudos/spotlight-bg.png`). The
- * live-notification stack shown in the design at that bottom-left position
- * is the deferred realtime feature (clarifications: "no live push"), so it
- * is intentionally not reproduced here. Node click navigates to the kudos
- * detail route stub per the clarified nav-stub rule.
+ * bottom-left "recent activity" ticker shown in the design (e.g. `08:30PM
+ * Nguyễn Bá Chức đã nhận được một Kudos mới`) is reproduced as a **static**
+ * render of the most-recently-received nodes (`buildActivityTicker`) — the
+ * earlier "no live push" clarification only ruled out a realtime feed, not
+ * rendering this text from the data already on the page. Node click
+ * navigates to the kudos detail route stub per the clarified nav-stub rule.
  *
  * The design's word-cloud uses many repeated/rescaled text layers to create
  * density and organic scatter; `buildScatterItems` (spotlight-scatter.ts)
- * reproduces that by deterministically repeating each real receiver's name
- * at several positions/sizes/opacities (seeded by index — no
- * `Math.random`/`Date.now` — so layout is SSR/hydration-stable), with node
- * weight still driving each receiver's primary (largest) instance.
+ * reproduces that with a jittered-grid placement so labels are guaranteed
+ * not to overlap — every instance still carries its real node's identity,
+ * seeded by index (no `Math.random`/`Date.now`) so layout is
+ * SSR/hydration-stable, with node weight still driving each receiver's
+ * primary (largest) instance.
  */
 export function SpotlightBoard({ totalKudos, nodes, onSelectNode }: SpotlightBoardProps) {
   const t = useTranslations("KudosPage.spotlight");
@@ -59,13 +63,21 @@ export function SpotlightBoard({ totalKudos, nodes, onSelectNode }: SpotlightBoa
     if (!q) return scatterItems;
     return scatterItems.filter((item) => item.name.toLowerCase().includes(q));
   }, [scatterItems, search]);
+  const tickerItems = useMemo(() => buildActivityTicker(nodes), [nodes]);
 
   return (
     <div
+      // `containerType: inline-size` turns this panel into a CSS container-query
+      // container so descendant `cqw` units below scale with its *actual*
+      // rendered width — the layout math in spotlight-scatter.ts sizes fonts
+      // against a fixed 1157px canvas, and a raw px value would balloon
+      // relative to the panel (and start overlapping again) once the panel
+      // shrinks below that on narrow viewports.
       className="relative min-h-[360px] w-full overflow-hidden rounded-[47px] border border-[#998C5F] bg-[#00070C] bg-cover bg-center transition-[aspect-ratio] duration-300 ease-out"
       style={{
         aspectRatio: isExpanded ? EXPANDED_ASPECT : COMPACT_ASPECT,
         backgroundImage: "url(/kudos/spotlight-bg.png)",
+        containerType: "inline-size",
       }}
     >
       <div className="absolute inset-0 flex flex-col p-6 sm:p-10">
@@ -100,7 +112,7 @@ export function SpotlightBoard({ totalKudos, nodes, onSelectNode }: SpotlightBoa
                 style={{
                   left: `${item.leftPct}%`,
                   top: `${item.topPct}%`,
-                  fontSize: `${item.fontSize}px`,
+                  fontSize: `${(item.fontSize / SPOTLIGHT_CANVAS_WIDTH_PX) * 100}cqw`,
                   opacity: item.opacity,
                 }}
                 className="absolute -translate-x-1/2 -translate-y-1/2 whitespace-nowrap font-bold text-white transition-colors duration-200 ease-out hover:text-[#FFEA9E]"
@@ -111,6 +123,20 @@ export function SpotlightBoard({ totalKudos, nodes, onSelectNode }: SpotlightBoa
           </div>
         )}
       </div>
+
+      {tickerItems.length > 0 && (
+        <div className="pointer-events-none absolute bottom-6 left-4 flex max-w-[70%] flex-col gap-0.5 sm:bottom-8 sm:left-8">
+          {tickerItems.map((item, index) => (
+            <p
+              key={item.key}
+              style={{ opacity: (index + 1) / tickerItems.length }}
+              className="truncate text-[10px] font-bold text-white sm:text-xs"
+            >
+              {`${formatTickerTime(item.lastReceivedAt)} ${item.name} ${t("activitySuffix")}`}
+            </p>
+          ))}
+        </div>
+      )}
 
       <div className="absolute bottom-4 right-4">
         <button

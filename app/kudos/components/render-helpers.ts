@@ -21,6 +21,20 @@ export function formatKudosTimestamp(iso: string): string {
   return `${hh}:${mm} - ${MM}/${DD}/${YYYY}`;
 }
 
+/** Formats an ISO-8601 timestamp as a 12-hour clock string with no space
+ * before the meridiem, e.g. `08:30PM` (Spotlight Board activity ticker,
+ * design node `3004:15995`). Uses UTC getters for the same SSR/hydration
+ * parity reason as `formatKudosTimestamp`. */
+export function formatTickerTime(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "";
+  const pad = (n: number) => String(n).padStart(2, "0");
+  const hours24 = d.getUTCHours();
+  const period = hours24 >= 12 ? "PM" : "AM";
+  const hours12 = hours24 % 12 === 0 ? 12 : hours24 % 12;
+  return `${pad(hours12)}:${pad(d.getUTCMinutes())}${period}`;
+}
+
 /** "Số hoa thị" — renders the star tier as a string of asterisk glyphs
  * (0 tiers = no glyphs). Never invents a tier beyond the derived 0–3 range. */
 export function starGlyph(tier: StarTier): string {

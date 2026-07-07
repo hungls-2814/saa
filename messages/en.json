@@ -182,7 +182,8 @@
       "searchPlaceholder": "Search",
       "expand": "Expand board",
       "collapse": "Collapse board",
-      "empty": "No Kudos yet."
+      "empty": "No Kudos yet.",
+      "activitySuffix": "just received a new Kudos"
     },
     "feed": {
       "title": "ALL KUDOS",

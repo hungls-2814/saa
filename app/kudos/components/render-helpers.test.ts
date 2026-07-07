@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
   formatKudosTimestamp,
+  formatTickerTime,
   starGlyph,
   formatHeartCount,
   truncateHashtags,
@@ -23,6 +24,25 @@ describe("formatKudosTimestamp", () => {
 
   it("returns an empty string for an invalid timestamp", () => {
     expect(formatKudosTimestamp("not-a-date")).toBe("");
+  });
+});
+
+describe("formatTickerTime", () => {
+  it("formats an evening timestamp as hh:mmPM with no space (e.g. 08:30PM)", () => {
+    expect(formatTickerTime("2025-10-30T20:30:00.000Z")).toBe("08:30PM");
+  });
+
+  it("formats a morning timestamp as hh:mmAM", () => {
+    expect(formatTickerTime("2025-10-30T01:30:00.000Z")).toBe("01:30AM");
+  });
+
+  it("renders noon as 12:00PM and midnight as 12:00AM", () => {
+    expect(formatTickerTime("2025-10-30T12:00:00.000Z")).toBe("12:00PM");
+    expect(formatTickerTime("2025-10-30T00:00:00.000Z")).toBe("12:00AM");
+  });
+
+  it("returns an empty string for an invalid timestamp", () => {
+    expect(formatTickerTime("not-a-date")).toBe("");
   });
 });
 

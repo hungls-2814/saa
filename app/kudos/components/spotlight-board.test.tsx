@@ -59,4 +59,17 @@ describe("SpotlightBoard", () => {
     await user.click(toggle);
     expect(screen.getByRole("button", { name: "collapse" })).toBeInTheDocument();
   });
+
+  it("renders the bottom-left recent-activity ticker as time + name + suffix, from real node data", () => {
+    render(<SpotlightBoard totalKudos={388} nodes={nodes} />);
+    // node "a": 2025-10-30T13:30:00.000Z (UTC) -> 01:30PM
+    expect(screen.getByText("01:30PM Đỗ hoàng Hiệp activitySuffix")).toBeInTheDocument();
+    // node "b": 2025-10-30T20:30:00.000Z (UTC) -> 08:30PM
+    expect(screen.getByText("08:30PM Nguyễn Bá Chức activitySuffix")).toBeInTheDocument();
+  });
+
+  it("renders no ticker rows when there are no nodes", () => {
+    render(<SpotlightBoard totalKudos={0} nodes={[]} />);
+    expect(screen.queryByText(/activitySuffix/)).not.toBeInTheDocument();
+  });
 });

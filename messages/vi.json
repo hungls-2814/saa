@@ -182,7 +182,8 @@
       "searchPlaceholder": "Tìm kiếm",
       "expand": "Mở rộng bảng",
       "collapse": "Thu nhỏ bảng",
-      "empty": "Hiện tại chưa có Kudos nào."
+      "empty": "Hiện tại chưa có Kudos nào.",
+      "activitySuffix": "đã nhận được một Kudos mới"
     },
     "feed": {
       "title": "ALL KUDOS",
