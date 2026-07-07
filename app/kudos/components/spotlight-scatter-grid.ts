@@ -1,11 +1,12 @@
 /**
  * Shared foundation for the Spotlight Board word-cloud layout (FR2,
  * `B.7_Spotlight`): the `ScatterItem` shape, the canvas dimensions the layout
- * math assumes, and the deterministic grid helpers both layers build on.
+ * math assumes, and the deterministic grid helpers the single placement
+ * layer builds on.
  *
  * Kept free of React/JSX and of `Math.random`/`Date.now` so scatter placement
  * is trivially unit-testable and stable across server/client renders. See
- * `spotlight-scatter.ts` for the two-layer (primary + fill) placement model.
+ * `spotlight-scatter.ts` for the single non-overlapping layer model.
  */
 
 /** One rendered instance of a receiver name in the scattered word cloud. */
@@ -24,10 +25,14 @@ export interface ScatterItem {
    * narrow viewports and overlap again. */
   fontSize: number;
   opacity: number;
-  /** True for the one prominent instance per receiver (see module doc
-   * above) — used by callers that need one canonical/collision-free element
-   * per receiver (e.g. tests, z-index layering). */
+  /** True for the first (largest/brightest) instance of each receiver —
+   * used by callers that want one canonical element per receiver on top
+   * (e.g. z-index layering). Every instance, primary or not, is placed by
+   * the same non-overlapping grid; this is a visual-hierarchy flag only. */
   isPrimary: boolean;
+  /** True for exactly one instance across the whole board: the single name
+   * the design renders in red (its top-weight receiver's first instance). */
+  isHighlighted: boolean;
 }
 
 /** The design's own `B.7_Spotlight` box (1157x548) — exported so
@@ -36,6 +41,15 @@ export interface ScatterItem {
  * this file's math assumes. */
 export const SPOTLIGHT_CANVAS_WIDTH_PX = 1157;
 export const SPOTLIGHT_CANVAS_HEIGHT_PX = 548;
+
+/** A rectangle to exclude from placement, in fractions (0-1) of the canvas —
+ * resolution-independent so the same rect works at any grid size. */
+export interface ReservedRect {
+  left: number;
+  top: number;
+  right: number;
+  bottom: number;
+}
 
 /**
  * Deterministic pseudo-random fraction in [0, 1) derived purely from an
@@ -60,14 +74,38 @@ export function seededShuffle<T>(items: readonly T[], seedOffset: number): T[] {
   return arr;
 }
 
+/** Whether a cell centered at fractional `(cx, cy)` (each 0-1) falls inside
+ * any of `reservedRects` — used to keep names off the search box, "N KUDOS"
+ * header, and activity ticker footprints. */
+function isCellReserved(cx: number, cy: number, reservedRects: readonly ReservedRect[]): boolean {
+  return reservedRects.some((r) => cx >= r.left && cx <= r.right && cy >= r.top && cy <= r.bottom);
+}
+
+/** Count of non-reserved cells in a `rows` x `cols` grid. */
+export function countAvailableCells(rows: number, cols: number, reservedRects: readonly ReservedRect[]): number {
+  let count = 0;
+  for (let cellIndex = 0; cellIndex < rows * cols; cellIndex++) {
+    const col = cellIndex % cols;
+    const row = Math.floor(cellIndex / cols);
+    if (!isCellReserved((col + 0.5) / cols, (row + 0.5) / rows, reservedRects)) count++;
+  }
+  return count;
+}
+
 /** Builds a shuffled cell-index order for a `rows` x `cols` grid, excluding
- * the bottom-left `reservedCols` cells of the last row (kept clear for the
- * activity ticker overlay). Shared by both layers so their reservation
- * logic — and the "don't render on top of the ticker" guarantee — stays
- * identical even though the two grids differ in density. */
-export function assignShuffledCells(rows: number, cols: number, reservedCols: number, seedOffset: number): number[] {
-  const isReservedCell = (cellIndex: number) =>
-    Math.floor(cellIndex / cols) === rows - 1 && cellIndex % cols < reservedCols;
-  const availableCells = Array.from({ length: rows * cols }, (_, i) => i).filter((i) => !isReservedCell(i));
+ * every cell whose center falls inside `reservedRects` (the search box,
+ * "N KUDOS" header, and activity-ticker footprints — kept clear so names
+ * never render on top of that chrome). */
+export function assignShuffledCells(
+  rows: number,
+  cols: number,
+  reservedRects: readonly ReservedRect[],
+  seedOffset: number,
+): number[] {
+  const availableCells = Array.from({ length: rows * cols }, (_, i) => i).filter((cellIndex) => {
+    const col = cellIndex % cols;
+    const row = Math.floor(cellIndex / cols);
+    return !isCellReserved((col + 0.5) / cols, (row + 0.5) / rows, reservedRects);
+  });
   return seededShuffle(availableCells, seedOffset);
 }

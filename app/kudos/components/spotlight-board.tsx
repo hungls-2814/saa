@@ -19,6 +19,11 @@ export interface SpotlightBoardProps {
 
 const MAX_SEARCH_LENGTH = 100;
 
+/** The design's own highlight color (`B.7_Spotlight` node `2940:14198`,
+ * fill `rgba(241, 118, 118, 1)`) — applied to exactly one scatter item, the
+ * top-weight receiver's first instance (`ScatterItem.isHighlighted`). */
+const HIGHLIGHT_COLOR = "#F17676";
+
 /** Design's own 1157x548 box (`B.7_Spotlight`) — the compact/default panel
  * size, used to keep the container's aspect ratio faithful across viewport
  * widths. The design only shows this one state; "expanded" (~50% taller,
@@ -46,11 +51,13 @@ const EXPANDED_ASPECT = "1157 / 822";
  *
  * The design's word-cloud uses many repeated/rescaled text layers to create
  * density and organic scatter; `buildScatterItems` (spotlight-scatter.ts)
- * reproduces that with a jittered-grid placement so labels are guaranteed
- * not to overlap — every instance still carries its real node's identity,
- * seeded by index (no `Math.random`/`Date.now`) so layout is
- * SSR/hydration-stable, with node weight still driving each receiver's
- * primary (largest) instance.
+ * reproduces that with a single fine jittered-grid placement so no two
+ * labels — across the whole board — ever overlap, evenly covering the
+ * canvas around the search/header/ticker footprints. Node weight drives
+ * each receiver's first (largest, brightest) instance, and the single
+ * top-weight receiver's first instance renders in the design's highlight
+ * red (`ScatterItem.isHighlighted`). Seeded by index (no
+ * `Math.random`/`Date.now`) so layout is SSR/hydration-stable.
  */
 export function SpotlightBoard({ totalKudos, nodes, onSelectNode }: SpotlightBoardProps) {
   const t = useTranslations("KudosPage.spotlight");
@@ -114,9 +121,10 @@ export function SpotlightBoard({ totalKudos, nodes, onSelectNode }: SpotlightBoa
                   top: `${item.topPct}%`,
                   fontSize: `${(item.fontSize / SPOTLIGHT_CANVAS_WIDTH_PX) * 100}cqw`,
                   opacity: item.opacity,
-                  // Fill-layer instances may lightly overlap each other (see
-                  // spotlight-scatter.ts); keep the one bright/large primary
-                  // per receiver readable on top of that fog.
+                  color: item.isHighlighted ? HIGHLIGHT_COLOR : undefined,
+                  // Every instance is placed by one non-overlapping grid
+                  // (see spotlight-scatter.ts); keep each receiver's first,
+                  // largest instance stacked above its own fainter repeats.
                   zIndex: item.isPrimary ? 1 : 0,
                 }}
                 className="absolute -translate-x-1/2 -translate-y-1/2 whitespace-nowrap font-bold text-white transition-colors duration-200 ease-out hover:text-[#FFEA9E]"

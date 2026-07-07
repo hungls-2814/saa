@@ -7,10 +7,21 @@ const nodes: SpotlightNode[] = [
   { receiverId: "b", name: "Nguyễn Bá Chức", weight: 20, lastReceivedAt: "2025-10-30T20:30:00.000Z" },
 ];
 
+/** Builds `count` synthetic nodes cycling through `names` — used to exercise
+ * realistic/large receiver lists without inventing production data. */
+function manyNodes(count: number, names: string[] = ["Nguyễn Hoàng Linh"]): SpotlightNode[] {
+  return Array.from({ length: count }, (_, i) => ({
+    receiverId: `r${i}`,
+    name: names[i % names.length],
+    weight: (i % 6) + 1,
+    lastReceivedAt: new Date(2025, 9, 30, 10, i).toISOString(),
+  }));
+}
+
 /** Estimated bounding box for a rendered label — the same estimate the
- * layout algorithm itself uses to cap the primary layer's font size (see
- * spotlight-scatter.ts: CHAR_WIDTH_FACTOR / LINE_HEIGHT_FACTOR), so this is
- * the objective pass/fail check for "prominent names must not overlap". */
+ * layout algorithm itself uses to cap every instance's font size (see
+ * spotlight-scatter-layers.ts: CHAR_WIDTH_FACTOR / LINE_HEIGHT_FACTOR), so
+ * this is the objective pass/fail check for "no two names ever overlap". */
 function boundingBoxOf(item: ScatterItem, canvasWidthPx = 1157, canvasHeightPx = 548) {
   const boxWidth = item.name.length * item.fontSize * 0.7;
   const boxHeight = item.fontSize * 1.6;
@@ -28,6 +39,18 @@ function intersects(a: ReturnType<typeof boundingBoxOf>, b: ReturnType<typeof bo
   return a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top;
 }
 
+/** Asserts no two items' estimated bounding boxes intersect, across every
+ * rendered instance — the core guarantee of the single non-overlapping
+ * layer (not just a "primary" subset, as the prior two-layer model had). */
+function expectNoOverlaps(items: ScatterItem[], canvasWidthPx = 1157, canvasHeightPx = 548) {
+  const boxes = items.map((item) => boundingBoxOf(item, canvasWidthPx, canvasHeightPx));
+  for (let i = 0; i < boxes.length; i++) {
+    for (let j = i + 1; j < boxes.length; j++) {
+      expect(intersects(boxes[i], boxes[j])).toBe(false);
+    }
+  }
+}
+
 describe("buildScatterItems", () => {
   it("returns no items for an empty node list", () => {
     expect(buildScatterItems([])).toEqual([]);
@@ -40,7 +63,7 @@ describe("buildScatterItems", () => {
     expect(items.filter((i) => i.receiverId === "b")).toHaveLength(3);
   });
 
-  it("marks exactly one primary instance per node, first in order", () => {
+  it("marks exactly one primary (first) instance per node", () => {
     const items = buildScatterItems(nodes, 4);
     const aItems = items.filter((i) => i.receiverId === "a");
     expect(aItems[0].isPrimary).toBe(true);
@@ -56,7 +79,7 @@ describe("buildScatterItems", () => {
     }
   });
 
-  it("scales the primary instance by weight (heavier node renders larger + more opaque)", () => {
+  it("scales the first instance by weight (heavier node renders larger + more opaque)", () => {
     const items = buildScatterItems(nodes, 1);
     const heavy = items.find((i) => i.receiverId === "a")!;
     const light = items.find((i) => i.receiverId === "b")!;
@@ -64,12 +87,10 @@ describe("buildScatterItems", () => {
     expect(heavy.opacity).toBeGreaterThan(light.opacity);
   });
 
-  it("fades later repeats relative to the primary instance and never exceeds its font size", () => {
+  it("fades later repeats relative to the first instance and never exceeds its font size", () => {
     const items = buildScatterItems([nodes[0]], 3);
     expect(items[1].opacity).toBeLessThan(items[0].opacity);
     expect(items[2].opacity).toBeLessThan(items[1].opacity);
-    // Font size is capped by cell size (see boundingBoxOf), so later repeats
-    // are never *larger* than the primary even when the cap binds equally.
     expect(items[1].fontSize).toBeLessThanOrEqual(items[0].fontSize);
     expect(items[2].fontSize).toBeLessThanOrEqual(items[1].fontSize);
   });
@@ -85,74 +106,50 @@ describe("buildScatterItems", () => {
   });
 
   it("is deterministic across repeated calls with the same input (SSR/hydration-stable)", () => {
-    const first = buildScatterItems(nodes, 4);
-    const second = buildScatterItems(nodes, 4);
-    expect(second).toEqual(first);
+    expect(buildScatterItems(nodes, 4)).toEqual(buildScatterItems(nodes, 4));
   });
 
   it("uses distinct React keys for every instance", () => {
     const items = buildScatterItems(nodes, 4);
-    const keys = new Set(items.map((i) => i.key));
-    expect(keys.size).toBe(items.length);
+    expect(new Set(items.map((i) => i.key)).size).toBe(items.length);
   });
 
   it("caps total density so a large receiver list doesn't shrink into illegibility", () => {
-    const manyNodes: SpotlightNode[] = Array.from({ length: 40 }, (_, i) => ({
-      receiverId: `r${i}`,
-      name: "Nguyễn Văn Quy",
-      weight: (i % 5) + 1,
-      lastReceivedAt: new Date(2025, 9, 30, 10, i).toISOString(),
-    }));
-    const items = buildScatterItems(manyNodes, 4);
-    // Every receiver still gets at least its primary instance...
+    const items = buildScatterItems(manyNodes(40, ["Nguyễn Văn Quy"]), 4);
+    // Every receiver still gets at least its first instance...
     expect(new Set(items.map((i) => i.receiverId)).size).toBe(40);
-    // ...but repeats are trimmed well below 4x40 to keep the fill layer readable.
+    // ...but repeats are trimmed well below 4x40 to keep the cloud readable.
     expect(items.length).toBeLessThan(40 * 4);
   });
 
-  describe("word-cloud texture: dense fog of small names + a few prominent ones", () => {
+  describe("small, dense word-cloud texture", () => {
     it("renders a dense cloud (~80-120 instances) for a realistic receiver count", () => {
-      // Mirrors the production seed data shape: a handful of distinct
-      // receivers (see scripts/seed-kudos-data.ts) — the design tiles these
-      // repeatedly to fake density rather than inventing more names.
-      const sevenNodes: SpotlightNode[] = Array.from({ length: 7 }, (_, i) => ({
-        receiverId: `r${i}`,
-        name: "Nguyễn Hoàng Linh",
-        weight: (i % 5) + 1,
-        lastReceivedAt: new Date(2025, 9, 30, 10, i).toISOString(),
-      }));
-      const items = buildScatterItems(sevenNodes);
+      // Mirrors the production seed data shape (see scripts/seed-kudos-data.ts):
+      // a handful of distinct receivers, tiled repeatedly to fake density
+      // rather than inventing more names.
+      const items = buildScatterItems(manyNodes(7));
       expect(items.length).toBeGreaterThanOrEqual(80);
       expect(items.length).toBeLessThanOrEqual(120);
     });
 
-    it("makes fill instances dominate the cloud and stay small/faint", () => {
-      const items = buildScatterItems(nodes);
-      const fill = items.filter((i) => !i.isPrimary);
-      const primaries = items.filter((i) => i.isPrimary);
-      // Fill instances vastly outnumber the two primaries.
-      expect(fill.length).toBeGreaterThan(primaries.length * 5);
-      for (const item of fill) {
-        expect(item.fontSize).toBeLessThanOrEqual(13);
-        expect(item.opacity).toBeLessThanOrEqual(0.5);
+    it("keeps every instance within the 11-18px design-scale font range", () => {
+      for (const item of buildScatterItems(nodes)) {
+        expect(item.fontSize).toBeGreaterThanOrEqual(11);
+        expect(item.fontSize).toBeLessThanOrEqual(18);
       }
     });
 
-    it("makes primary instances distinctly larger and brighter than any fill instance", () => {
-      const items = buildScatterItems(nodes);
-      const fill = items.filter((i) => !i.isPrimary);
-      const primaries = items.filter((i) => i.isPrimary);
-      const maxFillFont = Math.max(...fill.map((i) => i.fontSize));
-      const maxFillOpacity = Math.max(...fill.map((i) => i.opacity));
-      for (const primary of primaries) {
-        expect(primary.fontSize).toBeGreaterThan(maxFillFont);
-        expect(primary.opacity).toBeGreaterThan(maxFillOpacity);
+    it("makes the first instance distinctly larger and brighter than its own later repeats", () => {
+      const [first, ...repeats] = buildScatterItems([nodes[0]], 5);
+      for (const repeat of repeats) {
+        expect(repeat.fontSize).toBeLessThanOrEqual(first.fontSize);
+        expect(repeat.opacity).toBeLessThan(first.opacity);
       }
     });
   });
 
-  describe("no-overlap guarantee for the prominent (primary) layer", () => {
-    it("never intersects two primary-instance bounding boxes at realistic density", () => {
+  describe("no-overlap guarantee across the whole board", () => {
+    it("never intersects any two instances' bounding boxes at realistic density", () => {
       const names = [
         "Nguyễn Văn Quy",
         "Nguyễn Bá Chức",
@@ -162,31 +159,31 @@ describe("buildScatterItems", () => {
         "Lê Kiều Trang",
         "Nguyễn Hoàng Linh",
       ];
-      const manyNodes: SpotlightNode[] = Array.from({ length: 14 }, (_, i) => ({
-        receiverId: `r${i}`,
-        name: names[i % names.length],
-        weight: (i % 6) + 1,
-        lastReceivedAt: new Date(2025, 9, 30, 10, i * 5).toISOString(),
-      }));
-
-      const items = buildScatterItems(manyNodes);
-      const boxes = items.filter((i) => i.isPrimary).map((item) => boundingBoxOf(item));
-
-      for (let i = 0; i < boxes.length; i++) {
-        for (let j = i + 1; j < boxes.length; j++) {
-          expect(intersects(boxes[i], boxes[j])).toBe(false);
-        }
-      }
+      expectNoOverlaps(buildScatterItems(manyNodes(14, names)));
     });
 
     it("never intersects at a custom canvas size", () => {
-      const items = buildScatterItems(nodes, 5, 800, 400);
-      const boxes = items.filter((i) => i.isPrimary).map((item) => boundingBoxOf(item, 800, 400));
-      for (let i = 0; i < boxes.length; i++) {
-        for (let j = i + 1; j < boxes.length; j++) {
-          expect(intersects(boxes[i], boxes[j])).toBe(false);
-        }
-      }
+      expectNoOverlaps(buildScatterItems(nodes, 5, 800, 400), 800, 400);
+    });
+
+    it("never intersects even a large receiver list packed to the density cap", () => {
+      expectNoOverlaps(buildScatterItems(manyNodes(40), 4));
+    });
+  });
+
+  describe("single highlighted (red) instance", () => {
+    it("marks exactly one instance as highlighted, on the top-weight receiver's first instance", () => {
+      const items = buildScatterItems(nodes, 6);
+      const highlighted = items.filter((i) => i.isHighlighted);
+      expect(highlighted).toHaveLength(1);
+      expect(highlighted[0].receiverId).toBe("a"); // node "a" has the higher weight (42 vs 20)
+      expect(highlighted[0].isPrimary).toBe(true);
+    });
+
+    it("stays deterministic (same node highlighted) across repeated calls", () => {
+      const first = buildScatterItems(nodes, 6).find((i) => i.isHighlighted);
+      const second = buildScatterItems(nodes, 6).find((i) => i.isHighlighted);
+      expect(second?.receiverId).toBe(first?.receiverId);
     });
   });
 });
