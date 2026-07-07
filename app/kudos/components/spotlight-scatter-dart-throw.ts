@@ -19,8 +19,8 @@ import {
 /** Smallest/largest font any instance may render at. Most instances land
  * near the low end (small, dense "fog"); only the highest-weight node's
  * first instance can reach the top end. */
-export const FONT_MIN_PX = 11;
-export const FONT_MAX_PX = 18;
+export const FONT_MIN_PX = 9;
+export const FONT_MAX_PX = 15;
 
 /** Glyph width / line-height as a fraction of font-size, for *estimating*
  * (never rendering) a label's box — calibrated against real
@@ -53,10 +53,15 @@ const FONT_SHRINK_STEPS = 6;
 const SEARCH_BOX_RESERVED: ReservedRect = { left: 0, top: 0, right: 0.22, bottom: 0.15 };
 const KUDOS_HEADER_RESERVED: ReservedRect = { left: 0.32, top: 0, right: 0.68, bottom: 0.15 };
 const ACTIVITY_TICKER_RESERVED: ReservedRect = { left: 0, top: 0.82, right: 0.52, bottom: 1 };
+/** Left strip kept clear so the background swirl art (which lives down the
+ * left edge of `spotlight-bg.png`) stays visible — biases the whole cloud
+ * rightward so names don't cover it. */
+const LEFT_SWIRL_RESERVED: ReservedRect = { left: 0, top: 0, right: 0.12, bottom: 1 };
 const RESERVED_RECTS: readonly ReservedRect[] = [
   SEARCH_BOX_RESERVED,
   KUDOS_HEADER_RESERVED,
   ACTIVITY_TICKER_RESERVED,
+  LEFT_SWIRL_RESERVED,
 ];
 
 /** One (node, repeat) unit awaiting placement. */

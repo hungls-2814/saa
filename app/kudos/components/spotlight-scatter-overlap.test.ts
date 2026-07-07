@@ -76,9 +76,11 @@ describe("buildScatterItems", () => {
       // let any single 2%-wide band hold more than a small minority.
       expect(maxSharedBucket(lefts, 2)).toBeLessThan(items.length * 0.25);
       expect(maxSharedBucket(tops, 2)).toBeLessThan(items.length * 0.25);
-      // Distinct rounded values should be close to the item count — a grid
-      // would repeat the same handful of rounded centers across many items.
-      expect(new Set(lefts.map((v) => Math.round(v))).size).toBeGreaterThan(items.length * 0.6);
+      // Distinct rounded values should be a large fraction of the item count
+      // — a grid would repeat the same handful of rounded centers across many
+      // items (≈0.13 here). The bar is below 0.6 because the left-swirl
+      // reserve narrows the horizontal band names spread across.
+      expect(new Set(lefts.map((v) => Math.round(v))).size).toBeGreaterThan(items.length * 0.45);
     });
   });
 });

@@ -83,10 +83,10 @@ describe("buildScatterItems", () => {
       expect(items.length).toBeLessThanOrEqual(120);
     });
 
-    it("keeps every instance within the 11-18px design-scale font range", () => {
+    it("keeps every instance within the 9-15px design-scale font range", () => {
       for (const item of buildScatterItems(nodes)) {
-        expect(item.fontSize).toBeGreaterThanOrEqual(11);
-        expect(item.fontSize).toBeLessThanOrEqual(18);
+        expect(item.fontSize).toBeGreaterThanOrEqual(9);
+        expect(item.fontSize).toBeLessThanOrEqual(15);
       }
     });
 
