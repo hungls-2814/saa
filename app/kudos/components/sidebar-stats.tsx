@@ -21,8 +21,8 @@ export function SidebarStats({ stats }: { stats: PerUserStats }) {
     <div className="flex w-full flex-col gap-4 rounded-[17px] border border-[#998C5F] bg-[#00070C] p-6">
       {rows.map((row) => (
         <div key={row.key} className="flex items-center justify-between gap-2">
-          <span className="text-right text-lg font-bold text-white">{row.label}</span>
-          <span className="text-2xl font-bold text-[#FFEA9E]">{stats[row.key]}</span>
+          <span className="text-right text-[22px] font-bold text-white">{row.label}</span>
+          <span className="text-[32px] font-bold text-[#FFEA9E]">{stats[row.key]}</span>
         </div>
       ))}
     </div>

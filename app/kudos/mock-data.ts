@@ -11,13 +11,19 @@ import type {
  * MoMorph design (Sun* Kudos - Live board, `MaZUn5xHXZ`) — sender/receiver
  * names, department codes, honorific titles, content, hashtags, spotlight
  * names, stats and gift rows all come from the design's own sample content.
- * No photos are attached (`avatarUrl: ""`); cards render an initials
- * fallback instead of inventing stock avatar images.
+ * Avatars use a stable `pravatar.cc` placeholder per person/gift (seeded by
+ * name slug) so `Avatar` (see `components/avatar.tsx`) has something to
+ * render in standalone/mock/test contexts — real Sunners get their actual
+ * `avatar_url` from Supabase via Track B's query layer.
  *
  * Track B's real query layer produces the same `BoardData` shape from
  * Supabase — this file only exists so the presentational components can be
  * developed/previewed without a backend.
  */
+
+function pravatarUrl(seed: string): string {
+  return `https://i.pravatar.cc/150?u=${seed}`;
+}
 
 const hashtags: HashtagRef[] = [
   { id: "dedicated", label: "Dedicated" },
@@ -31,11 +37,12 @@ function person(
   title: string,
   starTier: KudosPerson["starTier"],
 ): KudosPerson {
+  const slug = fullName.toLowerCase().replace(/\s+/g, "-");
   return {
-    id: fullName.toLowerCase().replace(/\s+/g, "-"),
+    id: slug,
     fullName,
     department: "CECV10",
-    avatarUrl: "",
+    avatarUrl: pravatarUrl(slug),
     title,
     starTier,
   };
@@ -100,11 +107,11 @@ export const mockSpotlightNodes = [
 ];
 
 export const mockGifts = [
-  { id: "gift-1", recipientName: "Huỳnh Dương Xuân", recipientAvatarUrl: "", description: "Nhận được 1 áo phông SAA", awardedAt: "2025-10-30T20:30:00.000Z" },
-  { id: "gift-2", recipientName: "Huỳnh Dương Xuân", recipientAvatarUrl: "", description: "Nhận được 1 áo phông SAA", awardedAt: "2025-10-30T19:10:00.000Z" },
-  { id: "gift-3", recipientName: "Huỳnh Dương Xuân", recipientAvatarUrl: "", description: "Nhận được 1 áo phông SAA", awardedAt: "2025-10-30T18:00:00.000Z" },
-  { id: "gift-4", recipientName: "Huỳnh Dương Xuân", recipientAvatarUrl: "", description: "Nhận được 1 áo phông SAA", awardedAt: "2025-10-30T17:40:00.000Z" },
-  { id: "gift-5", recipientName: "Huỳnh Dương Xuân", recipientAvatarUrl: "", description: "Nhận được 1 áo phông SAA", awardedAt: "2025-10-30T16:25:00.000Z" },
+  { id: "gift-1", recipientName: "Huỳnh Dương Xuân", recipientAvatarUrl: pravatarUrl("gift-1"), description: "Nhận được 1 áo phông SAA", awardedAt: "2025-10-30T20:30:00.000Z" },
+  { id: "gift-2", recipientName: "Huỳnh Dương Xuân", recipientAvatarUrl: pravatarUrl("gift-2"), description: "Nhận được 1 áo phông SAA", awardedAt: "2025-10-30T19:10:00.000Z" },
+  { id: "gift-3", recipientName: "Huỳnh Dương Xuân", recipientAvatarUrl: pravatarUrl("gift-3"), description: "Nhận được 1 áo phông SAA", awardedAt: "2025-10-30T18:00:00.000Z" },
+  { id: "gift-4", recipientName: "Huỳnh Dương Xuân", recipientAvatarUrl: pravatarUrl("gift-4"), description: "Nhận được 1 áo phông SAA", awardedAt: "2025-10-30T17:40:00.000Z" },
+  { id: "gift-5", recipientName: "Huỳnh Dương Xuân", recipientAvatarUrl: pravatarUrl("gift-5"), description: "Nhận được 1 áo phông SAA", awardedAt: "2025-10-30T16:25:00.000Z" },
 ];
 
 /** Full mock `BoardData` payload — matches the design's sample values

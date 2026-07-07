@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { KudosPerson as KudosPersonType } from "@/lib/kudos/types";
-import { initialsOf, starGlyph } from "./render-helpers";
+import { starGlyph } from "./render-helpers";
+import { Avatar } from "./avatar";
 
 /**
  * Sender/receiver identity block used inside a Kudos card: avatar (initials
@@ -16,12 +17,7 @@ export function KudosPersonInfo({ person }: { person: KudosPersonType }) {
   return (
     <div className="flex flex-col items-center gap-2 text-center">
       <Link href={`/sunners/${person.id}`} aria-label={person.fullName}>
-        <span
-          aria-hidden
-          className="flex size-16 items-center justify-center rounded-full border-[1.87px] border-white bg-[#EEE] text-lg font-bold text-[#00101A]"
-        >
-          {initialsOf(person.fullName)}
-        </span>
+        <Avatar name={person.fullName} avatarUrl={person.avatarUrl} />
       </Link>
       <div className="flex flex-col items-center gap-0.5">
         <Link

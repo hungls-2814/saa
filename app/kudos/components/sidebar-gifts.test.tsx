@@ -23,8 +23,20 @@ describe("SidebarGifts", () => {
     expect(screen.getByText("empty")).toBeInTheDocument();
   });
 
-  it("renders an initials fallback avatar per gift row", () => {
+  it("renders an initials fallback avatar per gift row when recipientAvatarUrl is empty", () => {
     render(<SidebarGifts gifts={gifts} />);
     expect(screen.getByText("HX")).toBeInTheDocument();
+  });
+
+  it("renders the recipient photo when recipientAvatarUrl is set", () => {
+    const withPhoto: GiftItem[] = [
+      { ...gifts[0], recipientAvatarUrl: "https://i.pravatar.cc/150?u=xuan" },
+    ];
+    const { container } = render(<SidebarGifts gifts={withPhoto} />);
+    expect(container.querySelector("img")).toHaveAttribute(
+      "src",
+      "https://i.pravatar.cc/150?u=xuan",
+    );
+    expect(screen.queryByText("HX")).not.toBeInTheDocument();
   });
 });

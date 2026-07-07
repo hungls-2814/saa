@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import type { GiftItem } from "@/lib/kudos/types";
-import { initialsOf } from "./render-helpers";
+import { Avatar } from "./avatar";
 
 /**
  * "10 SUNNER NHẬN QUÀ MỚI NHẤT" sidebar list (FR6): the caller passes an
@@ -12,8 +12,8 @@ export function SidebarGifts({ gifts }: { gifts: GiftItem[] }) {
   const t = useTranslations("KudosPage.gifts");
 
   return (
-    <div className="flex w-full flex-col gap-4 rounded-[17px] border border-[#998C5F] bg-[#00070C] p-6">
-      <h3 className="whitespace-pre-line text-center text-xl font-bold leading-7 text-[#FFEA9E]">
+    <div className="flex w-full flex-col gap-4 rounded-[17px] border border-[#998C5F] bg-[#00070C] py-6 pl-6 pr-4">
+      <h3 className="whitespace-pre-line text-center text-[22px] font-bold leading-7 text-[#FFEA9E]">
         {t("title")}
       </h3>
 
@@ -23,15 +23,10 @@ export function SidebarGifts({ gifts }: { gifts: GiftItem[] }) {
         <ul className="flex flex-col gap-4">
           {gifts.map((gift) => (
             <li key={gift.id} className="flex items-center gap-2">
-              <span
-                aria-hidden
-                className="flex size-16 shrink-0 items-center justify-center rounded-full border-[1.87px] border-white bg-[#EEE] text-sm font-bold text-[#00101A]"
-              >
-                {initialsOf(gift.recipientName)}
-              </span>
+              <Avatar name={gift.recipientName} avatarUrl={gift.recipientAvatarUrl} textSizeClassName="text-sm" />
               <div className="flex flex-col gap-0.5">
-                <p className="text-lg font-bold text-[#FFEA9E]">{gift.recipientName}</p>
-                <p className="text-base font-bold text-white">{gift.description}</p>
+                <p className="text-[22px] font-bold leading-7 text-[#FFEA9E]">{gift.recipientName}</p>
+                <p className="text-base font-bold tracking-[0.15px] text-white">{gift.description}</p>
               </div>
             </li>
           ))}
