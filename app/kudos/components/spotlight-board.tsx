@@ -85,7 +85,11 @@ export function SpotlightBoard({ totalKudos, nodes, onSelectNode }: SpotlightBoa
       className="relative min-h-[360px] w-full overflow-hidden rounded-[47px] border border-[#998C5F] bg-[#00070C] bg-cover bg-center transition-[aspect-ratio] duration-300 ease-out"
       style={{
         aspectRatio: isExpanded ? EXPANDED_ASPECT : COMPACT_ASPECT,
-        backgroundImage: "url(/kudos/spotlight-bg.png)",
+        // Two stacked layers: the plexus/constellation overlay (white lines +
+        // triangles on black) screened over the swirl base — `screen` drops
+        // the overlay's black so only the mesh lightens the art beneath it.
+        backgroundImage: "url(/kudos/spotlight-bg-over.png), url(/kudos/spotlight-bg.png)",
+        backgroundBlendMode: "screen",
         containerType: "inline-size",
       }}
     >
