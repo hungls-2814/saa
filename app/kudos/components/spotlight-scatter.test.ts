@@ -74,13 +74,11 @@ describe("buildScatterItems", () => {
   });
 
   describe("small, dense word-cloud texture", () => {
-    it("renders a dense cloud (~80-120 instances) for a realistic receiver count", () => {
-      // Mirrors the production seed data shape (see scripts/seed-kudos-data.ts):
-      // a handful of distinct receivers, tiled repeatedly to fake density
-      // rather than inventing more names.
+    it("renders each receiver exactly once by default (no repeated names)", () => {
+      // Product decision: names are not tiled — one instance per receiver.
       const items = buildScatterItems(manyNodes(7));
-      expect(items.length).toBeGreaterThanOrEqual(80);
-      expect(items.length).toBeLessThanOrEqual(120);
+      expect(items).toHaveLength(7);
+      expect(new Set(items.map((i) => i.receiverId)).size).toBe(7);
     });
 
     it("keeps every instance within the 9-15px design-scale font range", () => {

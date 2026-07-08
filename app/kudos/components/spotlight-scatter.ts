@@ -11,13 +11,14 @@ import {
  * Kept free of React/JSX so scatter placement is trivially unit-testable and
  * stable across server/client renders (no `Math.random`/`Date.now`).
  *
- * The design's cloud reads as a dense fog: many tiny repeats of each
- * receiver name scattered organically across the whole canvas, with the one
- * highest-weight receiver's first instance standing out larger and in the
- * design's highlight red. Every instance — not just one per node — is
- * placed by the single dart-throwing, non-overlapping layer in
- * `spotlight-scatter-layers.ts`, built on the shared primitives in
- * `spotlight-scatter-grid.ts`.
+ * Each receiver appears EXACTLY ONCE on the board (per product decision —
+ * names are not tiled/repeated). Instances are scattered organically across
+ * the whole canvas by the dart-throwing, non-overlapping layer in
+ * `spotlight-scatter-layers.ts` (built on the shared primitives in
+ * `spotlight-scatter-grid.ts`); the one highest-weight receiver renders
+ * larger and in the design's highlight red. The engine still accepts a
+ * higher `repeatsPerNode` (exercised by unit tests), but production defaults
+ * to one instance per receiver.
  */
 
 // Re-exported so consumers (`spotlight-board.tsx`, `spotlight-scatter.test.ts`)
@@ -25,8 +26,9 @@ import {
 export type { ScatterItem };
 export { SPOTLIGHT_CANVAS_WIDTH_PX, SPOTLIGHT_CANVAS_HEIGHT_PX };
 
-/** Total instances per node, before the density cap below. */
-const DEFAULT_REPEATS_PER_NODE = 14;
+/** One instance per receiver — each name appears exactly once (product
+ * decision). The engine supports more via an explicit `repeatsPerNode`. */
+const DEFAULT_REPEATS_PER_NODE = 1;
 /** Absolute ceiling on total rendered instances across all nodes — keeps a
  * large receiver list from blowing up the DOM, while comfortably covering
  * the design's ~80-120 instance target for a realistic (~7-20 receiver)
