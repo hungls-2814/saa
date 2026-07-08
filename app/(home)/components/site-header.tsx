@@ -32,7 +32,7 @@ export async function SiteHeader({
 
   return (
     <header className="absolute inset-x-0 top-0 z-20 flex h-20 items-center bg-[rgba(16,20,23,0.8)]">
-      <div className="mx-auto flex w-full max-w-[1512px] items-center justify-between px-6 py-3 sm:px-10 lg:px-36">
+      <div className="mx-auto flex w-full max-w-[1440px] items-center justify-between px-6 py-3 sm:px-10 lg:px-36">
         <div className="flex items-center gap-16">
           <Link href="/" aria-label={t("nav.aboutSaa")}>
             <Image

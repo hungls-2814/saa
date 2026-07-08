@@ -24,7 +24,10 @@ a route guard.
       rewired from `/awards-information` to `/he-thong-giai(#slug)`
 - [x] F004 — `/prelaunch` countdown page + pre-launch redirect gate (`proxy.ts`): every
       route locks to the countdown until `NEXT_PUBLIC_EVENT_DATETIME`, then unlocks to `/`
-- [ ] `/kudos` — Sun* Kudos detail page
+- [x] F005 — `/kudos` Sun* Kudos Live board — auth-gated, first Supabase Postgres data layer
+      (migrations + RLS + seed script); implementation + tests complete. Manual DB smoke
+      (`supabase db push` + `db:seed` + anon-view REST check) still pending before production
+      — no DB creds available at implementation time.
 - [ ] `/standards` — footer "Tiêu chuẩn chung" target page
 - [ ] Real Todo feature (data model, CRUD, persistence) behind the existing guard
 - [ ] Roles/permissions layer, if per-user authorization becomes necessary

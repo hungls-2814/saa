@@ -3,6 +3,55 @@
 All notable changes to this project are recorded here. Format loosely follows
 [Keep a Changelog](https://keepachangelog.com/); dates are `YYYY-MM-DD`.
 
+## Unreleased — F005: Sun* Kudos Live board (`/kudos`)
+
+Auth-gated page presenting a live-feeling board of SAA 2025 Kudos — the first feature backed
+by a real Supabase Postgres data layer (previously auth-only). Built to the MoMorph spec
+(screen `MaZUn5xHXZ`). Static SSR on each load (no realtime).
+
+### Added
+- **Kudos board page** (`app/kudos/**`) — top banner + filter bar, highlight carousel (top-5
+  by heart count), spotlight receiver word-cloud, paged "all kudos" feed (10 cards/page via a
+  manual "Xem thêm" button, keyset pagination on `created_at desc, id desc`), hashtag +
+  department filters (AND-combined), per-user stats sidebar, top-10 recent-gift-recipients
+  sidebar, like toggle, copy-link.
+- **First Supabase Postgres data layer** (`supabase/migrations/`) — tables `departments`,
+  `profiles`, `kudos`, `hashtags`, `kudos_hashtags`, `kudos_images`, `hearts`, `gifts`; views
+  `kudos_with_heart_count` and `profile_kudos_stats` (`security_invoker=true`, revoked from
+  `anon`); RLS on every table; self-like blocked; self-kudos blocked via CHECK; `profiles`
+  populated by a `handle_new_user()` signup trigger.
+- **Query/action layer** (`lib/kudos/`) — `queries.ts` (SSR board data + lookups), `actions.ts`
+  (Server Actions: `toggleHeart`, `loadMoreFeed`, `applyFilters`), pure helpers (star-tier,
+  cursor encode/decode, filter descriptor, card mapping), shared `types.ts`.
+- **Seed script** (`scripts/seed-kudos*.ts`, `npm run db:seed`) — service-role, idempotent.
+- **Route guard** — `proxy.ts` `PROTECTED_PATHS` now `["/he-thong-giai", "/kudos"]`;
+  defense-in-depth `getUser()` → `redirect("/login")` in `app/kudos/page.tsx`.
+- **New env** — `SUPABASE_SERVICE_ROLE_KEY` (server/tooling-only, seed script only).
+- **VN/EN i18n** — new `KudosPage` namespace in `messages/{vi,en}.json`.
+
+### Changed (design-fidelity pass)
+- **Spotlight font scale** — word-cloud names resized to the design's own text nodes
+  (`FONT_MIN_PX`/`FONT_MAX_PX` 9–15 → 6.7–11.3 on the 1157px canvas).
+- **Sidebar stats** — added the design's two Secret Box counter rows (`D.1.6` "Số Secret Box
+  bạn đã mở", `D.1.7` "Số Secret Box chưa mở") + divider; `PerUserStats` gains
+  `secretBoxOpened`/`secretBoxUnopened` (0 from the real query — no Secret Box source yet).
+- **All-Kudos feed** — replaced auto `IntersectionObserver` scroll-load with a user-triggered
+  "Xem thêm" button so the page footer stays reachable; `DEFAULT_FEED_LIMIT` 20 → 10.
+
+### Tests
+- 499 tests pass; reviewer sealed the implementation.
+
+### Notes
+- **Deferred to a follow-up session:** live `supabase db push` + `db:seed` (×2, idempotency
+  check) + an anon-role REST check against the two views — no DB credentials were available
+  this session, so this is a documented manual smoke step before production deploy.
+- Out of scope this iteration (present in the design): 2nd rank-up leaderboard, Secret Box
+  "Mở quà" dialog, compose-Kudos dialog, special-day +2 hearts, realtime/polling,
+  user-profile & kudos-detail pages (link stubs only).
+- See `docs/features/F005-kudos-live-board/overview.md` for the full feature spec, and
+  `docs/system/architecture.md` / `docs/system/permissions.md` for the updated stack,
+  directory shape, and guard matrix.
+
 ## 0.2.1 — 2026-07-06 — Header dropdowns: language selector & account menu design alignment
 
 Design polish to two existing header dropdowns, aligning UI presentation to MoMorph specs. All

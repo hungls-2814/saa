@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { LanguageSelector } from "./language-selector";
-import type { Locale } from "@/i18n/config";
 
 // Mock next-intl (useLocale)
 vi.mock("next-intl", () => ({
@@ -21,9 +20,15 @@ vi.mock("@/lib/i18n/set-locale", () => ({
   setLocale: vi.fn(async () => {}),
 }));
 
+interface ImageProps {
+  src: string;
+  alt: string;
+  className?: string;
+}
+
 // Mock next/image
 vi.mock("next/image", () => ({
-  default: ({ src, alt, className }: any) => (
+  default: ({ src, alt, className }: ImageProps) => (
     <img src={src} alt={alt} className={className} />
   ),
 }));

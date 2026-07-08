@@ -18,7 +18,7 @@ export async function SiteFooter() {
 
   return (
     <footer className="w-full border-t border-[#2E3940] bg-[#00101A]">
-      <div className="mx-auto flex w-full max-w-[1512px] flex-col items-center gap-6 px-6 py-10 sm:flex-row sm:justify-between sm:px-10 lg:px-[90px]">
+      <div className="mx-auto flex w-full max-w-[1440px] flex-col items-center gap-6 px-6 py-10 sm:flex-row sm:justify-between sm:px-10 lg:px-[90px]">
         <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-12">
           <Link href="/" aria-label={t("aboutSaa")}>
             <Image
