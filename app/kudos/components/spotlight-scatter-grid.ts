@@ -64,14 +64,23 @@ export interface PxBox {
 }
 
 /**
- * Deterministic pseudo-random fraction in [0, 1) derived purely from an
- * integer seed. Never uses `Math.random`/`Date.now` so the same `nodes`
- * input always scatters identically — required for SSR/hydration parity
- * and for unit tests to assert exact positions.
+ * Deterministic pseudo-random fraction in [0, 1) derived purely from a seed.
+ * Uses integer math only (mulberry32) — NO `Math.sin`/`Math.random`/`Date.now`.
+ * This matters for SSR: `Math.sin` is not required to be bit-identical across
+ * V8 builds, so the old sin-based hash produced slightly different scatter
+ * coordinates on the Node server vs the browser client and triggered React
+ * hydration mismatches once the board was dense. Integer ops (`Math.imul` +
+ * shifts) are identical on every platform.
+ *
+ * Callers pass `seed` and `seed + 0.5` to get two independent values from one
+ * integer; `Math.round(seed * 2)` folds that into distinct integers (2n and
+ * 2n+1) before hashing, preserving that idiom without a truncating collision.
  */
 export function seededFraction(seed: number): number {
-  const x = Math.sin(seed * 12.9898) * 43758.5453123;
-  return x - Math.floor(x);
+  let t = (Math.round(seed * 2) | 0) + 0x6d2b79f5;
+  t = Math.imul(t ^ (t >>> 15), t | 1);
+  t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+  return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
 }
 
 /** Whether two px boxes overlap — the structural no-overlap test, shared by
