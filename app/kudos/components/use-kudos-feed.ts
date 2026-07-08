@@ -12,11 +12,11 @@ export interface UseKudosFeedOptions {
 }
 
 /**
- * Infinite-scroll load-more for the `/kudos` "ALL KUDOS" feed (FR3,
- * Integration Phase 06). Owns only the in-flight guard — the scroll
- * sentinel in `AllKudosFeed` can fire `onLoadMore` more than once in quick
- * succession (fast scroll, re-observed sentinel), so a ref-based flag drops
- * any call that arrives while a fetch is still pending.
+ * Button-driven load-more for the `/kudos` "ALL KUDOS" feed (FR3,
+ * Integration Phase 06). Owns only the in-flight guard — a rapid double-click
+ * on the "Xem thêm" button in `AllKudosFeed` can fire `onLoadMore` twice
+ * before state updates, so a ref-based flag drops any call that arrives while
+ * a fetch is still pending.
  */
 export function useKudosFeed({ onAppend, onError }: UseKudosFeedOptions) {
   const inFlight = useRef(false);

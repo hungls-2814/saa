@@ -198,6 +198,8 @@
       "received": "Số Kudos bạn nhận được:",
       "sent": "Số Kudos bạn đã gửi:",
       "heartsReceived": "Số tim bạn nhận được:",
+      "secretBoxOpened": "Số Secret Box bạn đã mở:",
+      "secretBoxUnopened": "Số Secret Box chưa mở:",
       "openSecretBox": "Mở Secret Box"
     },
     "gifts": {

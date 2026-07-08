@@ -11,9 +11,10 @@ by a real Supabase Postgres data layer (previously auth-only). Built to the MoMo
 
 ### Added
 - **Kudos board page** (`app/kudos/**`) — top banner + filter bar, highlight carousel (top-5
-  by heart count), spotlight receiver word-cloud, infinite-scroll "all kudos" feed (keyset
-  pagination on `created_at desc, id desc`), hashtag + department filters (AND-combined),
-  per-user stats sidebar, top-10 recent-gift-recipients sidebar, like toggle, copy-link.
+  by heart count), spotlight receiver word-cloud, paged "all kudos" feed (10 cards/page via a
+  manual "Xem thêm" button, keyset pagination on `created_at desc, id desc`), hashtag +
+  department filters (AND-combined), per-user stats sidebar, top-10 recent-gift-recipients
+  sidebar, like toggle, copy-link.
 - **First Supabase Postgres data layer** (`supabase/migrations/`) — tables `departments`,
   `profiles`, `kudos`, `hashtags`, `kudos_hashtags`, `kudos_images`, `hearts`, `gifts`; views
   `kudos_with_heart_count` and `profile_kudos_stats` (`security_invoker=true`, revoked from
@@ -28,8 +29,17 @@ by a real Supabase Postgres data layer (previously auth-only). Built to the MoMo
 - **New env** — `SUPABASE_SERVICE_ROLE_KEY` (server/tooling-only, seed script only).
 - **VN/EN i18n** — new `KudosPage` namespace in `messages/{vi,en}.json`.
 
+### Changed (design-fidelity pass)
+- **Spotlight font scale** — word-cloud names resized to the design's own text nodes
+  (`FONT_MIN_PX`/`FONT_MAX_PX` 9–15 → 6.7–11.3 on the 1157px canvas).
+- **Sidebar stats** — added the design's two Secret Box counter rows (`D.1.6` "Số Secret Box
+  bạn đã mở", `D.1.7` "Số Secret Box chưa mở") + divider; `PerUserStats` gains
+  `secretBoxOpened`/`secretBoxUnopened` (0 from the real query — no Secret Box source yet).
+- **All-Kudos feed** — replaced auto `IntersectionObserver` scroll-load with a user-triggered
+  "Xem thêm" button so the page footer stays reachable; `DEFAULT_FEED_LIMIT` 20 → 10.
+
 ### Tests
-- 461 tests pass; reviewer sealed the implementation.
+- 499 tests pass; reviewer sealed the implementation.
 
 ### Notes
 - **Deferred to a follow-up session:** live `supabase db push` + `db:seed` (×2, idempotency

@@ -22,7 +22,7 @@ const EMPTY_BOARD_DATA: BoardData = {
   feed: [],
   feedNextCursor: null,
   spotlight: { totalKudos: 0, nodes: [] },
-  stats: { kudosReceived: 0, kudosSent: 0, heartsReceived: 0 },
+  stats: { kudosReceived: 0, kudosSent: 0, heartsReceived: 0, secretBoxOpened: 0, secretBoxUnopened: 0 },
   gifts: [],
   hashtags: [],
   departments: [],

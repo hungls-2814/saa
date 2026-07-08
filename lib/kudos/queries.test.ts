@@ -213,7 +213,13 @@ describe('getPerUserStats', () => {
 
     expect(mockFrom).toHaveBeenCalledWith('profile_kudos_stats');
     expect(statsBuilder.eq).toHaveBeenCalledWith('profile_id', 'u1');
-    expect(result).toEqual({ kudosReceived: 7, kudosSent: 3, heartsReceived: 15 });
+    expect(result).toEqual({
+      kudosReceived: 7,
+      kudosSent: 3,
+      heartsReceived: 15,
+      secretBoxOpened: 0,
+      secretBoxUnopened: 0,
+    });
   });
 
   it('defaults to zeros when no stats row exists', async () => {
@@ -221,7 +227,13 @@ describe('getPerUserStats', () => {
     mockTables({ profile_kudos_stats: statsBuilder });
 
     const result = await getPerUserStats('u1');
-    expect(result).toEqual({ kudosReceived: 0, kudosSent: 0, heartsReceived: 0 });
+    expect(result).toEqual({
+      kudosReceived: 0,
+      kudosSent: 0,
+      heartsReceived: 0,
+      secretBoxOpened: 0,
+      secretBoxUnopened: 0,
+    });
   });
 });
 
@@ -330,7 +342,13 @@ describe('getBoardData', () => {
     expect(result.feed).toEqual([]);
     expect(result.feedNextCursor).toBeNull();
     expect(result.spotlight).toEqual({ totalKudos: 0, nodes: [] });
-    expect(result.stats).toEqual({ kudosReceived: 0, kudosSent: 0, heartsReceived: 0 });
+    expect(result.stats).toEqual({
+      kudosReceived: 0,
+      kudosSent: 0,
+      heartsReceived: 0,
+      secretBoxOpened: 0,
+      secretBoxUnopened: 0,
+    });
     expect(result.gifts).toEqual([]);
     expect(result.hashtags).toEqual([]);
     expect(result.departments).toEqual([]);

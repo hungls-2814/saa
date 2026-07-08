@@ -198,6 +198,8 @@
       "received": "Kudos you received:",
       "sent": "Kudos you sent:",
       "heartsReceived": "Hearts you received:",
+      "secretBoxOpened": "Secret Boxes you opened:",
+      "secretBoxUnopened": "Unopened Secret Boxes:",
       "openSecretBox": "Open Secret Box"
     },
     "gifts": {

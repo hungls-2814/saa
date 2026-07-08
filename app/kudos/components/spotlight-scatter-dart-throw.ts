@@ -16,11 +16,13 @@ import {
  * never line up into visible rows or columns.
  */
 
-/** Smallest/largest font any instance may render at. Most instances land
- * near the low end (small, dense "fog"); only the highest-weight node's
- * first instance can reach the top end. */
-export const FONT_MIN_PX = 9;
-export const FONT_MAX_PX = 15;
+/** Smallest/largest font any instance may render at, taken straight from the
+ * design's own `B.7_Spotlight` text nodes (same 1157px canvas): the common
+ * name renders at ~6.66px, the single highlight ("Nguyễn Hoàng Linh") at
+ * ~11.34px. Most instances land near the low end (small, dense "fog"); only
+ * the highest-weight node's first instance can reach the top end. */
+export const FONT_MIN_PX = 6.7;
+export const FONT_MAX_PX = 11.3;
 
 /** Glyph width / line-height as a fraction of font-size, for *estimating*
  * (never rendering) a label's box — calibrated against real

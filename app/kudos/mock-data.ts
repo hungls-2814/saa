@@ -115,7 +115,7 @@ export const mockGifts = [
 ];
 
 /** Full mock `BoardData` payload — matches the design's sample values
- * (388 total kudos, 25/25/25 sidebar stats). */
+ * (388 total kudos, 25/25/25 + 25/25 secret-box sidebar stats). */
 export const mockBoardData: BoardData = {
   highlights: mockHighlights,
   feed: mockFeed,
@@ -128,6 +128,8 @@ export const mockBoardData: BoardData = {
     kudosReceived: 25,
     kudosSent: 25,
     heartsReceived: 25,
+    secretBoxOpened: 25,
+    secretBoxUnopened: 25,
   },
   gifts: mockGifts,
   hashtags,

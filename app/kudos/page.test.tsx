@@ -73,7 +73,7 @@ describe("KudosPage guard (SC1: /kudos auth gate, defense-in-depth)", () => {
       feed: [],
       feedNextCursor: null,
       spotlight: { totalKudos: 0, nodes: [] },
-      stats: { kudosReceived: 0, kudosSent: 0, heartsReceived: 0 },
+      stats: { kudosReceived: 0, kudosSent: 0, heartsReceived: 0, secretBoxOpened: 0, secretBoxUnopened: 0 },
       gifts: [],
       hashtags: [],
       departments: [],

@@ -70,6 +70,10 @@ export async function getPerUserStats(userId: string): Promise<PerUserStats> {
     kudosReceived: row?.received_count ?? 0,
     kudosSent: row?.sent_count ?? 0,
     heartsReceived: row?.hearts_received ?? 0,
+    // Secret Box has no data source on this board yet (out-of-scope feature);
+    // the design rows still render, backed by 0 until a source exists.
+    secretBoxOpened: 0,
+    secretBoxUnopened: 0,
   };
 }
 

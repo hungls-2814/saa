@@ -68,6 +68,11 @@ export interface PerUserStats {
   kudosReceived: number;
   kudosSent: number;
   heartsReceived: number;
+  /** Secret Boxes opened / still unopened (design rows `D.1.6`/`D.1.7`).
+   * The Secret Box feature has no data source on this board yet, so the real
+   * query returns 0 for both; they render for design fidelity. */
+  secretBoxOpened: number;
+  secretBoxUnopened: number;
 }
 
 /** A recent gift recipient row for the "Top 10 nhận quà mới nhất" list (FR6). */

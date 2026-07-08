@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 import type { KudosCard as KudosCardType } from "@/lib/kudos/types";
 import { KudosCard } from "./kudos-card";
@@ -16,10 +15,11 @@ export interface AllKudosFeedProps {
 }
 
 /**
- * "ALL KUDOS" feed (FR3): newest-first cards with infinite scroll. An
- * IntersectionObserver sentinel calls `onLoadMore` once it enters view (the
- * caller owns the actual keyset fetch); a visible "load more" button is kept
- * as an accessible/testable fallback for the same action.
+ * "ALL KUDOS" feed (FR3): newest-first cards paged by an explicit "Xem thêm"
+ * button. Each click asks the caller for the next keyset page (`onLoadMore`)
+ * and appends it. Loading is user-driven — never auto-triggered on scroll —
+ * so the page stops growing on its own and the footer stays reachable no
+ * matter how many kudos exist.
  */
 export function AllKudosFeed({
   feed,
@@ -30,19 +30,6 @@ export function AllKudosFeed({
   onSelectHashtag,
 }: AllKudosFeedProps) {
   const t = useTranslations("KudosPage.feed");
-  const sentinelRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!hasMore || !onLoadMore) return;
-    const el = sentinelRef.current;
-    if (!el || typeof IntersectionObserver === "undefined") return;
-
-    const observer = new IntersectionObserver((entries) => {
-      if (entries.some((entry) => entry.isIntersecting)) onLoadMore();
-    });
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [hasMore, onLoadMore]);
 
   if (feed.length === 0) {
     return <p className="w-full py-12 text-center text-base text-white/70">{t("empty")}</p>;
@@ -62,7 +49,7 @@ export function AllKudosFeed({
       ))}
 
       {hasMore && (
-        <div ref={sentinelRef} className="flex justify-center py-4">
+        <div className="flex justify-center py-4">
           <button
             type="button"
             onClick={() => onLoadMore?.()}

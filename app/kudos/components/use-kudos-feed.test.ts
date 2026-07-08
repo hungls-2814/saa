@@ -79,7 +79,7 @@ describe("useKudosFeed", () => {
     expect(onError).toHaveBeenCalledTimes(1);
   });
 
-  it("drops a second call while the first is still in flight (sentinel double-fire guard)", async () => {
+  it("drops a second call while the first is still in flight (double-click guard)", async () => {
     let resolveFirst: (value: { ok: true; items: KudosCard[]; nextCursor: string | null }) => void;
     mockLoadMoreFeedAction.mockImplementationOnce(
       () =>

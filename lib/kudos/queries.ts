@@ -15,7 +15,7 @@ import { getDepartments, getHashtags, getPerUserStats, getSpotlight, getTopGifts
 export { getSenderStats } from './queries-internal';
 export { getSpotlight, getPerUserStats, getTopGifts, getHashtags, getDepartments } from './queries-lookups';
 
-const DEFAULT_FEED_LIMIT = 20;
+const DEFAULT_FEED_LIMIT = 10;
 
 /** FR1: top-5 kudos by `heart_count` over the whole event. */
 export async function getHighlights(opts: {
