@@ -1,0 +1,52 @@
+name: CD
+
+# Deploys to Vercel (Production). Chained off the CI workflow: it only runs
+# after CI completes on main, and only deploys if that CI run passed — so a
+# failing lint/typecheck/test never reaches production.
+#
+# Required repo secrets: VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID
+# See docs/setup/vercel-deployment.md for how to obtain them.
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+
+concurrency:
+  group: cd-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy to Vercel (Production)
+    # Guard: only deploy when the triggering CI run succeeded.
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # workflow_run defaults to the default branch; pin to the exact commit CI validated.
+          ref: ${{ github.event.workflow_run.head_sha }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Vercel CLI
+        run: npm i -g vercel@latest
+
+      - name: Pull Vercel environment
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy
+        run: |
+          url=$(vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }})
+          echo "$url"
+          echo "### 🚀 Production deployment" >> "$GITHUB_STEP_SUMMARY"
+          echo "$url" >> "$GITHUB_STEP_SUMMARY"

@@ -140,6 +140,8 @@ and `plans/**` (agent-kit tooling and workspace artifacts, not application sourc
 - `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` (client-safe). Template in `.env.local.example`.
 - `SUPABASE_SERVICE_ROLE_KEY` (server/tooling-only — **never** `NEXT_PUBLIC_`) — used solely by
   `scripts/seed-kudos*.ts` to seed the Postgres data layer; the app itself never reads it at runtime.
+- `SUPABASE_ACCESS_TOKEN`, `SUPABASE_DB_PASSWORD` (local Supabase CLI only — not read by the app or
+  at build time) — let `supabase link` / `db push` run non-interactively. See `docs/setup/supabase-migrations.md`.
 - Supabase dashboard: Google provider enabled; redirect + site URLs whitelisted. See `docs/setup/supabase-google-oauth.md`.
 - `NEXT_PUBLIC_EVENT_DATETIME` (client-safe, ISO-8601) — the SAA 2025 launch moment. Drives three
   things: the homepage hero countdown, the pre-launch redirect gate (`proxy.ts`), and the
