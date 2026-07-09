@@ -64,17 +64,29 @@ grant delete on kudos to authenticated; -- own-row only (RLS "delete own kudos")
 
 -- 4. Storage bucket for kudos images ------------------------------------------
 -- Public-read bucket (served via public object URLs); authenticated users upload.
--- NB: on hosted Supabase the storage.objects policies below require the migration
--- role to own storage.objects — if `supabase db push` errors here, apply this
--- block via the SQL editor. The local CLI stack (superuser) applies it directly.
-insert into storage.buckets (id, name, public)
-values ('kudos-images', 'kudos-images', true)
-on conflict (id) do nothing;
+-- Wrapped in a DO block that is idempotent (duplicate_object → skip) AND tolerant
+-- of hosted Supabase's storage.objects ownership: if the migration role can't
+-- create policies on storage.objects (insufficient_privilege), the block raises a
+-- notice and the migration still succeeds — the critical public-schema DDL above
+-- (columns/grants/RLS that unblock compose) is never rolled back by a storage
+-- ownership quirk. Create the bucket/policies via Supabase Studio if skipped.
+do $$
+begin
+  insert into storage.buckets (id, name, public)
+  values ('kudos-images', 'kudos-images', true)
+  on conflict (id) do nothing;
 
-create policy "authenticated upload kudos images" on storage.objects
-  for insert to authenticated
-  with check (bucket_id = 'kudos-images');
+  begin
+    create policy "authenticated upload kudos images" on storage.objects
+      for insert to authenticated with check (bucket_id = 'kudos-images');
+  exception when duplicate_object then null;
+  end;
 
-create policy "public read kudos images" on storage.objects
-  for select to public
-  using (bucket_id = 'kudos-images');
+  begin
+    create policy "public read kudos images" on storage.objects
+      for select to public using (bucket_id = 'kudos-images');
+  exception when duplicate_object then null;
+  end;
+exception when insufficient_privilege then
+  raise notice 'kudos-images storage bucket/policies skipped (insufficient privilege) — create them via the Supabase Studio SQL editor / Storage dashboard';
+end $$;
