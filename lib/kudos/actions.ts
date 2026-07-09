@@ -76,14 +76,18 @@ export async function toggleHeartAction(kudosId: string): Promise<ToggleHeartRes
     liked = true;
   }
 
-  const { count, error: countError } = await supabase
-    .from('hearts')
-    .select('*', { count: 'exact', head: true })
-    .eq('kudos_id', kudosId);
+  // F005 increment: heart_count is a weighted SUM (special-day likes count as
+  // +2), so the post-mutate read goes through the view instead of a raw
+  // COUNT on `hearts`.
+  const { data: row, error: countError } = await supabase
+    .from('kudos_with_heart_count')
+    .select('heart_count')
+    .eq('id', kudosId)
+    .single();
   if (countError) return { ok: false, error: 'unknown' };
 
   revalidatePath('/kudos');
-  return { ok: true, liked, heartCount: count ?? 0 };
+  return { ok: true, liked, heartCount: row?.heart_count ?? 0 };
 }
 
 /**

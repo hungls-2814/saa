@@ -26,6 +26,7 @@ import {
   upsertKudos,
   upsertKudosHashtags,
   upsertKudosImages,
+  upsertSpecialDays,
 } from "./seed-kudos-domain";
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -47,6 +48,7 @@ async function main(): Promise<void> {
 
   const departmentIds = await upsertDepartments(supabase);
   const hashtagIds = await upsertHashtags(supabase);
+  await upsertSpecialDays(supabase);
 
   const profileIds: Record<string, string> = {};
   for (const sunner of SUNNERS) {

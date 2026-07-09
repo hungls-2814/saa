@@ -75,7 +75,7 @@ describe('toggleHeartAction', () => {
       .fn()
       .mockReturnValueOnce(createQueryMock({ data: null, error: null })) // existence lookup
       .mockReturnValueOnce(createQueryMock({ data: null, error: null })) // insert
-      .mockReturnValueOnce(createQueryMock({ data: null, error: null, count: 4 })); // count
+      .mockReturnValueOnce(createQueryMock({ data: { heart_count: 4 }, error: null })); // weighted count
     mockCreateClient.mockResolvedValue(authedSupabase(from) as never);
 
     const result = await toggleHeartAction(KUDOS_ID);
@@ -93,7 +93,7 @@ describe('toggleHeartAction', () => {
       .fn()
       .mockReturnValueOnce(createQueryMock({ data: { user_id: USER_ID }, error: null })) // existence lookup
       .mockReturnValueOnce(createQueryMock({ data: null, error: null })) // delete
-      .mockReturnValueOnce(createQueryMock({ data: null, error: null, count: 0 })); // count
+      .mockReturnValueOnce(createQueryMock({ data: { heart_count: 0 }, error: null })); // weighted count
     mockCreateClient.mockResolvedValue(authedSupabase(from) as never);
 
     const result = await toggleHeartAction(KUDOS_ID);
@@ -125,7 +125,7 @@ describe('toggleHeartAction', () => {
       .mockReturnValueOnce(
         createQueryMock({ data: null, error: { code: '23505', message: 'duplicate key' } }),
       ) // insert
-      .mockReturnValueOnce(createQueryMock({ data: null, error: null, count: 2 })); // count
+      .mockReturnValueOnce(createQueryMock({ data: { heart_count: 2 }, error: null })); // weighted count
     mockCreateClient.mockResolvedValue(authedSupabase(from) as never);
 
     const result = await toggleHeartAction(KUDOS_ID);
@@ -184,7 +184,7 @@ describe('toggleHeartAction', () => {
       .mockReturnValueOnce(createQueryMock({ data: null, error: null })) // insert
       .mockReturnValueOnce(
         createQueryMock({ data: null, error: { code: '500', message: 'count failed' } }),
-      ); // count
+      ); // weighted count
     mockCreateClient.mockResolvedValue(authedSupabase(from) as never);
 
     const result = await toggleHeartAction(KUDOS_ID);
