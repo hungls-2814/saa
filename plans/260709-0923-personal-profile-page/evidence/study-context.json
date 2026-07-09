@@ -1,0 +1,34 @@
+{
+  "task": "F008 — Personal Profile page (/profile): own-profile, auth-gated server component composing region A (identity header via getMyProfileHeader), region B stats (reused SidebarStats + getPerUserStats), regions C+D kudos list with Sent/Received toggle (reused read-only KudosCard, new getKudosByUser). Secret Box + icon collection deferred (static placeholders); Spam tag omitted. MoMorph screen 3FoIx6ALVb.",
+  "mode": "interactive",
+  "acceptanceCriteria": [
+    "SC1 /profile unauthenticated redirects to /login (proxy guard + page redirect); authenticated renders regions A/B/C/D",
+    "SC2 Sent/Received toggle flips the kudos list with correct per-direction counts and shows a direction-specific empty state; default is sent",
+    "SC3 profile kudos cards are read-only: hearts count + copy-link shown, no like handler (onToggleLike never passed)",
+    "SC4 Secret Box and icon collection are deferred static placeholders (0 counts, inert Mở Secret Box button, 6 gray locked icons) and the Spam tag is omitted",
+    "SC5 getKudosByUser filters sender_id for sent and receiver_id for received; getMyProfileHeader is null-safe for a brand-new user",
+    "SC6 typecheck, lint, and the full vitest suite are green with no regressions; no new migration; every new file under 200 lines"
+  ],
+  "touchpoints": [
+    "app/profile/page.tsx",
+    "app/profile/components/profile-header.tsx",
+    "app/profile/components/profile-kudos-section.tsx",
+    "lib/kudos/queries-profile.ts",
+    "proxy.ts",
+    "app/(home)/components/site-header.tsx",
+    "messages/en.json",
+    "messages/vi.json"
+  ],
+  "blastRadius": [
+    "proxy.ts PROTECTED_PATHS gains /profile — middleware route-guard path",
+    "site-header.tsx NavKey union gains 'profile' — shared header consumed by every page",
+    "messages/{en,vi}.json gain ProfilePage namespace — i18n parity surface",
+    "reuse of SidebarStats/KudosCard/SectionHeader/Avatar/HeroBadgeImage/mapRowsToCards — unchanged, read-only reuse"
+  ],
+  "contracts": [
+    "getKudosByUser({ userId, direction }) => Promise<KudosCard[]>",
+    "getMyProfileHeader(userId) => Promise<ProfileHeaderData>",
+    "ProfileHeader props { fullName, avatarUrl, department, starTier, heroBadge }",
+    "ProfileKudosSection props { sent: KudosCard[], received: KudosCard[] }"
+  ]
+}

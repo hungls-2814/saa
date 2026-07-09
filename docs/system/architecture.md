@@ -31,6 +31,7 @@ Browser → proxy.ts (pre-launch gate → session refresh + route guard) → rou
   /               : public homepage, renders regardless of auth (header UI adapts)
   /he-thong-giai  : unauthenticated → /login (PROTECTED_PATHS); else render (defense-in-depth getUser() in page)
   /kudos          : unauthenticated → /login (PROTECTED_PATHS); else render (defense-in-depth getUser() in page)
+  /profile        : unauthenticated → /login (PROTECTED_PATHS); else render own-profile page (defense-in-depth getUser() in page)
   /home           : always → redirect("/") (convenience alias for older/typed links)
   /prelaunch      : public countdown "coming soon" gate (F004); no auth required
 OAuth: login button → signInWithOAuth(google, redirectTo=/auth/callback)
@@ -40,8 +41,8 @@ OAuth: login button → signInWithOAuth(google, redirectTo=/auth/callback)
 except `_next/*`, static assets, and `/auth/*` (the callback runs its own code exchange). The
 pre-launch gate (`isBeforeLaunch`, `lib/event/countdown.ts`) is checked FIRST, before the
 Supabase session refresh — while the countdown is running it overrides every auth guard below.
-`PROTECTED_PATHS = ["/he-thong-giai", "/kudos"]` — `/kudos` (F005) is the second authenticated-only
-route; see `docs/system/permissions.md` for the full guard matrix.
+`PROTECTED_PATHS = ["/he-thong-giai", "/kudos", "/profile"]` — `/profile` (F008) is the third
+authenticated-only route; see `docs/system/permissions.md` for the full guard matrix.
 
 ## Directory shape
 ```
@@ -76,6 +77,12 @@ app/
                                # hero-badge-image.tsx (F007): renders the Hero badge (New/Rising/
                                # Super/Legend) on kudos-person.tsx's name pill, replacing the
                                # honorific `title` pill
+  profile/                   # Personal Profile page (F008) — auth-gated, own-profile only, renders at `/profile`
+    page.tsx                  # server component; getUser() → redirect("/login"); Promise.all over
+                               # getMyProfileHeader/getPerUserStats/getKudosByUser(×2), empty fallback on failure
+    components/                # profile-header.tsx (region A: avatar, name, star tier, Hero badge,
+                               # static gray icon-collection row), profile-kudos-section.tsx
+                               # (regions C+D: Sent/Received toggle + read-only KudosCard list)
   components/                 # shared cross-feature components (e.g. language-selector.tsx,
                                # countdown-unit.tsx — LED digits + minute-tick clock shared by
                                # the homepage hero and prelaunch countdowns)
@@ -92,6 +99,9 @@ lib/kudos/                    # F005 query/logic layer: queries.ts (SSR board da
                                # pure helpers (star-tier, cursor encode/decode, filter, map-card), types.ts
                                # F007: hero-badge.ts (pure fn: distinct-sender-count → New/Rising/
                                # Super/Legend tier), wired via queries-internal.ts + map-card.ts
+                               # F008: queries-profile.ts — getMyProfileHeader() + getKudosByUser()
+                               # (sibling of queries.ts, not merged into it; reuses buildCardSelect/
+                               # mapRowsToCards from queries-internal.ts, no pagination)
                                # F006 compose write-path: compose-actions.ts (Server Action
                                # `createKudoAction` — inserts kudos + hashtags + images, compensating
                                # delete-own-kudos rollback on partial failure, revalidatePath('/kudos'));

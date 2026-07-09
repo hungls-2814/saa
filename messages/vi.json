@@ -214,6 +214,20 @@
       "secretBoxComingSoon": "Tính năng Secret Box sẽ sớm ra mắt."
     }
   },
+  "ProfilePage": {
+    "title": "Trang cá nhân",
+    "awardsEyebrow": "Sun* Annual Awards 2025",
+    "kudosTitle": "KUDOS",
+    "toggle": {
+      "sent": "Đã gửi ({count})",
+      "received": "Đã nhận ({count})"
+    },
+    "iconCollection": "Bộ sưu tập icon của tôi",
+    "empty": {
+      "sent": "Bạn chưa gửi Kudos nào.",
+      "received": "Bạn chưa nhận Kudos nào."
+    }
+  },
   "ComposeKudos": {
     "title": "Gửi lời cám ơn và ghi nhận đến đồng đội",
     "recipientLabel": "Người nhận",

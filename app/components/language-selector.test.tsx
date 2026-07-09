@@ -199,7 +199,7 @@ describe("LanguageSelector", () => {
       expect(svg).toBeInTheDocument();
     });
 
-    it("renders VN flag as image", async () => {
+    it("renders VN flag as inline SVG (no raster, so the star is never cropped)", async () => {
       const user = userEvent.setup();
       render(<LanguageSelector />);
       const button = screen.getByRole("button", { name: /EN/i });
@@ -207,8 +207,10 @@ describe("LanguageSelector", () => {
       await user.click(button);
       const options = screen.getAllByRole("option");
       const vnOption = options[0]; // VI is first in SUPPORTED_LOCALES
-      const img = vnOption.querySelector('img[src*="vn-flag"]');
-      expect(img).toBeInTheDocument();
+      // The VN flag is now an inline SVG (red field + centered yellow star),
+      // consistent with the EN flag — not a distorted 28x28 raster.
+      expect(vnOption.querySelector("svg")).toBeInTheDocument();
+      expect(vnOption.querySelector('img[src*="vn-flag"]')).not.toBeInTheDocument();
     });
 
     it("trigger button renders EN flag as SVG", () => {

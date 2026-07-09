@@ -214,6 +214,20 @@
       "secretBoxComingSoon": "Secret Box is coming soon."
     }
   },
+  "ProfilePage": {
+    "title": "My Profile",
+    "awardsEyebrow": "Sun* Annual Awards 2025",
+    "kudosTitle": "KUDOS",
+    "toggle": {
+      "sent": "Sent ({count})",
+      "received": "Received ({count})"
+    },
+    "iconCollection": "My icon collection",
+    "empty": {
+      "sent": "You haven't sent any Kudos yet.",
+      "received": "You haven't received any Kudos yet."
+    }
+  },
   "ComposeKudos": {
     "title": "Send thanks and recognition to your teammate",
     "recipientLabel": "Recipient",

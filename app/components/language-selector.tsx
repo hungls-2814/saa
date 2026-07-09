@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useId, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
@@ -104,22 +103,30 @@ export function LanguageSelector() {
 }
 
 /**
- * Locale flag chip (24×16). VN uses the design's flag asset; EN renders an inline
- * SVG Union Jack (no binary asset), per the MoMorph design.
+ * Locale flag chip (24×16). Both flags are inline SVGs (no binary asset), per the
+ * MoMorph design. VN was previously a 28×28 square raster forced into the 3:2 chip
+ * with object-cover, which cropped the centered star's top/bottom points — the SVG
+ * renders the full flag at the correct ratio with no crop.
  */
 function LocaleFlag({ locale }: { locale: Locale }) {
-  if (locale === "vi") {
-    return (
-      <Image
-        src="/login/icons/vn-flag.png"
-        alt=""
-        width={24}
-        height={16}
-        className="h-4 w-6 shrink-0 rounded-[2px] object-cover"
+  return locale === "vi" ? <VnFlag /> : <GbFlag />;
+}
+
+/**
+ * Inline Vietnam flag (3:2, node …178:1010): red field (#DA251D) with a centered
+ * yellow five-pointed star (#FFFF00), rendered as a 24×16 flag chip. Star geometry:
+ * center (15,10), outer radius 6, inner 2.4 — a clean, fully-visible star.
+ */
+function VnFlag() {
+  return (
+    <svg viewBox="0 0 30 20" className="h-4 w-6 shrink-0 rounded-[2px]" aria-hidden>
+      <rect width="30" height="20" rx="2" fill="#DA251D" />
+      <path
+        d="M15,4 L16.41,8.06 L20.71,8.15 L17.28,10.74 L18.53,14.85 L15,12.4 L11.47,14.85 L12.72,10.74 L9.29,8.15 L13.59,8.06 Z"
+        fill="#FFFF00"
       />
-    );
-  }
-  return <GbFlag />;
+    </svg>
+  );
 }
 
 /**

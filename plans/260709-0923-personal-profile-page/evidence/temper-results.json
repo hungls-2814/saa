@@ -1,0 +1,25 @@
+{
+  "commands": [
+    {
+      "command": "npm run test",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "67 test files, 825 tests passed. Includes F008 (queries-profile 8, profile-header 6, profile-kudos-section 5, page 4) + proxy /profile guard (2) + updated language-selector VN-flag SVG test. Fresh run at ship time after the visual fixes (profile-header padding/keyvisual, VN flag SVG, logo blend).",
+      "ts": "2026-07-09T15:07:30.000Z"
+    },
+    {
+      "command": "npm run typecheck",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "tsc --noEmit: 0 errors",
+      "ts": "2026-07-09T15:07:00.000Z"
+    },
+    {
+      "command": "npm run lint",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "eslint: 0 errors (15 pre-existing warnings in unrelated files, none in the profile/header/footer/language-selector changes)",
+      "ts": "2026-07-09T15:07:15.000Z"
+    }
+  ]
+}

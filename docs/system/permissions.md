@@ -19,14 +19,17 @@ launch. See `docs/features/F004-countdown-prelaunch/overview.md` and
 ## Access tiers (this iteration)
 | Tier | Meaning | Routes |
 |------|---------|--------|
-| Anonymous | No valid Supabase session | `/login`, `/` (public); `/he-thong-giai`, `/kudos` → redirect `/login` |
-| Authenticated | Valid Supabase session | `/`, `/he-thong-giai`, `/kudos` (+ future app routes); `/login` → `/` |
+| Anonymous | No valid Supabase session | `/login`, `/` (public); `/he-thong-giai`, `/kudos`, `/profile` → redirect `/login` |
+| Authenticated | Valid Supabase session | `/`, `/he-thong-giai`, `/kudos`, `/profile` (+ future app routes); `/login` → `/` |
 
 No finer-grained roles yet — add a roles table + policy layer when per-user authorization is needed.
-The homepage (`/`) is public for everyone; `/he-thong-giai` (Awards System detail page, F003) and
-`/kudos` (Sun* Kudos Live board, F005) both require authentication. `/kudos` additionally reads
-from Supabase Postgres, where Row Level Security requires the `authenticated` role on every table
-read (see `docs/features/F005-kudos-live-board/overview.md`).
+The homepage (`/`) is public for everyone; `/he-thong-giai` (Awards System detail page, F003),
+`/kudos` (Sun* Kudos Live board, F005), and `/profile` (own-profile page, F008) all require
+authentication. `/kudos` and `/profile` additionally read from Supabase Postgres, where Row Level
+Security requires the `authenticated` role on every table read (see
+`docs/features/F005-kudos-live-board/overview.md`). `/profile` reads no new tables/views — only
+existing `profiles`, `profile_kudos_stats`, and `kudos_with_heart_count` reads already covered by
+F005/F006/F007 RLS policies, scoped to the caller's own `userId`.
 
 ## Route guard matrix
 | Route | Anonymous | Authenticated |
@@ -34,15 +37,18 @@ read (see `docs/features/F005-kudos-live-board/overview.md`).
 | `/` | render homepage (public) | render homepage, header adds notification bell + account menu |
 | `/he-thong-giai` | redirect `/login` | render |
 | `/kudos` | redirect `/login` | render |
+| `/profile` | redirect `/login` | render (own profile only) |
 | `/login` | render login | redirect `/` |
 | `/home` | redirect `/` (alias, unconditional) | redirect `/` (alias, unconditional) |
 | `/auth/callback` | exchange code → validated redirect (default `/`) | (same) |
 | `/prelaunch` | render countdown page (public) | render countdown page (same, public) |
 
-`/` is public — no guard in `proxy.ts`. `/he-thong-giai` and `/kudos` are `PROTECTED_PATHS`:
-unauthenticated requests are redirected to `/login` by `proxy.ts`, with a defense-in-depth
-`getUser()` → `redirect("/login")` check in each page itself (`app/he-thong-giai/page.tsx`,
-`app/kudos/page.tsx`). The homepage reads the Supabase user server-side (`getUser()`) purely to
+`/` is public — no guard in `proxy.ts`. `/he-thong-giai`, `/kudos`, and `/profile` are
+`PROTECTED_PATHS`: unauthenticated requests are redirected to `/login` by `proxy.ts`, with a
+defense-in-depth `getUser()` → `redirect("/login")` check in each page itself
+(`app/he-thong-giai/page.tsx`, `app/kudos/page.tsx`, `app/profile/page.tsx`). `/profile` has no
+other-user variant — it always renders the caller's own data (`userId` from `getUser()`), never a
+route param. The homepage reads the Supabase user server-side (`getUser()`) purely to
 toggle header UI (bell + account menu), not to gate access. No roles/Admin-Dashboard menu item
 yet — deferred until a roles layer exists (see F002 overview,
 `docs/features/F002-homepage/overview.md`).
