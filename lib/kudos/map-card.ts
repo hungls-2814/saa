@@ -1,5 +1,6 @@
 import type { HashtagRef, KudosCard, KudosPerson } from './types';
 import { deriveStarTier } from './star-tier';
+import { deriveHeroBadge } from './hero-badge';
 
 /** A `profiles` row as embedded in a kudos card query (sender or receiver side). */
 export interface KudosProfileRow {
@@ -47,6 +48,7 @@ function anonymousSender(alias: string | null): KudosPerson {
     avatarUrl: '',
     title: '',
     starTier: 0,
+    heroBadge: 'none',
   };
 }
 
@@ -56,18 +58,26 @@ export interface MapCardContext {
   likedByMe: Set<string>;
   /** profile id -> received_count, from a batched `profile_kudos_stats` fetch. */
   receivedCounts: Map<string, number>;
+  /** profile id -> distinct_sender_count (Hero badge source); optional — absent → no badge. */
+  distinctSenderCounts?: Map<string, number>;
 }
 
 const MAX_IMAGES = 5;
 
-function mapPerson(row: KudosProfileRow | null, receivedCounts: Map<string, number>): KudosPerson {
+function mapPerson(
+  row: KudosProfileRow | null,
+  receivedCounts: Map<string, number>,
+  distinctSenderCounts?: Map<string, number>,
+): KudosPerson {
+  const id = row?.id ?? '';
   return {
-    id: row?.id ?? '',
+    id,
     fullName: row?.full_name ?? '',
     department: row?.department?.name ?? '',
     avatarUrl: row?.avatar_url ?? '',
     title: row?.title ?? '',
-    starTier: deriveStarTier(row?.id ? (receivedCounts.get(row.id) ?? 0) : 0),
+    starTier: deriveStarTier(id ? (receivedCounts.get(id) ?? 0) : 0),
+    heroBadge: deriveHeroBadge(id ? (distinctSenderCounts?.get(id) ?? 0) : 0),
   };
 }
 
@@ -92,8 +102,10 @@ export function mapKudosRowToCard(row: KudosRow, ctx: MapCardContext): KudosCard
     // Anonymity is enforced HERE, in the server-side mapper: the real sender
     // profile is replaced by the alias before the card ever reaches the client,
     // so an anonymous author's identity is never serialized into the payload.
-    sender: isAnonymous ? anonymousSender(row.anonymous_alias) : mapPerson(row.sender, ctx.receivedCounts),
-    receiver: mapPerson(row.receiver, ctx.receivedCounts),
+    sender: isAnonymous
+      ? anonymousSender(row.anonymous_alias)
+      : mapPerson(row.sender, ctx.receivedCounts, ctx.distinctSenderCounts),
+    receiver: mapPerson(row.receiver, ctx.receivedCounts, ctx.distinctSenderCounts),
     content: row.content,
     createdAt: row.created_at,
     heartCount: row.heart_count,

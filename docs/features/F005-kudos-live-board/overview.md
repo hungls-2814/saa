@@ -88,8 +88,11 @@ Derived (not stored):
 - **`kudos_with_heart_count`** VIEW — `kudos` LEFT JOIN `hearts`, `SUM(weight)` → `heart_count`.
 - **`profile_kudos_stats`** VIEW — per profile: `received_count`, `sent_count`, `hearts_received`
   (= `SUM(weight)` of hearts on the profile's kudos; serves both FR5 per-user stats and FR11
-  sender star-tier).
+  sender star-tier), and `distinct_sender_count` (= `count(distinct sender_id)` of kudos received;
+  added by **F007** — Hero Badges + Rules modal — to feed the Hero-badge tier below).
 - star-tier = pure fn of `received_count` (10 / 20 / 50 → 1 / 2 / 3).
+- Hero-badge tier (F007) = pure fn of `distinct_sender_count` (1 / 5 / 10 / >20 → New / Rising /
+  Super / Legend); replaces the `title` honorific pill on the Kudos card name pill.
 
 RLS: reads require `authenticated` (board isn't per-tenant); `hearts` insert/delete only own rows,
 insert blocked on own kudos via `WITH CHECK NOT EXISTS`; `profiles` written only by

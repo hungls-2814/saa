@@ -51,6 +51,7 @@ describe('mapKudosRowToCard', () => {
         avatarUrl: 'https://example.com/alice.png',
         title: 'Senior Dev',
         starTier: 1,
+        heroBadge: 'none',
       },
       receiver: {
         id: 'receiver-1',
@@ -59,6 +60,7 @@ describe('mapKudosRowToCard', () => {
         avatarUrl: 'https://example.com/bob.png',
         title: '',
         starTier: 0,
+        heroBadge: 'none',
       },
       content: 'Great work!',
       createdAt: '2026-07-06T10:00:00.000Z',
@@ -94,6 +96,7 @@ describe('mapKudosRowToCard', () => {
       avatarUrl: '',
       title: '',
       starTier: 0,
+      heroBadge: 'none',
     });
     // The real author ("Alice"/"sender-1") must appear nowhere on the client card.
     expect(JSON.stringify(card)).not.toContain('Alice');
@@ -128,6 +131,28 @@ describe('mapKudosRowToCard', () => {
     expect(card.sender.starTier).toBe(0);
   });
 
+  it('derives hero badge from the batched distinct-sender-count map', () => {
+    const card = mapKudosRowToCard(makeRow(), {
+      likedByMe: new Set(),
+      receivedCounts: new Map(),
+      distinctSenderCounts: new Map([
+        ['sender-1', 3],
+        ['receiver-1', 25],
+      ]),
+    });
+    expect(card.sender.heroBadge).toBe('new');
+    expect(card.receiver.heroBadge).toBe('legend');
+  });
+
+  it('defaults hero badge to none when no distinct-sender map is provided', () => {
+    const card = mapKudosRowToCard(makeRow(), {
+      likedByMe: new Set(),
+      receivedCounts: new Map(),
+    });
+    expect(card.sender.heroBadge).toBe('none');
+    expect(card.receiver.heroBadge).toBe('none');
+  });
+
   it('caps images at 5 thumbnails', () => {
     const row = makeRow({
       kudos_images: [
@@ -159,6 +184,7 @@ describe('mapKudosRowToCard', () => {
       avatarUrl: '',
       title: '',
       starTier: 0,
+      heroBadge: 'none',
     });
     expect(card.hashtags).toEqual([]);
     expect(card.images).toEqual([]);

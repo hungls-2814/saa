@@ -34,7 +34,7 @@ const departments: DepartmentRef[] = [{ id: "cecv10", name: "CECV10" }];
 
 function person(
   fullName: string,
-  title: string,
+  heroBadge: KudosPerson["heroBadge"],
   starTier: KudosPerson["starTier"],
 ): KudosPerson {
   const slug = fullName.toLowerCase().replace(/\s+/g, "-");
@@ -43,15 +43,16 @@ function person(
     fullName,
     department: "CECV10",
     avatarUrl: pravatarUrl(slug),
-    title,
+    title: "",
     starTier,
+    heroBadge,
   };
 }
 
-const nhat = person("Huỳnh Dương Xuân Nhật", "New Hero", 1);
-const xuan = person("Huỳnh Dương Xuân", "Legend Hero", 3);
-const rising = person("Huỳnh Dương Xuân Nhật", "Rising Hero", 2);
-const superHero = person("Huỳnh Dương Xuân Nhật", "Super Hero", 3);
+const nhat = person("Huỳnh Dương Xuân Nhật", "new", 1);
+const xuan = person("Huỳnh Dương Xuân", "legend", 3);
+const rising = person("Huỳnh Dương Xuân Nhật", "rising", 2);
+const superHero = person("Huỳnh Dương Xuân Nhật", "super", 3);
 
 const CONTENT =
   "Cảm ơn người em bình thường nhưng phi thường :D Cảm ơn sự chăm chỉ, cần mẫn của em đã tạo động lực rất nhiều cho team, để luôn nhắc mình luôn phải nỗ lực hơn nữa trong công việc. <3 cuộc sống...";

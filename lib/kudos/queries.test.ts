@@ -243,8 +243,8 @@ describe('getSenderStats', () => {
   it('batches a single .in() query on profile_kudos_stats (no N+1)', async () => {
     const statsBuilder = createQueryMock({
       data: [
-        { profile_id: 's1', received_count: 12 },
-        { profile_id: 's2', received_count: 25 },
+        { profile_id: 's1', received_count: 12, distinct_sender_count: 3 },
+        { profile_id: 's2', received_count: 25, distinct_sender_count: 21 },
       ],
       error: null,
     });
@@ -254,16 +254,21 @@ describe('getSenderStats', () => {
 
     expect(mockFrom).toHaveBeenCalledTimes(1);
     expect(statsBuilder.in).toHaveBeenCalledWith('profile_id', ['s1', 's2']);
-    expect(result.get('s1')).toBe(12);
-    expect(result.get('s2')).toBe(25);
+    const selectArg = (statsBuilder.select as ReturnType<typeof vi.fn>).mock.calls[0][0] as string;
+    expect(selectArg).toContain('distinct_sender_count');
+    expect(result.receivedCounts.get('s1')).toBe(12);
+    expect(result.receivedCounts.get('s2')).toBe(25);
+    expect(result.distinctSenderCounts.get('s1')).toBe(3);
+    expect(result.distinctSenderCounts.get('s2')).toBe(21);
   });
 
-  it('returns an empty map without querying when given no ids', async () => {
+  it('returns empty maps without querying when given no ids', async () => {
     const mockFrom = vi.fn();
     vi.mocked(createClient).mockResolvedValue({ from: mockFrom } as never);
 
     const result = await getSenderStats([]);
-    expect(result.size).toBe(0);
+    expect(result.receivedCounts.size).toBe(0);
+    expect(result.distinctSenderCounts.size).toBe(0);
     expect(mockFrom).not.toHaveBeenCalled();
   });
 });

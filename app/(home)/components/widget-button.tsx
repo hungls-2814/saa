@@ -7,13 +7,15 @@ import { useTranslations } from "next-intl";
  * Fixed bottom-right Floating Action Button (MoMorph _hphd32jN2 / Sv7DFwBw1h).
  * Collapsed = a cream pill (pen `/` Sun-mark). Expanded = cream action pills
  * ("Thể lệ" · "Viết KUDOS") stacked above a red ✕ close button. "Viết KUDOS"
- * opens the compose-Kudos modal via `onWriteKudos`; "Thể lệ" is still a stub.
+ * opens the compose-Kudos modal via `onWriteKudos`; "Thể lệ" opens the Rules
+ * modal via `onOpenRules`.
  */
 export interface WidgetButtonProps {
   onWriteKudos?: () => void;
+  onOpenRules?: () => void;
 }
 
-export function WidgetButton({ onWriteKudos }: WidgetButtonProps) {
+export function WidgetButton({ onWriteKudos, onOpenRules }: WidgetButtonProps) {
   const t = useTranslations("Home.widget");
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -38,7 +40,13 @@ export function WidgetButton({ onWriteKudos }: WidgetButtonProps) {
     <div ref={containerRef} className="fixed bottom-8 right-5 z-30 flex flex-col items-end gap-5">
       {open && (
         <div role="menu" aria-label={t("label")} className="flex flex-col items-end gap-5">
-          <ActionPill onClick={() => setOpen(false)} icon={<SunMarkIcon className="size-6" />}>
+          <ActionPill
+            onClick={() => {
+              setOpen(false);
+              onOpenRules?.();
+            }}
+            icon={<SunMarkIcon className="size-6" />}
+          >
             {t("saaRules")}
           </ActionPill>
           <ActionPill

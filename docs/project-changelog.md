@@ -3,6 +3,49 @@
 All notable changes to this project are recorded here. Format loosely follows
 [Keep a Changelog](https://keepachangelog.com/); dates are `YYYY-MM-DD`.
 
+## 2026-07-09 — F007: Kudos Hero Badges + Thể lệ (Rules) Modal (release 0.4.0)
+
+Two-track feature pairing a new Rules explanation modal with Hero badges on Kudos cards. Built to
+MoMorph spec; shipped as **0.4.0** (second minor bump — F007 adds badge gamification + user guidance).
+
+### Added
+- **Thể lệ (Rules) Modal** (`app/(home)/components/saa-rules-modal.tsx` + 3 section subcomponents)
+  opened via FAB "Thể lệ" pill in `home-compose-widget.tsx`. Modal presents the four Hero badge
+  tiers (New/Rising/Super/Legend) with icon visuals and tier-range descriptions. Footer buttons:
+  "Đóng" (close), "Viết KUDOS" (open compose modal). Pixel-perfect from MoMorph design.
+- **Hero Badge Tier System** (`lib/kudos/hero-badge.ts`) — pure fn `deriveHeroBadge(distinctSenderCount)`
+  returns tier: `'none'` (0), `'new'` (1–4 senders), `'rising'` (5–9), `'super'` (10–20), `'legend'`
+  (≥21). Added to `KudosPerson` type; applied in `map-card` during card serialization.
+- **Distinct Sender Count Tracking** (`supabase/migrations/20260709090000_*`) — `profile_kudos_stats`
+  view now includes `distinct_sender_count` = count(distinct sender_id), grouped by receiver_id.
+  Additive; preserves existing columns + security_invoker + anon revoke.
+- **Badge Display on Kudos Cards** (`app/kudos/components/kudos-person.tsx`) — renders Hero badge
+  image (not `person.title` any longer) next to department code. Assets: `public/kudos/badges/hero-
+  {new,rising,super,legend}.png` (110×20 pills). Null for `'none'` tier (no badge shown).
+- **Badge Alt Text & i18n** — new `Rules` namespace in `messages/{vi,en}.json`: modal title ("Thể
+  lệ"), section headings ("Các loại danh hiệu", "Huy hiệu tự hào", "Tiêu chí xếp hạng"), tier
+  ranges/descriptions, button labels ("Đóng", "Viết KUDOS"), badge alt text (New/Rising/Super/Legend).
+
+### Changed
+- **FAB Wiring** (`app/(home)/components/home-compose-widget.tsx` + `widget-button.tsx`) — "Thể lệ"
+  pill now calls `onOpenRules()` (from widget-button); compose widget manages `rulesOpen` state
+  alongside existing `composeOpen` state. "Viết KUDOS" button in Rules modal closes the modal and
+  opens the compose modal (cross-modal handoff).
+
+### Verified (full test suite)
+- All 800 tests pass (includes hero-badge thresholds, card badge rendering, modal state, i18n).
+- `npx tsc --noEmit` — 0 errors.
+- `npx next lint` — 0 errors.
+
+### Notes
+- Badge tier thresholds chosen for engagement: new (entry), rising (showing traction), super (expert),
+  legend (cultural icon).
+- `person.title` field remains in the DB/type (not removed) but no longer drives the UI pill; kept
+  for future iterations or data audits.
+- Anonymous senders always render `'none'` tier (no badge) per NFR4 (anonymity enforcement).
+- See `plans/260709-0813-kudos-hero-badges-rules-modal/` for the full spec + implementation
+  details (not yet promoted to a `docs/features/F007-*/overview.md`).
+
 ## 2026-07-09 — F006 debug + design-fidelity pass (release 0.3.0)
 
 Post-implementation hardening of the compose-Kudos feature against live testing and the MoMorph

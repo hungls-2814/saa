@@ -1,0 +1,17 @@
+[
+  {
+    "command": "npm run test",
+    "exitCode": 0,
+    "summary": "All 800 tests passed across 63 test files (765 existing + 35 new tests)"
+  },
+  {
+    "command": "npm run typecheck",
+    "exitCode": 0,
+    "summary": "TypeScript compilation successful, 0 type errors"
+  },
+  {
+    "command": "npm run lint",
+    "exitCode": 0,
+    "summary": "ESLint passed with 0 errors (15 pre-existing warnings in unrelated files)"
+  }
+]

@@ -17,16 +17,18 @@ const baseKudos: KudosCardType = {
     fullName: "Huỳnh Dương Xuân Nhật",
     department: "CECV10",
     avatarUrl: "",
-    title: "New Hero",
+    title: "",
     starTier: 1,
+    heroBadge: "new",
   },
   receiver: {
     id: "receiver-1",
     fullName: "Huỳnh Dương Xuân",
     department: "CECV10",
     avatarUrl: "",
-    title: "Legend Hero",
+    title: "",
     starTier: 3,
+    heroBadge: "legend",
   },
   content: "Cảm ơn người em bình thường nhưng phi thường",
   createdAt: "2025-10-30T10:00:00.000Z",
@@ -61,6 +63,21 @@ describe("KudosCard", () => {
 
     rerender(<KudosCard kudos={{ ...baseKudos, title: "" }} variant="feed" />);
     expect(screen.queryByRole("heading", { name: "Người truyền động lực" })).not.toBeInTheDocument();
+  });
+
+  it("renders the sender/receiver Hero badges and hides the badge when none", () => {
+    const { rerender } = render(<KudosCard kudos={baseKudos} variant="feed" />);
+    expect(screen.getByAltText("New Hero")).toBeInTheDocument();
+    expect(screen.getByAltText("Legend Hero")).toBeInTheDocument();
+
+    rerender(
+      <KudosCard
+        kudos={{ ...baseKudos, sender: { ...baseKudos.sender, heroBadge: "none" } }}
+        variant="feed"
+      />,
+    );
+    expect(screen.queryByAltText("New Hero")).not.toBeInTheDocument();
+    expect(screen.getByAltText("Legend Hero")).toBeInTheDocument();
   });
 
   it("renders hashtag chips keyed by id, not by label text alone", () => {

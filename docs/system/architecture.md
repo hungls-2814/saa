@@ -52,6 +52,10 @@ app/
     components/                # section components (header, hero, countdown, awards, footer, ...)
                                # SiteHeader takes an `active` NavKey prop (e.g. "home" | "awards")
                                # to mark the current nav item across pages
+                               # home-compose-widget.tsx (FAB): opens the compose-Kudos modal, or
+                               # saa-rules-modal.tsx (F007) — the "Thể lệ" (Rules) panel covering
+                               # Hero-badge tiers, the 6-icon collectible reward, and "Kudos Quốc
+                               # Dân"; its own "Viết KUDOS" footer button hands off to compose
     data/awards-data.ts        # award category content (slugs, copy)
   he-thong-giai/              # Awards System detail page (F003) — auth-gated, renders at `/he-thong-giai`
     page.tsx                  # server component; getUser() → redirect("/login") if unauthenticated
@@ -69,6 +73,9 @@ app/
                                # markdown content/toolbar, hashtag, image, anonymous) opened from
                                # this board's compose trigger and from the homepage FAB
                                # (`app/(home)/components/home-compose-widget.tsx`)
+                               # hero-badge-image.tsx (F007): renders the Hero badge (New/Rising/
+                               # Super/Legend) on kudos-person.tsx's name pill, replacing the
+                               # honorific `title` pill
   components/                 # shared cross-feature components (e.g. language-selector.tsx,
                                # countdown-unit.tsx — LED digits + minute-tick clock shared by
                                # the homepage hero and prelaunch countdowns)
@@ -83,6 +90,8 @@ lib/i18n/set-locale.ts        # Server Action: set NEXT_LOCALE cookie
 lib/kudos/                    # F005 query/logic layer: queries.ts (SSR board data + lookups),
                                # actions.ts (Server Actions: toggleHeart, loadMoreFeed, applyFilters),
                                # pure helpers (star-tier, cursor encode/decode, filter, map-card), types.ts
+                               # F007: hero-badge.ts (pure fn: distinct-sender-count → New/Rising/
+                               # Super/Legend tier), wired via queries-internal.ts + map-card.ts
                                # F006 compose write-path: compose-actions.ts (Server Action
                                # `createKudoAction` — inserts kudos + hashtags + images, compensating
                                # delete-own-kudos rollback on partial failure, revalidatePath('/kudos'));
@@ -102,7 +111,9 @@ supabase/migrations/          # Postgres schema (F005): tables + 2 views + RLS +
                                # (F005 FR7 +2): `hearts.weight` smallint(1|2) + `special_days`
                                # table + BEFORE INSERT trigger `set_heart_weight()` (decides the
                                # weight server-side, Asia/Ho_Chi_Minh calendar day) + both views
-                               # recomputed to SUM(weight) instead of COUNT —
+                               # recomputed to SUM(weight) instead of COUNT;
+                               # (F007): `profile_kudos_stats` gains `distinct_sender_count`
+                               # (count(distinct sender_id) per receiver) — additive, view-only —
                                # migrations-only; never hand-edit the DB
 scripts/seed-kudos*.ts        # service-role seed script (npm run db:seed) for the kudos data layer
 ```
