@@ -84,12 +84,27 @@ export function ComposeKudosContainer({ isOpen, onClose, currentUserId, onSucces
         return;
       }
     }
+
+    // Show a spinning placeholder per file immediately so the upload is visible;
+    // swap them for the real thumbnails on success, or drop them on failure.
+    const pending: ComposeKudosImage[] = files.map(() => ({
+      id: `uploading-${crypto.randomUUID()}`,
+      url: "",
+      uploading: true,
+    }));
+    const pendingIds = new Set(pending.map((p) => p.id));
+    setImages((prev) => [...prev, ...pending]);
+
     const result = await uploadKudosImages(supabaseRef.current, currentUserId, files, () => crypto.randomUUID());
     if (!result.ok) {
+      setImages((prev) => prev.filter((img) => !pendingIds.has(img.id)));
       setToast(t("errors.submitFailed"));
       return;
     }
-    setImages((prev) => [...prev, ...result.urls.map((url) => ({ id: url, url }))]);
+    setImages((prev) => [
+      ...prev.filter((img) => !pendingIds.has(img.id)),
+      ...result.urls.map((url) => ({ id: url, url })),
+    ]);
   }
 
   function mapErrors(e: ComposeErrors): ComposeKudosErrors {
@@ -112,7 +127,8 @@ export function ComposeKudosContainer({ isOpen, onClose, currentUserId, onSucces
         title: payload.title,
         content: payload.content,
         hashtagLabels: addedTags.map((tag) => tag.label),
-        imageUrls: images.map((img) => img.url),
+        // Only committed uploads carry a URL; skip any still-uploading placeholder.
+        imageUrls: images.map((img) => img.url).filter(Boolean),
         isAnonymous: payload.isAnonymous,
         anonymousAlias: payload.anonymousAlias ?? "",
       });

@@ -7,10 +7,12 @@ import { ComposeFieldError, ComposeFieldLabel } from "./compose-field-label";
 const MAX_IMAGES = 5;
 
 /** One attached image thumbnail. `url: ""` renders a placeholder box (no
- * invented stock photo — real uploads replace this at integration). */
+ * invented stock photo). `uploading: true` marks a thumbnail whose file is
+ * still being uploaded to Storage — it shows a spinner and no remove button. */
 export interface ComposeKudosImage {
   id: string;
   url: string;
+  uploading?: boolean;
 }
 
 export interface ComposeImageFieldProps {
@@ -41,8 +43,14 @@ export function ComposeImageField({
         {images.map((image, index) => (
           <span key={image.id} className="relative size-20 shrink-0">
             <span className="flex size-20 items-center justify-center overflow-hidden rounded-[18px] border border-[#998C5F] bg-white">
-              {image.url ? (
-                // eslint-disable-next-line @next/next/no-img-element -- presentational mock thumbnail, no next/image config for this yet
+              {image.uploading ? (
+                <span
+                  role="status"
+                  aria-label={t("imageUploading")}
+                  className="size-8 animate-spin rounded-full border-4 border-[#FFEA9E] border-t-[#998C5F]"
+                />
+              ) : image.url ? (
+                // eslint-disable-next-line @next/next/no-img-element -- user-uploaded Storage URL; next/image remote loader not configured for this bucket
                 <img
                   src={image.url}
                   alt=""
@@ -57,14 +65,16 @@ export function ComposeImageField({
                 </span>
               )}
             </span>
-            <button
-              type="button"
-              aria-label={`${t("imageLabel")} ${index + 1}`}
-              onClick={() => onRemoveImage(image.id)}
-              className="absolute -top-2 -right-2 flex size-5 items-center justify-center rounded-full bg-[#D4271D] text-white"
-            >
-              <CloseIcon className="size-3" />
-            </button>
+            {!image.uploading && (
+              <button
+                type="button"
+                aria-label={`${t("imageLabel")} ${index + 1}`}
+                onClick={() => onRemoveImage(image.id)}
+                className="absolute -top-2 -right-2 flex size-5 items-center justify-center rounded-full bg-[#D4271D] text-white"
+              >
+                <CloseIcon className="size-3" />
+              </button>
+            )}
           </span>
         ))}
 

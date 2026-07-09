@@ -263,6 +263,7 @@
     "linkTitle": "Add link",
     "linkContent": "Content",
     "linkUrl": "URL",
-    "linkSave": "Save"
+    "linkSave": "Save",
+    "imageUploading": "Uploading image"
   }
 }
