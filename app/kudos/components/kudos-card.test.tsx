@@ -10,6 +10,8 @@ vi.mock("next-intl", () => ({
 
 const baseKudos: KudosCardType = {
   id: "k1",
+  title: "",
+  isAnonymous: false,
   sender: {
     id: "sender-1",
     fullName: "Huỳnh Dương Xuân Nhật",

@@ -11,6 +11,8 @@ vi.mock("next-intl", () => ({
 function makeKudos(id: string, senderName: string): KudosCardType {
   return {
     id,
+    title: "",
+    isAnonymous: false,
     sender: { id: `${id}-s`, fullName: senderName, department: "CECV10", avatarUrl: "", title: "New Hero", starTier: 1 },
     receiver: { id: `${id}-r`, fullName: "Receiver", department: "CECV10", avatarUrl: "", title: "Legend Hero", starTier: 3 },
     content: "Content",

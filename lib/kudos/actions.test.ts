@@ -44,6 +44,8 @@ function unauthedSupabase() {
 
 const CARD: KudosCard = {
   id: KUDOS_ID,
+  title: '',
+  isAnonymous: false,
   sender: { id: 's1', fullName: 'Sender', department: '', avatarUrl: '', title: '', starTier: 0 },
   receiver: { id: 'r1', fullName: 'Receiver', department: '', avatarUrl: '', title: '', starTier: 0 },
   content: 'nice work',
