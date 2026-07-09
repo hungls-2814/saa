@@ -5,10 +5,10 @@ import { isBeforeLaunch } from "@/lib/event/countdown";
 // Next 16 renamed middleware.ts -> proxy.ts (exported `proxy`, nodejs runtime).
 // Refreshes the Supabase session and enforces route guards.
 
-// The homepage is public; /he-thong-giai (Awards System detail page) and
-// /kudos (Sun* Kudos Live board) are auth-gated routes. Kept as the
-// extension point for future auth-gated pages (e.g. /profile).
-const PROTECTED_PATHS: string[] = ["/he-thong-giai", "/kudos"];
+// The homepage is public; /he-thong-giai (Awards System detail page),
+// /kudos (Sun* Kudos Live board), and /profile (own-profile page) are
+// auth-gated routes.
+const PROTECTED_PATHS: string[] = ["/he-thong-giai", "/kudos", "/profile"];
 const AUTH_PATHS = ["/login"];
 // The public countdown page. Until SAA opens, every route funnels here.
 const PRELAUNCH_PATH = "/prelaunch";

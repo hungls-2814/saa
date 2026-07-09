@@ -12,7 +12,9 @@ import { AccountMenu } from "./account-menu";
  *
  * Design: 80px tall, semi-transparent dark background (rgba(16,20,23,0.8)).
  */
-type NavKey = "home" | "awards" | "kudos";
+// "profile" is a valid active value (own-profile page, reached via the account
+// menu) but has no top-nav link, so it simply leaves every nav item unhighlighted.
+type NavKey = "home" | "awards" | "kudos" | "profile";
 
 const NAV_ACTIVE =
   "border-b border-[#FFEA9E] px-4 py-4 text-sm font-bold tracking-[0.1px] text-[#FFEA9E] [text-shadow:0_4px_4px_rgba(0,0,0,0.25),0_0_6px_#FAE287]";
@@ -34,6 +36,9 @@ export async function SiteHeader({
     <header className="absolute inset-x-0 top-0 z-20 flex h-20 items-center bg-[rgba(16,20,23,0.8)]">
       <div className="mx-auto flex w-full max-w-[1440px] items-center justify-between px-6 py-3 sm:px-10 lg:px-36">
         <div className="flex items-center gap-16">
+          {/* No badge background: the logo PNG is transparent (mark only) so it
+              inherits THIS header's background on every screen — never a fixed
+              color. (login-header renders it the same way.) */}
           <Link href="/" aria-label={t("nav.aboutSaa")}>
             <Image
               src="/login/logo.png"

@@ -42,6 +42,10 @@ a route guard.
       `title` pill on Kudos cards. Migration adds `distinct_sender_count` to `profile_kudos_stats`;
       pure-fn `hero-badge.ts` derives tier; badge assets in `public/kudos/badges/`. Tests 800/800;
       tsc/lint clean. Shipped as part of 0.4.0 release.
+- [x] F008 — Personal Profile page (`/profile`) (2026-07-09) — own-profile identity + Hero badge,
+      Kudos/hearts stats (reused `SidebarStats`), Sent/Received Kudos list (new `getKudosByUser`
+      query, read-only cards, no Spam tag). Secret Box + icon collection deferred (static
+      placeholders, no schema). Third `PROTECTED_PATHS` route. Tests 823/823; tsc/lint clean.
 - [ ] `/standards` — footer "Tiêu chuẩn chung" target page
 - [ ] Real Todo feature (data model, CRUD, persistence) behind the existing guard
 - [ ] Roles/permissions layer, if per-user authorization becomes necessary

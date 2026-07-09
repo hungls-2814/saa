@@ -3,6 +3,48 @@
 All notable changes to this project are recorded here. Format loosely follows
 [Keep a Changelog](https://keepachangelog.com/); dates are `YYYY-MM-DD`.
 
+## 2026-07-09 — F008: Personal Profile Page (`/profile`)
+
+Authenticated Sunner's own profile: identity + Hero badge, personal Kudos/hearts statistics, a
+(deferred) Secret Box + icon collection, and the Sent/Received Kudos list. Built to the MoMorph
+spec (screen `3FoIx6ALVb`, "Profile bản thân") — own-profile only, no public/other-user route.
+
+### Added
+- **Profile page** (`app/profile/page.tsx` + `app/profile/components/`) — server component
+  composing region A (`profile-header.tsx`: keyvisual band, avatar, name, star tier, department,
+  Hero badge, static gray icon-collection row), region B (reused `SidebarStats` +
+  `getPerUserStats`), and regions C+D (`profile-kudos-section.tsx`: Sun* Annual Awards/KUDOS
+  header, Sent/Received toggle default Sent, read-only `KudosCard` list with copy-link but no
+  hearting, no Spam tag).
+- **Profile queries** (`lib/kudos/queries-profile.ts`) — `getMyProfileHeader(userId)` (identity +
+  `deriveStarTier`/`deriveHeroBadge` from `profile_kudos_stats`) and
+  `getKudosByUser({ userId, direction })` (sent/received kudos via the existing card-select/mapper
+  pipeline, no pagination — small per-user volume). Sibling of `queries.ts`, not merged into it.
+- **Route guard** — `proxy.ts` `PROTECTED_PATHS` now `["/he-thong-giai", "/kudos", "/profile"]`;
+  page also runs its own `getUser()` → `redirect("/login")` (defense-in-depth). The previously-dead
+  "Profile" row in `account-menu.tsx` is now a live link.
+- **`SiteHeader` `NavKey`** gains `"profile"` (no top-nav item highlights for it; reached via the
+  account menu, not the nav bar).
+- **VN/EN i18n** — new `ProfilePage` namespace in `messages/{vi,en}.json` (title, toggle labels,
+  icon-collection label, empty states).
+
+### Deferred (per clarifications, no schema/migration)
+- Secret Box open mechanic + counters (render 0, existing F005 placeholder behavior unchanged).
+- Icon collection (region A.3): 6 static gray/locked circles, no data source.
+
+### Verified
+- Test suite: 823/823 passing (+4 in `app/profile/page.test.tsx`; existing
+  `lib/kudos/queries-profile.test.ts` (8), `profile-header.test.tsx` (6),
+  `profile-kudos-section.test.tsx` (5) already green). `npm run typecheck` / `npm run lint` clean
+  (0 new issues). See `plans/reports/tester-260709-0950-profile-page-temper.md`.
+
+### Notes
+- No new Supabase migration — `getMyProfileHeader` reuses the `distinct_sender_count` column F007
+  added to `profile_kudos_stats`.
+- See `docs/features/F008-personal-profile/overview.md` for the full feature spec, and
+  `docs/system/architecture.md` / `docs/system/permissions.md` for the updated route map and guard
+  matrix.
+
 ## 2026-07-09 — F007: Kudos Hero Badges + Thể lệ (Rules) Modal (release 0.4.0)
 
 Two-track feature pairing a new Rules explanation modal with Hero badges on Kudos cards. Built to

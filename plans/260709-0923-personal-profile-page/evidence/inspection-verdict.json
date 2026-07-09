@@ -1,0 +1,24 @@
+{
+  "score": 9,
+  "criticalCount": 0,
+  "decision": "SEALED",
+  "acceptanceCovered": [
+    "SC1 /profile unauthenticated redirects to /login (proxy guard + page redirect); authenticated renders regions A/B/C/D — proven by proxy.test.ts (protected routes (/profile): 307 to /login unauth, 200 auth) + app/profile/page.test.tsx (redirect on no user / unconfigured; renders ProfileHeader + SidebarStats + ProfileKudosSection on success)",
+    "SC2 Sent/Received toggle flips the kudos list with correct per-direction counts and shows a direction-specific empty state; default is sent — proven by profile-kudos-section.test.tsx (defaults to Sent list, switches list + label round-trip, direction-specific empty state)",
+    "SC3 profile kudos cards are read-only: hearts count + copy-link shown, no like handler (onToggleLike never passed) — proven by profile-kudos-section.test.tsx (onCopyLink writes ${origin}/kudos/:id; onToggleLike always undefined)",
+    "SC4 Secret Box and icon collection are deferred static placeholders (0 counts, inert Mở Secret Box button, 6 gray locked icons) and the Spam tag is omitted — proven by profile-header.test.tsx (6 locked-icon placeholders + iconCollection label) + page.tsx passing no onOpenSecretBox to SidebarStats (button inert) + reviewer grep confirming no Spam field anywhere",
+    "SC5 getKudosByUser filters sender_id for sent and receiver_id for received; getMyProfileHeader is null-safe for a brand-new user — proven by queries-profile.test.ts (direction 'sent'/'received' filter selection; missing profile row and missing stats row fall back to defaults without throwing)",
+    "SC6 typecheck, lint, and the full vitest suite are green with no regressions; no new migration; every new file under 200 lines — proven by temper-results.json (825/825 tests, tsc 0 errors, eslint 0 errors) + no supabase/migrations change + all new files verified <200 lines"
+  ],
+  "regressionChecked": [
+    "Full vitest suite 825/825 (was 819 pre-change) — no existing test regressed",
+    "proxy.ts PROTECTED_PATHS: existing /kudos + /he-thong-giai guard tests still pass alongside new /profile block",
+    "site-header.tsx NavKey union widened (additive) — existing active='home'/'awards'/'kudos' callers unaffected, tsc clean",
+    "messages/{en,vi}.json ProfilePage namespace additive — key-parity test passes; no existing namespace touched",
+    "getPerUserStats left unchanged (region B) — new queries are a clean sibling module (queries-profile.ts), no mutation of shared queries.ts"
+  ],
+  "contractStatus": "OK",
+  "refuted": [],
+  "unproven": [],
+  "reachableRegressions": []
+}
