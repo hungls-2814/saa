@@ -1,16 +1,20 @@
 "use client";
 
 import { useCallback, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { applyFiltersAction, toggleHeartAction } from "@/lib/kudos/actions";
 import type { BoardData, FilterState, KudosCard } from "@/lib/kudos/types";
 import { KudosBoard } from "./kudos-board";
 import { KudosToast } from "./kudos-toast";
+import { ComposeKudosContainer } from "./compose-kudos-container";
 import { useKudosFeed } from "./use-kudos-feed";
 
 export interface KudosBoardContainerProps {
   /** SSR payload from `getBoardData` — the real replacement for the Track A mock data. */
   initialData: BoardData;
+  /** Current signed-in user id — the compose modal excludes self + uploads under it. */
+  currentUserId: string;
 }
 
 function patchCard(cards: KudosCard[], kudosId: string, liked: boolean, heartCount: number) {
@@ -28,13 +32,27 @@ function patchCard(cards: KudosCard[], kudosId: string, liked: boolean, heartCou
  * `FilterState` (see `kudos-board.tsx`), so re-wiring `onSelectHashtag` here
  * too would fire `applyFiltersAction` twice for the same click.
  */
-export function KudosBoardContainer({ initialData }: KudosBoardContainerProps) {
+export function KudosBoardContainer({ initialData, currentUserId }: KudosBoardContainerProps) {
   const t = useTranslations("KudosPage.toast");
+  const router = useRouter();
   const [data, setData] = useState<BoardData>(initialData);
   const [filters, setFilters] = useState<FilterState>({});
   const [toast, setToast] = useState<string | null>(null);
+  const [composeOpen, setComposeOpen] = useState(false);
   const likingRef = useRef<Set<string>>(new Set());
   const filterTokenRef = useRef(0);
+
+  // After a compose revalidates `/kudos`, `router.refresh()` re-runs the server
+  // page and a fresh `initialData` flows in. Reseed during render (React's
+  // documented "adjust state when a prop changes" pattern with a tracked
+  // previous value) so the new kudos shows without a setState-in-effect
+  // cascade. Client-side filter/like updates keep the same `initialData`
+  // reference, so they never trip this.
+  const [seededData, setSeededData] = useState(initialData);
+  if (seededData !== initialData) {
+    setSeededData(initialData);
+    setData(initialData);
+  }
 
   const showError = useCallback(() => setToast(t("error")), [t]);
 
@@ -141,6 +159,13 @@ export function KudosBoardContainer({ initialData }: KudosBoardContainerProps) {
         onCopyLink={handleCopyLink}
         onLoadMore={() => loadMore(data.feedNextCursor, filters)}
         onOpenSecretBox={handleOpenSecretBox}
+        onOpenCompose={() => setComposeOpen(true)}
+      />
+      <ComposeKudosContainer
+        isOpen={composeOpen}
+        onClose={() => setComposeOpen(false)}
+        currentUserId={currentUserId}
+        onSuccess={() => router.refresh()}
       />
     </>
   );
