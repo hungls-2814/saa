@@ -93,8 +93,8 @@
     },
     "widget": {
       "label": "Quick action widget",
-      "writeKudos": "Write Kudos",
-      "saaRules": "SAA Rules",
+      "writeKudos": "Write KUDOS",
+      "saaRules": "Rules",
       "close": "Close"
     }
   },
