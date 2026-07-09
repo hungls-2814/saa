@@ -10,6 +10,7 @@ import {
   GIFT_IDS,
   HASHTAGS,
   KUDOS_IDS,
+  KUDOS_TITLES,
   SUNNERS,
   THANK_YOU_CONTENT,
 } from "./seed-kudos-data";
@@ -50,6 +51,7 @@ export async function upsertKudos(
     id,
     sender_id: profileIds[SUNNERS[i % SUNNERS.length].email],
     receiver_id: profileIds[SUNNERS[(i + 3) % SUNNERS.length].email], // offset 3, never 0 mod 8 → no self-kudos
+    title: KUDOS_TITLES[i % KUDOS_TITLES.length], // Danh hiệu — shown as the card heading (F006)
     content: THANK_YOU_CONTENT,
   }));
   const { error } = await supabase.from("kudos").upsert(rows, { onConflict: "id" });

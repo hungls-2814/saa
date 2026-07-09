@@ -70,6 +70,20 @@ export const KUDOS_IDS = Array.from(
   { length: 200 },
   (_, i) => `b0a10000-0000-4000-8000-${i.toString().padStart(12, "0")}`,
 );
+
+// "Danh hiệu" (per-kudos award title) shown as the card heading (F006). Assigned
+// round-robin per kudos so every seeded card carries one, like the design.
+export const KUDOS_TITLES = [
+  "Người truyền động lực cho tôi",
+  "IDOL giới trẻ",
+  "Người đồng đội tuyệt vời",
+  "Chiến binh thầm lặng",
+  "Nguồn cảm hứng bất tận",
+  "Người hùng của team",
+  "Ngôi sao sáng nhất",
+  "Người luôn hết mình",
+] as const;
+
 export const GIFT_IDS = Array.from(
   { length: 10 },
   (_, i) => `d0a10000-0000-4000-8000-${i.toString().padStart(12, "0")}`,
