@@ -1,0 +1,37 @@
+{
+  "task": "F007 — Wire the homepage FAB 'Thể lệ' pill to a Rules modal (MoMorph b1Filzi9i6) and show derived Hero badges (New/Rising/Super/Legend, by distinct-sender count) on Kudos card name pills.",
+  "mode": "interactive",
+  "acceptanceCriteria": [
+    "SC1 FAB 'Thể lệ' opens the Rules modal; Đóng/Esc/backdrop close it; 'Viết KUDOS' opens compose",
+    "SC2 Rules modal shows 3 sections + 4 hero badges + 6 collectible icons + footer",
+    "SC3 deriveHeroBadge correct at boundaries 0/1/4/5/9/10/20/21",
+    "SC4 Kudos card pill shows the correct Hero badge per distinct-sender count; hidden at 0; anonymous sender hidden",
+    "SC5 profile_kudos_stats exposes distinct_sender_count and the card query maps it end-to-end",
+    "SC6 all new visible strings resolve from vi + en (Rules namespace)",
+    "SC7 migration applies cleanly; existing queries/tests still pass"
+  ],
+  "touchpoints": [
+    "lib/kudos/hero-badge.ts",
+    "lib/kudos/types.ts",
+    "lib/kudos/map-card.ts",
+    "lib/kudos/queries-internal.ts",
+    "supabase/migrations/20260709090000_kudos_distinct_sender_count.sql",
+    "app/kudos/components/kudos-person.tsx",
+    "app/kudos/components/hero-badge-image.tsx",
+    "app/(home)/components/saa-rules-modal.tsx",
+    "app/(home)/components/home-compose-widget.tsx",
+    "app/(home)/components/widget-button.tsx",
+    "messages/vi.json",
+    "messages/en.json"
+  ],
+  "blastRadius": [
+    "KudosPerson gains heroBadge — all card-render paths (highlight carousel, feed, detail)",
+    "profile_kudos_stats view — read by getSenderStats (star tier) and per-user stats",
+    "homepage FAB — adds a second modal alongside compose"
+  ],
+  "contracts": [
+    "SaaRulesModal props { isOpen, onClose, onWriteKudos }",
+    "getSenderStats returns { receivedCounts, distinctSenderCounts }",
+    "MapCardContext.distinctSenderCounts optional (absent → heroBadge 'none')"
+  ]
+}

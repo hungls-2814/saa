@@ -13,6 +13,13 @@
 /** Star tier ("số hoa thị") — DERIVED from received-kudos count (10/20/50 → 1/2/3), never stored. */
 export type StarTier = 0 | 1 | 2 | 3;
 
+/**
+ * Hero badge ("Huy hiệu Hero") — DERIVED from the count of DISTINCT senders who
+ * sent this Sunner Kudos, never stored. `none` renders no badge. Tiers per
+ * design b1Filzi9i6: 1–4 new, 5–9 rising, 10–20 super, >20 legend.
+ */
+export type HeroBadge = 'none' | 'new' | 'rising' | 'super' | 'legend';
+
 /** A hashtag reference — chips render the label but key filtering on the id. */
 export interface HashtagRef {
   id: string;
@@ -43,6 +50,8 @@ export interface KudosPerson {
   /** "danh hiệu" — honorific title; may be empty. */
   title: string;
   starTier: StarTier;
+  /** Hero badge derived from distinct-sender count; `none` = render no badge. */
+  heroBadge: HeroBadge;
 }
 
 /** A single kudos post rendered as a card in the Highlight carousel or the feed. */

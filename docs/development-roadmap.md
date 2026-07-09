@@ -36,6 +36,12 @@ a route guard.
       markdown content with toolbar, hashtags 1–5, image upload ≤5 to Storage, anonymous alias)
       opened from FAB and board trigger; persists via server action; new kudos appear on board.
       Extends F005 schema (columns + RLS policies + Storage bucket). 695 tests passing.
+- [x] F007 — Kudos Hero Badges + Thể lệ (Rules) Modal (2026-07-09) — FAB "Thể lệ" pill opens new
+      Rules modal (`saa-rules-modal.tsx` + 3 section subcomponents) explaining the 4 Hero badge tiers
+      (New/Rising/Super/Legend) derived from distinct-sender count. Badges replace the honorific
+      `title` pill on Kudos cards. Migration adds `distinct_sender_count` to `profile_kudos_stats`;
+      pure-fn `hero-badge.ts` derives tier; badge assets in `public/kudos/badges/`. Tests 800/800;
+      tsc/lint clean. Shipped as part of 0.4.0 release.
 - [ ] `/standards` — footer "Tiêu chuẩn chung" target page
 - [ ] Real Todo feature (data model, CRUD, persistence) behind the existing guard
 - [ ] Roles/permissions layer, if per-user authorization becomes necessary

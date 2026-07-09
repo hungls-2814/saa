@@ -2,11 +2,13 @@ import Link from "next/link";
 import type { KudosPerson as KudosPersonType } from "@/lib/kudos/types";
 import { starGlyph } from "./render-helpers";
 import { Avatar } from "./avatar";
+import { HeroBadgeImage } from "./hero-badge-image";
 
 /**
  * Sender/receiver identity block used inside a Kudos card: avatar (initials
  * fallback — no stock photo is invented), name, department code, star tier
- * ("số hoa thị"), and the honorific "danh hiệu" badge (FR1/FR11).
+ * ("số hoa thị"), and the derived Hero badge (New/Rising/Super/Legend) — the
+ * badge replaces the honorific "danh hiệu" pill per design b1Filzi9i6 (F007).
  *
  * Avatar + name link to the Sunner's profile — a route stub per the
  * clarified nav-stub rule (no profile page exists yet).
@@ -29,10 +31,12 @@ export function KudosPersonInfo({ person }: { person: KudosPersonType }) {
         <div className="flex items-center gap-2.5 text-sm font-bold tracking-[0.1px] text-[#999]">
           {stars && <span className="text-[#998C5F]">{stars}</span>}
           <span>{person.department}</span>
-          <span aria-hidden className="size-1 rounded-full bg-[#999] opacity-40" />
-          <span className="rounded-full border-[0.5px] border-[#FFEA9E] px-2.5 py-0.5 text-xs font-bold text-[#00101A]">
-            {person.title}
-          </span>
+          {person.heroBadge !== "none" && (
+            <>
+              <span aria-hidden className="size-1 rounded-full bg-[#999] opacity-40" />
+              <HeroBadgeImage badge={person.heroBadge} />
+            </>
+          )}
         </div>
       </div>
     </div>

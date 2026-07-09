@@ -1,0 +1,25 @@
+{
+  "commands": [
+    {
+      "command": "npm run test",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "63 test files, 800 tests passed (35 new for F007: hero-badge, map-card, queries, kudos-card badge, saa-rules-modal, home-compose-widget)",
+      "ts": "2026-07-09T08:55:36.000Z"
+    },
+    {
+      "command": "npm run typecheck",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "tsc --noEmit: 0 errors",
+      "ts": "2026-07-09T08:55:10.000Z"
+    },
+    {
+      "command": "npm run lint",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "eslint: 0 errors (pre-existing <img> warnings in unrelated files only)",
+      "ts": "2026-07-09T08:55:20.000Z"
+    }
+  ]
+}

@@ -10,26 +10,41 @@ import { mapKudosRowToCard, type KudosRow } from './map-card';
 
 export type SupabaseServerClient = Awaited<ReturnType<typeof createClient>>;
 
+/** Per-profile aggregates folded into cards: star-tier source + Hero-badge source. */
+export interface ProfileStatMaps {
+  /** profile id -> received_count (total kudos received) → star tier. */
+  receivedCounts: Map<string, number>;
+  /** profile id -> distinct_sender_count (distinct senders) → Hero badge. */
+  distinctSenderCounts: Map<string, number>;
+}
+
 /**
- * Batched star-tier source: `profile_kudos_stats` is an aggregate view with
- * no FK back to `kudos`, so it can't be embedded in the card select. One
- * `.in('profile_id', ids)` query covers every sender AND receiver on a page
- * (both are `KudosPerson`s and both carry a derived star tier) — no N+1.
+ * Batched star-tier + Hero-badge source: `profile_kudos_stats` is an aggregate
+ * view with no FK back to `kudos`, so it can't be embedded in the card select.
+ * One `.in('profile_id', ids)` query covers every sender AND receiver on a page
+ * (both are `KudosPerson`s carrying a derived star tier + Hero badge) — no N+1.
  */
-export async function getSenderStats(profileIds: string[]): Promise<Map<string, number>> {
-  if (profileIds.length === 0) return new Map();
+export async function getSenderStats(profileIds: string[]): Promise<ProfileStatMaps> {
+  const empty: ProfileStatMaps = { receivedCounts: new Map(), distinctSenderCounts: new Map() };
+  if (profileIds.length === 0) return empty;
   const supabase = await createClient();
   const { data, error } = await supabase
     .from('profile_kudos_stats')
-    .select('profile_id, received_count')
+    .select('profile_id, received_count, distinct_sender_count')
     .in('profile_id', profileIds);
   if (error) throw error;
 
-  const map = new Map<string, number>();
-  for (const row of (data ?? []) as { profile_id: string; received_count: number }[]) {
-    map.set(row.profile_id, row.received_count);
+  const receivedCounts = new Map<string, number>();
+  const distinctSenderCounts = new Map<string, number>();
+  for (const row of (data ?? []) as {
+    profile_id: string;
+    received_count: number;
+    distinct_sender_count: number | null;
+  }[]) {
+    receivedCounts.set(row.profile_id, row.received_count);
+    distinctSenderCounts.set(row.profile_id, row.distinct_sender_count ?? 0);
   }
-  return map;
+  return { receivedCounts, distinctSenderCounts };
 }
 
 const KUDOS_CARD_FIELDS = `
@@ -113,10 +128,16 @@ export async function mapRowsToCards(
     ),
   );
 
-  const [likedByMe, receivedCounts] = await Promise.all([
+  const [likedByMe, stats] = await Promise.all([
     fetchLikedKudosIds(supabase, userId, kudosIds),
     getSenderStats(profileIds),
   ]);
 
-  return rows.map((row) => mapKudosRowToCard(row, { likedByMe, receivedCounts }));
+  return rows.map((row) =>
+    mapKudosRowToCard(row, {
+      likedByMe,
+      receivedCounts: stats.receivedCounts,
+      distinctSenderCounts: stats.distinctSenderCounts,
+    }),
+  );
 }

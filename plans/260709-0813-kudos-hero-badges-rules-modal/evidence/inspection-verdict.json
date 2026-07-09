@@ -1,0 +1,24 @@
+{
+  "score": 9,
+  "criticalCount": 0,
+  "decision": "SEALED",
+  "acceptanceCovered": [
+    "SC1 FAB 'Thể lệ' opens the Rules modal; Đóng/Esc/backdrop close it; 'Viết KUDOS' opens compose — proven by home-compose-widget.test.tsx (FAB pill opens rules dialog; close/escape/backdrop all dismiss; rules 'Viết KUDOS' opens the compose dialog)",
+    "SC2 Rules modal shows 3 sections + 4 hero badges + 6 collectible icons + footer — proven by saa-rules-modal.test.tsx (3 section-heading keys, 4 hero badge alts, 6 icon alts/labels, close + writeKudos buttons)",
+    "SC3 deriveHeroBadge correct at boundaries 0/1/4/5/9/10/20/21 — proven by hero-badge.test.ts mapping to none/new/new/rising/rising/super/super/legend",
+    "SC4 Kudos card pill shows the correct Hero badge per distinct-sender count; hidden at 0; anonymous sender hidden — proven by kudos-card.test.tsx (badge alt per tier, hidden when none) + map-card.test.ts (anonymousSender forces heroBadge 'none')",
+    "SC5 profile_kudos_stats exposes distinct_sender_count and the card query maps it end-to-end — proven by queries.test.ts (select includes distinct_sender_count; getSenderStats returns receivedCounts + distinctSenderCounts) + map-card.test.ts derivation",
+    "SC6 all new visible strings resolve from vi + en (Rules namespace) — proven by messages.test.ts vi/en parity passing with the added Rules namespace; all 4 modal components call useTranslations('Rules')",
+    "SC7 migration applies cleanly; existing queries/tests still pass — additive create-or-replace-view (column appended, order preserved, anon revoke retained); full suite 800/800 green (was 765 before)"
+  ],
+  "regressionChecked": [
+    "Full vitest suite 800/800 (was 765 pre-change) — no existing test regressed",
+    "KudosPerson.heroBadge added across all card literals (map-card, mock-data, 6 test files) — tsc clean",
+    "profile_kudos_stats consumers (star tier, per-user stats) unaffected — getSenderStats returns superset",
+    "Anonymity: map-card 'never leaks identity' test still passes; anonymousSender forces heroBadge 'none'"
+  ],
+  "contractStatus": "OK",
+  "refuted": [],
+  "unproven": [],
+  "reachableRegressions": []
+}
