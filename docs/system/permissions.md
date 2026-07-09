@@ -47,6 +47,32 @@ toggle header UI (bell + account menu), not to gate access. No roles/Admin-Dashb
 yet — deferred until a roles layer exists (see F002 overview,
 `docs/features/F002-homepage/overview.md`).
 
+## Kudos data-layer RLS (F005 + F006)
+`/kudos` reads require the `authenticated` role on every table (see
+`docs/features/F005-kudos-live-board/overview.md`). F006 (compose-Kudos) activates the write
+path that F005 left dormant:
+- `kudos` insert — existing policy, `sender_id = auth.uid()` (self-kudos blocked by CHECK).
+- `kudos_hashtags` / `kudos_images` insert (NEW, F006) — author-scoped: only for a kudos the
+  caller sent (`EXISTS kudos k WHERE k.id = kudos_id AND k.sender_id = auth.uid()`).
+- `hashtags` insert (NEW, F006) — any `authenticated` user, unrestricted (create-new-tag flow).
+- `kudos` delete (NEW, F006) — `sender_id = auth.uid()` (own rows only). Backs
+  `createKudoAction`'s compensating rollback: if the hashtag/image inserts fail after the kudos
+  row commits, the action deletes the orphan; `ON DELETE CASCADE` on the junction/child FKs
+  removes any partially-written hashtag/image rows with it.
+- GRANTs (NEW, F006): `insert` on `kudos`, `kudos_hashtags`, `kudos_images`, `hashtags`; `delete`
+  on `kudos` (own-row only, enforced by the policy above) — to `authenticated`.
+- Storage bucket `kudos-images` (NEW, F006, public): `authenticated` may `insert` (upload) into
+  the bucket; anyone (`public`) may `select` (read) — object URLs are served directly. On hosted
+  Supabase these `storage.objects` policies may need applying via the SQL editor (ownership);
+  the local CLI stack applies them directly.
+- Migration: `supabase/migrations/20260708150000_kudos_compose.sql`.
+
+**Anonymity is an application-layer guarantee, not an RLS one**: an anonymous kudos still stores
+the real `sender_id` (needed for RLS ownership checks and the delete-own-kudos rollback above).
+The real sender is withheld from the client in `lib/kudos/map-card.ts` — when `is_anonymous`,
+the mapper substitutes the alias for the sender profile before a `KudosCard` is ever serialized
+to the browser, so the real identity never leaves the server for an anonymous post.
+
 ## Notes
 - Enforcement: `proxy.ts` (guards) + defense-in-depth `getUser()` check in protected pages.
 - The callback validates the `next` redirect target to a same-origin relative path (no open redirect).

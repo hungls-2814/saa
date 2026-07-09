@@ -3,6 +3,56 @@
 All notable changes to this project are recorded here. Format loosely follows
 [Keep a Changelog](https://keepachangelog.com/); dates are `YYYY-MM-DD`.
 
+## 2026-07-08 — F006: Viết Kudo (Compose Kudos) — modal compose flow
+
+Compose-Kudos modal dialog for creating new kudos, opened from the homepage FAB ("Viết KUDOS")
+and the `/kudos` board trigger. Built to the MoMorph spec. Extends the F005 Supabase data layer
+with compose workflow: recipient autocomplete, Danh hiệu (award title), markdown content with
+functional toolbar, hashtags (1–5, create/pick), image upload (≤5) to Storage, optional anonymous
+send with alias. New kudos appear live on the board.
+
+### Added
+- **Compose Kudos modal** (`app/kudos/components/compose-kudos-modal.tsx` + splits) — recipient
+  search field with autocomplete, title field, markdown editor with toolbar (bold/italic/link),
+  hashtag picker (create new or select existing, 1–5 max), image upload carousel (≤5 images,
+  persisted to Supabase Storage bucket `kudos-images`), anonymous toggle + alias field, submit
+  button (active only when recipient + content present). Built from MoMorph design with mock data;
+  integrated with real backend.
+- **Schema & validation** (`lib/kudos/compose-schema.ts`) — Zod schemas for recipient, title,
+  hashtags, images; validation on client and server.
+- **Compose queries** (`lib/kudos/compose-queries.ts`) — `searchRecipients()` (user search),
+  `listHashtags()` (all hashtags for autocomplete), `resolveOrCreateHashtags()` (batch create/link).
+- **Server action** (`lib/kudos/compose-actions.ts`) — `createKudoAction(formData)` validates
+  input, inserts new kudos record + hashtag links + image records, returns success/error toast
+  (with anon alias displayed to sender on success), revalidates board feed cache.
+- **Image upload client** (`lib/kudos/upload-kudos-images.ts`) — browser-side Supabase Storage
+  client for uploading images with signed URLs; image metadata stored as kudos_images records.
+- **FAB & board integration** — homepage `widget-button.tsx` expanded state redesigned (cream
+  pills + red close icon); clicking "Viết KUDOS" pill opens the modal. `/kudos` board
+  `onOpenCompose` handler also opens the same modal.
+- **Supabase migrations** (`supabase/migrations/20260708150000_kudos_compose.sql`) — new kudos
+  columns: `title` (text, 3–100 char), `is_anonymous` (bool), `anonymous_alias` (text, ≤50 char);
+  `kudos_hashtags` and `kudos_images` insert/delete RLS policies; Storage bucket `kudos-images`
+  with RLS (authenticated users can insert/delete own images only).
+- **Types & mappers** — extend `KudosCard` (title, isAnonymous), `KudosRow` with new columns,
+  `map-card()` helper ensures anon alias replaces real sender name in serialized client data.
+- **VN/EN i18n** — new `ComposeKudos` namespace in `messages/{vi,en}.json`.
+
+### Tests
+- 695 tests pass; reviewer signed off (DONE_WITH_CONCERNS all addressed: compensating rollback,
+  real image rendering, type-layer fix, dead-code removal, length caps).
+
+### Known deferrals
+- Interactive `@mention` picker popup (design spec has it; implementation uses plain text field).
+- "Thể lệ" (Terms) FAB action (not required for MVP).
+- Edit/delete-posted-kudos UI (future iteration).
+
+### Notes
+- See `docs/features/F006-compose-kudos/overview.md` for the full spec.
+- Anonymity is enforced at the type layer (KudosCard never carries real sender identity when
+  is_anonymous=true) and the query layer (map-card filters sender name). NFR4 (anonymity) is
+  honored end-to-end.
+
 ## Unreleased — F005: Sun* Kudos Live board (`/kudos`)
 
 Auth-gated page presenting a live-feeling board of SAA 2025 Kudos — the first feature backed

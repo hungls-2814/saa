@@ -7,6 +7,8 @@
 - **Data layer:** Supabase Postgres (first real data layer — F005) — migrations in
   `supabase/migrations/`, RLS on every table, seeded via `scripts/seed-kudos*.ts`
   (service-role, `npm run db:seed`).
+- **File storage:** Supabase Storage — `kudos-images` bucket (F006, public read /
+  authenticated insert), for compose-Kudos image uploads.
 - **i18n:** next-intl, cookie-based (`NEXT_LOCALE`), no locale URL prefix. Locales: `vi` (default), `en`.
 - **Tests:** vitest + @testing-library/react (jsdom).
 
@@ -62,7 +64,11 @@ app/
     page.tsx                  # server component; getUser() → redirect("/login") if unauthenticated;
                                # fetches BoardData server-side, hands to the client container
     components/                # highlight carousel, spotlight word-cloud, infinite-scroll feed,
-                               # filter bar, per-user stats sidebar, top-10 gifts sidebar
+                               # filter bar, per-user stats sidebar, top-10 gifts sidebar;
+                               # compose-kudos-* (F006): modal + fields (recipient, title,
+                               # markdown content/toolbar, hashtag, image, anonymous) opened from
+                               # this board's compose trigger and from the homepage FAB
+                               # (`app/(home)/components/home-compose-widget.tsx`)
   components/                 # shared cross-feature components (e.g. language-selector.tsx,
                                # countdown-unit.tsx — LED digits + minute-tick clock shared by
                                # the homepage hero and prelaunch countdowns)
@@ -77,10 +83,22 @@ lib/i18n/set-locale.ts        # Server Action: set NEXT_LOCALE cookie
 lib/kudos/                    # F005 query/logic layer: queries.ts (SSR board data + lookups),
                                # actions.ts (Server Actions: toggleHeart, loadMoreFeed, applyFilters),
                                # pure helpers (star-tier, cursor encode/decode, filter, map-card), types.ts
+                               # F006 compose write-path: compose-actions.ts (Server Action
+                               # `createKudoAction` — inserts kudos + hashtags + images, compensating
+                               # delete-own-kudos rollback on partial failure, revalidatePath('/kudos'));
+                               # compose-data.ts (client-side reads — recipient/hashtag list via the
+                               # browser Supabase client — plus `uploadKudosImages()` to the
+                               # `kudos-images` Storage bucket); compose-schema.ts (pure validation:
+                               # required fields, 1-5 hashtags, image type/size <=5MB); markdown-format.ts
+                               # (pure toolbar markdown insert/wrap helpers). Anonymity is enforced
+                               # server-side in map-card.ts: the real sender profile is swapped for
+                               # the alias before a `KudosCard` ever reaches the client.
 proxy.ts                      # pre-launch gate + route guards + session refresh
 i18n/{request,config}.ts      # next-intl config + client-safe constants
 messages/{vi,en}.json         # translation catalogs
-supabase/migrations/          # Postgres schema (F005): tables + 2 views + RLS + signup trigger —
+supabase/migrations/          # Postgres schema (F005): tables + 2 views + RLS + signup trigger;
+                               # (F006): compose columns (title, is_anonymous, anonymous_alias) +
+                               # insert/delete RLS + `kudos-images` Storage bucket + policies —
                                # migrations-only; never hand-edit the DB
 scripts/seed-kudos*.ts        # service-role seed script (npm run db:seed) for the kudos data layer
 ```
