@@ -26,10 +26,28 @@ export interface KudosRow {
   content: string;
   created_at: string;
   heart_count: number;
+  /** Per-kudos award title ("danh hiệu"); null on legacy rows. */
+  title: string | null;
+  /** F006: sender chose anonymity. */
+  is_anonymous: boolean | null;
+  /** F006: display alias shown in place of the real sender when anonymous. */
+  anonymous_alias: string | null;
   sender: KudosProfileRow | null;
   receiver: KudosProfileRow | null;
   kudos_hashtags: KudosHashtagJunctionRow[] | null;
   kudos_images: KudosImageRow[] | null;
+}
+
+/** The sender shown for an anonymous kudos — no real identity, just the alias. */
+function anonymousSender(alias: string | null): KudosPerson {
+  return {
+    id: '',
+    fullName: (alias ?? '').trim() || 'Người gửi ẩn danh',
+    department: '',
+    avatarUrl: '',
+    title: '',
+    starTier: 0,
+  };
 }
 
 /** Pre-fetched context `queries.ts` folds into each card (no per-card IO here). */
@@ -66,9 +84,15 @@ function mapHashtags(junctions: KudosHashtagJunctionRow[] | null): HashtagRef[] 
  * this is unit-testable with zero mocks (NFR1).
  */
 export function mapKudosRowToCard(row: KudosRow, ctx: MapCardContext): KudosCard {
+  const isAnonymous = row.is_anonymous ?? false;
   return {
     id: row.id,
-    sender: mapPerson(row.sender, ctx.receivedCounts),
+    title: row.title ?? '',
+    isAnonymous,
+    // Anonymity is enforced HERE, in the server-side mapper: the real sender
+    // profile is replaced by the alias before the card ever reaches the client,
+    // so an anonymous author's identity is never serialized into the payload.
+    sender: isAnonymous ? anonymousSender(row.anonymous_alias) : mapPerson(row.sender, ctx.receivedCounts),
     receiver: mapPerson(row.receiver, ctx.receivedCounts),
     content: row.content,
     createdAt: row.created_at,
