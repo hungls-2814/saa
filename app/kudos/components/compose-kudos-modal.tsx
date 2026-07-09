@@ -50,7 +50,6 @@ export function ComposeKudosModal({
   onSelectRecipient,
   onFormat,
   onOpenGuidelines,
-  onRequestLinkUrl,
   submitting = false,
   errors,
 }: ComposeKudosModalProps) {
@@ -141,7 +140,6 @@ export function ComposeKudosModal({
           onChange={setContent}
           onFormat={(action) => onFormat?.(action)}
           onOpenGuidelines={onOpenGuidelines}
-          onRequestLinkUrl={onRequestLinkUrl}
           errorId="compose-content-error"
           error={errors?.content}
         />

@@ -259,6 +259,10 @@
       "imageSize": "Image exceeds 5MB",
       "submitFailed": "Failed to send Kudo. Please try again."
     },
-    "success": "Kudo sent successfully!"
+    "success": "Kudo sent successfully!",
+    "linkTitle": "Add link",
+    "linkContent": "Content",
+    "linkUrl": "URL",
+    "linkSave": "Save"
   }
 }

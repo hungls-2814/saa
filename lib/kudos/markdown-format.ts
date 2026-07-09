@@ -80,3 +80,26 @@ export function applyMarkdownFormat(
       return { value: text, selectionStart: start, selectionEnd: end };
   }
 }
+
+/**
+ * Inserts a markdown link `[label](url)` over the selection `start..end`, using
+ * the label + url captured by the add-link modal (design OyDLDuSGEa). `label`
+ * falls back to the url when blank so the link always has visible text; a blank
+ * url yields no insertion (caller validates, this is the defensive floor).
+ * The caret lands just after the inserted link.
+ */
+export function insertLink(
+  text: string,
+  start: number,
+  end: number,
+  label: string,
+  url: string,
+): FormatResult {
+  const href = url.trim();
+  if (href.length === 0) return { value: text, selectionStart: start, selectionEnd: end };
+  const visible = label.trim() || href;
+  const snippet = `[${visible}](${href})`;
+  const next = text.slice(0, start) + snippet + text.slice(end);
+  const cursor = start + snippet.length;
+  return { value: next, selectionStart: cursor, selectionEnd: cursor };
+}

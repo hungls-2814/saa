@@ -259,6 +259,10 @@
       "imageSize": "Ảnh vượt quá 5MB",
       "submitFailed": "Gửi Kudo thất bại. Vui lòng thử lại."
     },
-    "success": "Đã gửi Kudo thành công!"
+    "success": "Đã gửi Kudo thành công!",
+    "linkTitle": "Thêm đường dẫn",
+    "linkContent": "Nội dung",
+    "linkUrl": "URL",
+    "linkSave": "Lưu"
   }
 }

@@ -52,8 +52,6 @@ export interface ComposeKudosModalProps {
   onSelectRecipient?: (recipient: ComposeRecipientOption) => void;
   onFormat?: (action: ComposeFormatAction) => void;
   onOpenGuidelines?: () => void;
-  /** Prompt for a URL when the link toolbar button is pressed. */
-  onRequestLinkUrl?: () => string | null;
   /** Whether a submit is in flight — disables the footer + shows loading. */
   submitting?: boolean;
   errors?: ComposeKudosErrors;

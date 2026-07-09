@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { applyMarkdownFormat } from './markdown-format';
+import { applyMarkdownFormat, insertLink } from './markdown-format';
 
 describe('markdown-format', () => {
   describe('applyMarkdownFormat: bold', () => {
@@ -174,6 +174,97 @@ describe('markdown-format', () => {
       const result = applyMarkdownFormat('hello', 2, 2, 'bold');
       const selected = result.value.slice(result.selectionStart, result.selectionEnd);
       expect(selected).toBe('in đậm');
+    });
+  });
+
+  describe('insertLink', () => {
+    it('inserts markdown link with label and url', () => {
+      const result = insertLink('click here', 0, 10, 'click', 'https://example.com');
+      expect(result.value).toBe('[click](https://example.com)');
+    });
+
+    it('inserts markdown link at selection boundaries', () => {
+      const result = insertLink('hello world test', 0, 5, 'greet', 'https://example.com');
+      expect(result.value).toBe('[greet](https://example.com) world test');
+    });
+
+    it('falls back to url when label is blank', () => {
+      const result = insertLink('text here', 0, 0, '', 'https://example.com');
+      expect(result.value).toBe('[https://example.com](https://example.com)text here');
+    });
+
+    it('falls back to url when label is whitespace only', () => {
+      const result = insertLink('text here', 0, 0, '   ', 'https://example.com');
+      expect(result.value).toBe('[https://example.com](https://example.com)text here');
+    });
+
+    it('no-op when url is blank', () => {
+      const result = insertLink('text here', 0, 4, 'link', '');
+      expect(result.value).toBe('text here');
+      expect(result.selectionStart).toBe(0);
+      expect(result.selectionEnd).toBe(4);
+    });
+
+    it('no-op when url is whitespace only', () => {
+      const result = insertLink('text here', 0, 4, 'link', '   ');
+      expect(result.value).toBe('text here');
+      expect(result.selectionStart).toBe(0);
+      expect(result.selectionEnd).toBe(4);
+    });
+
+    it('trims url whitespace', () => {
+      const result = insertLink('text', 0, 4, 'link', '  https://example.com  ');
+      expect(result.value).toBe('[link](https://example.com)');
+    });
+
+    it('replaces selected text with link', () => {
+      const result = insertLink('hello world', 0, 5, 'greet', 'https://example.com');
+      expect(result.value).toBe('[greet](https://example.com) world');
+    });
+
+    it('inserts link mid-string', () => {
+      const result = insertLink('hello world test', 6, 11, 'site', 'https://example.com');
+      expect(result.value).toBe('hello [site](https://example.com) test');
+    });
+
+    it('cursor position is at end of inserted link', () => {
+      const result = insertLink('text', 0, 4, 'link', 'https://example.com');
+      const inserted = '[link](https://example.com)';
+      expect(result.selectionStart).toBe(inserted.length);
+      expect(result.selectionEnd).toBe(inserted.length);
+    });
+
+    it('cursor position accounts for text before selection', () => {
+      const result = insertLink('prefix text suffix', 7, 11, 'link', 'https://example.com');
+      const before = 'prefix ';
+      const inserted = '[link](https://example.com)';
+      expect(result.selectionStart).toBe(before.length + inserted.length);
+      expect(result.selectionEnd).toBe(before.length + inserted.length);
+    });
+
+    it('handles empty text', () => {
+      const result = insertLink('', 0, 0, 'link', 'https://example.com');
+      expect(result.value).toBe('[link](https://example.com)');
+    });
+
+    it('handles zero-width selection at start', () => {
+      const result = insertLink('hello', 0, 0, 'link', 'https://example.com');
+      expect(result.value).toBe('[link](https://example.com)hello');
+    });
+
+    it('handles zero-width selection at end', () => {
+      const result = insertLink('hello', 5, 5, 'link', 'https://example.com');
+      expect(result.value).toBe('hello[link](https://example.com)');
+    });
+
+    it('handles selection spanning entire text', () => {
+      const result = insertLink('hello', 0, 5, 'link', 'https://example.com');
+      expect(result.value).toBe('[link](https://example.com)');
+    });
+
+    it('preserves text around selection', () => {
+      const result = insertLink('start middle end', 6, 12, 'content', 'https://example.com');
+      expect(result.value).toBe('start [content](https://example.com) end');
     });
   });
 });

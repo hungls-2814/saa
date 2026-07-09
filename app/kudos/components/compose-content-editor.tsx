@@ -1,10 +1,11 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-import { applyMarkdownFormat } from "@/lib/kudos/markdown-format";
+import { applyMarkdownFormat, insertLink } from "@/lib/kudos/markdown-format";
 import { ComposeFieldError } from "./compose-field-label";
 import { ComposeToolbar, type ComposeFormatAction } from "./compose-toolbar";
+import { ComposeLinkModal } from "./compose-link-modal";
 
 export interface ComposeContentEditorProps {
   value: string;
@@ -12,8 +13,6 @@ export interface ComposeContentEditorProps {
   /** Optional side-effect hook; markdown insertion itself is handled here. */
   onFormat?: (action: ComposeFormatAction) => void;
   onOpenGuidelines?: () => void;
-  /** Prompt for a URL (link action); injected so the editor stays testable. */
-  onRequestLinkUrl?: () => string | null;
   contentPlaceholder?: string;
   mentionHint?: string;
   errorId: string;
@@ -32,7 +31,6 @@ export function ComposeContentEditor({
   onChange,
   onFormat,
   onOpenGuidelines,
-  onRequestLinkUrl,
   contentPlaceholder,
   mentionHint,
   errorId,
@@ -40,25 +38,55 @@ export function ComposeContentEditor({
 }: ComposeContentEditorProps) {
   const t = useTranslations("ComposeKudos");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  // The link toolbar action opens a modal; the selection is captured up-front
+  // because focus moves to the modal's inputs.
+  const [linkOpen, setLinkOpen] = useState(false);
+  const [linkRange, setLinkRange] = useState<{ start: number; end: number }>({ start: 0, end: 0 });
+  const [linkInitial, setLinkInitial] = useState("");
+
+  function restoreCaret(start: number, endPos: number) {
+    requestAnimationFrame(() => {
+      const el = textareaRef.current;
+      if (!el) return;
+      el.focus();
+      el.setSelectionRange(start, endPos);
+    });
+  }
 
   function handleFormat(action: ComposeFormatAction) {
     onFormat?.(action);
     const el = textareaRef.current;
     if (!el) return;
-    const url = action === "link" ? (onRequestLinkUrl?.() ?? undefined) : undefined;
-    if (action === "link" && url === null) return;
-    const result = applyMarkdownFormat(value, el.selectionStart, el.selectionEnd, action, url);
+    if (action === "link") {
+      // Capture the selection now and open the add-link modal (design OyDLDuSGEa).
+      const { selectionStart, selectionEnd } = el;
+      setLinkRange({ start: selectionStart, end: selectionEnd });
+      setLinkInitial(value.slice(selectionStart, selectionEnd));
+      setLinkOpen(true);
+      return;
+    }
+    const result = applyMarkdownFormat(value, el.selectionStart, el.selectionEnd, action);
     onChange(result.value);
-    // Restore the selection after React re-renders the controlled value.
-    requestAnimationFrame(() => {
-      el.focus();
-      el.setSelectionRange(result.selectionStart, result.selectionEnd);
-    });
+    restoreCaret(result.selectionStart, result.selectionEnd);
+  }
+
+  function handleSaveLink(content: string, url: string) {
+    const result = insertLink(value, linkRange.start, linkRange.end, content, url);
+    onChange(result.value);
+    setLinkOpen(false);
+    restoreCaret(result.selectionStart, result.selectionEnd);
   }
 
   return (
     <div className="flex w-full min-w-0 flex-col gap-1">
       <ComposeToolbar onFormat={handleFormat} onOpenGuidelines={onOpenGuidelines} />
+      {linkOpen && (
+        <ComposeLinkModal
+          initialContent={linkInitial}
+          onCancel={() => setLinkOpen(false)}
+          onSave={handleSaveLink}
+        />
+      )}
       <textarea
         id="compose-content"
         ref={textareaRef}

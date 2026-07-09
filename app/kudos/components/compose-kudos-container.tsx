@@ -158,7 +158,6 @@ export function ComposeKudosContainer({ isOpen, onClose, currentUserId, onSucces
         images={images}
         onAddImage={() => fileInputRef.current?.click()}
         onRemoveImage={(id) => setImages((prev) => prev.filter((img) => img.id !== id))}
-        onRequestLinkUrl={() => window.prompt(t("linkPrompt")) ?? null}
         submitting={submitting}
         errors={errors}
       />
