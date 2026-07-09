@@ -66,12 +66,15 @@ export function KudosCard({
           {formatKudosTimestamp(kudos.createdAt)}
         </p>
 
+        {/* Danh hiệu (per-kudos award title) — the kudos heading, centered above
+            the content box per design; only rendered when the sender gave one. */}
+        {kudos.title && (
+          <h3 className="text-center text-xl font-extrabold tracking-[0.5px] text-[#00101A] sm:text-2xl">
+            {kudos.title}
+          </h3>
+        )}
+
         <div className="rounded-xl border border-[#FFEA9E] bg-[rgba(255,234,158,0.4)] p-4 sm:p-6">
-          {kudos.title && (
-            <h3 className="mb-2 text-xl font-extrabold text-[#00101A] sm:text-2xl">
-              {kudos.title}
-            </h3>
-          )}
           <MarkdownContent
             content={kudos.content}
             className={`text-justify text-lg font-bold leading-relaxed text-[#00101A] sm:text-xl ${

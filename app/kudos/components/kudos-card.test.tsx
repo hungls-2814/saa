@@ -52,6 +52,17 @@ describe("KudosCard", () => {
     expect(screen.getByText("10:00 - 10/30/2025")).toBeInTheDocument();
   });
 
+  it("renders the Danh hiệu as a centered heading when present, omits it when empty", () => {
+    const { rerender } = render(
+      <KudosCard kudos={{ ...baseKudos, title: "Người truyền động lực" }} variant="feed" />,
+    );
+    const heading = screen.getByRole("heading", { name: "Người truyền động lực" });
+    expect(heading.className).toContain("text-center");
+
+    rerender(<KudosCard kudos={{ ...baseKudos, title: "" }} variant="feed" />);
+    expect(screen.queryByRole("heading", { name: "Người truyền động lực" })).not.toBeInTheDocument();
+  });
+
   it("renders hashtag chips keyed by id, not by label text alone", () => {
     render(<KudosCard kudos={baseKudos} variant="feed" />);
     expect(screen.getByText("#Dedicated")).toBeInTheDocument();
