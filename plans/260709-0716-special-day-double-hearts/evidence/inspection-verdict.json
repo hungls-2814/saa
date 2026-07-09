@@ -1,0 +1,23 @@
+{
+  "score": 9.4,
+  "criticalCount": 0,
+  "decision": "SEALED",
+  "contractStatus": "VERIFIED",
+  "acceptanceCovered": [
+    "SC-A migration applies cleanly (weight column + special_days table/RLS/grants + trigger + both views recomputed to sum(weight)); idempotent seed adds the configured special day — reviewer column-diffed both view replaces against their latest sources (lossless; security_invoker + anon revoke preserved); live-DB proof applied the migration on a HEAD schema and both CREATE OR REPLACE VIEW succeeded; upsertSpecialDays is idempotent on onConflict 'day'",
+    "SC-B on a special day one like moves heart_count by +2 and receiver hearts_received by +2; normal day by +1 (live-DB) — live Postgres: special-day (today VN) insert stored weight=2, sum moved base->base+2; hearts_received uses the same sum(weight)",
+    "SC-C a forged insert with weight=2 on a normal day is overwritten to 1 by the trigger (live-DB) — live Postgres: normal-day insert with client weight=2 stored as 1 (trigger overwrites unconditionally, SECURITY DEFINER + set search_path=public,pg_temp)",
+    "SC-D self-like still blocked; un-like removes the full weight (count returns to base) — self-like RLS path in actions.ts unchanged; live delete returned sum to base",
+    "SC-E toggleHeartAction unit tests pass against the weighted view-read (mocked) — lib/kudos/actions.test.ts 15/15 pass against a mocked kudos_with_heart_count.heart_count read"
+  ],
+  "regressionChecked": [
+    "full vitest suite 753/753 pass across 60 files — no regressions",
+    "npm run typecheck clean",
+    "queries-internal.ts/map-card.ts read heart_count off the view (unchanged) — weighting flows through with no code edit",
+    "heart_count/hearts_received keep bigint type (sum(smallint)->bigint), so no TS consumer drift",
+    "Fixed post-review: added revoke select on special_days from anon (Important, matches 20260706000400 hardening + spec FR7'-b); corrected migration comment to 20260706000300_kudos_grants.sql; reworded seed comment to not overclaim immediate testability"
+  ],
+  "refuted": [],
+  "unproven": [],
+  "reachableRegressions": []
+}

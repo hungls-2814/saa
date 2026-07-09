@@ -47,7 +47,7 @@ toggle header UI (bell + account menu), not to gate access. No roles/Admin-Dashb
 yet — deferred until a roles layer exists (see F002 overview,
 `docs/features/F002-homepage/overview.md`).
 
-## Kudos data-layer RLS (F005 + F006)
+## Kudos data-layer RLS (F005 + F006 + F005 FR7 +2)
 `/kudos` reads require the `authenticated` role on every table (see
 `docs/features/F005-kudos-live-board/overview.md`). F006 (compose-Kudos) activates the write
 path that F005 left dormant:
@@ -66,6 +66,13 @@ path that F005 left dormant:
   Supabase these `storage.objects` policies may need applying via the SQL editor (ownership);
   the local CLI stack applies them directly.
 - Migration: `supabase/migrations/20260708150000_kudos_compose.sql`.
+- `special_days` (NEW, special-day +2 hearts) — `authenticated` may `select` only
+  (`using (true)` — the calendar is board-wide, not per-tenant); no insert/update/delete policy
+  for `authenticated` = fail-closed, matching the `profiles`/`departments` pattern. `service_role`
+  has full DML (seed/admin only). `anon` explicitly revoked (same defense-in-depth revoke as every
+  sibling base table). The `weight` column on `hearts` itself is never client-writable — set
+  unconditionally by the `set_heart_weight()` trigger, so no RLS policy is needed to protect it.
+  Migration: `supabase/migrations/20260709070000_special_day_hearts.sql`.
 
 **Anonymity is an application-layer guarantee, not an RLS one**: an anonymous kudos still stores
 the real `sender_id` (needed for RLS ownership checks and the delete-own-kudos rollback above).
