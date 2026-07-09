@@ -3,6 +3,29 @@
 All notable changes to this project are recorded here. Format loosely follows
 [Keep a Changelog](https://keepachangelog.com/); dates are `YYYY-MM-DD`.
 
+## 2026-07-09 — F006 debug + design-fidelity pass (release 0.3.0)
+
+Post-implementation hardening of the compose-Kudos feature against live testing and the MoMorph
+design. Released as **0.3.0** (first minor bump — F006 is a new user-facing feature).
+
+### Fixed
+- **Blank `/kudos` board** — the `kudos_with_heart_count` view now exposes the compose columns
+  (`title`/`is_anonymous`/`anonymous_alias`); the board card query no longer 400s on them.
+- **Submit failure (`kudos_sender_id_fkey`)** — backfill `profiles` for `auth.users` that predate
+  the signup trigger, so composing works for pre-existing accounts.
+- **Compose modal** capped to the viewport height so the footer stays reachable.
+- **`db:seed`** loads `.env.local` (`tsx --env-file-if-exists`) instead of throwing on missing creds.
+- **Department filter** matches the design (`CEVC2/CEVC3/CEVC4/CEVC1/OPD/Infra`) via a rename+add
+  migration that preserves profile links.
+- **Danh hiệu** renders as a centered card heading; seeded kudos now carry a title.
+
+### Changed
+- Hashtag picker is now a dark multi-select dropdown (design `p9zO-c4a4x`); canonical SAA hashtags seeded.
+- Add-link uses a "Thêm đường dẫn" modal (design `OyDLDuSGEa`) instead of a browser prompt.
+- Image thumbnails show an uploading spinner until the Storage upload completes.
+- Homepage FAB uses the real red Sun\* brand mark + design-accurate pill styling.
+- Storage bucket/policy block made idempotent + hosted-Supabase-safe.
+
 ## 2026-07-08 — F006: Viết Kudo (Compose Kudos) — modal compose flow
 
 Compose-Kudos modal dialog for creating new kudos, opened from the homepage FAB ("Viết KUDOS")
