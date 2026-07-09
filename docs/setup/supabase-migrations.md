@@ -12,6 +12,11 @@ npx supabase init                  # only if supabase/ isn't already present (it
 npx supabase link --project-ref <your-project-ref>
 ```
 
+Set `SUPABASE_ACCESS_TOKEN` and `SUPABASE_DB_PASSWORD` in `.env.local` (see
+`.env.local.example`) so `link` / `db push` run non-interactively without prompting.
+`SUPABASE_ACCESS_TOKEN` comes from https://supabase.com/dashboard/account/tokens;
+`SUPABASE_DB_PASSWORD` from the project's Settings → Database.
+
 ## Applying migrations
 
 ```bash

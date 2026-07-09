@@ -3,6 +3,27 @@
 All notable changes to this project are recorded here. Format loosely follows
 [Keep a Changelog](https://keepachangelog.com/); dates are `YYYY-MM-DD`.
 
+## 2026-07-09 — CI/CD (Vercel) + README & environment docs (0.4.1)
+
+Project onboarding + deployment automation. No application-code changes; docs, config, and
+GitHub Actions only.
+
+### Added
+- **CI workflow** (`.github/workflows/ci.yml`) — lint · typecheck · test on every pull request
+  and push to `main`.
+- **CD workflow** (`.github/workflows/cd.yml`) — Vercel **Production** deploy, chained off CI via
+  `workflow_run` so it deploys only when CI passes; pins the checkout to the CI-validated commit.
+- **Vercel deployment guide** (`docs/setup/vercel-deployment.md`) — secrets, project link, and
+  Vercel env-var setup.
+
+### Changed
+- **README** rewritten from `create-next-app` boilerplate to a real overview: stack, feature
+  list (F001–F008), getting started, env vars, database, scripts, structure, deployment.
+- **`.env.local.example`** reorganized and fully documented — added the previously-undocumented
+  Supabase CLI vars `SUPABASE_ACCESS_TOKEN` / `SUPABASE_DB_PASSWORD`.
+- **Docs** — `system/architecture.md` and `setup/supabase-migrations.md` now note the Supabase
+  CLI env vars.
+
 ## 2026-07-09 — F008: Personal Profile Page (`/profile`)
 
 Authenticated Sunner's own profile: identity + Hero badge, personal Kudos/hearts statistics, a
