@@ -41,6 +41,15 @@ export function FilterDropdown({
 
   const selected = options.find((o) => o.id === selectedId);
 
+  // Design (Dropdown Phòng ban WXK5AYB_rG): centered rows; the active row sits
+  // in a raised, faintly gold-ringed box, others reveal it only on hover.
+  const optionClass = (isSelected: boolean) =>
+    `w-full rounded px-4 py-3 text-center text-sm font-bold text-white transition-colors duration-150 ${
+      isSelected
+        ? "bg-[rgba(255,234,158,0.15)] ring-1 ring-[#FFEA9E]/40"
+        : "hover:bg-[rgba(255,234,158,0.1)]"
+    }`;
+
   return (
     <div className="relative" ref={rootRef}>
       <button
@@ -75,7 +84,7 @@ export function FilterDropdown({
                   onChange(undefined);
                   setOpen(false);
                 }}
-                className="w-full rounded px-4 py-3 text-left text-sm font-bold text-white hover:bg-[rgba(255,234,158,0.1)]"
+                className={optionClass(!selectedId)}
               >
                 {allLabel}
               </button>
@@ -90,7 +99,7 @@ export function FilterDropdown({
                     onChange(option.id);
                     setOpen(false);
                   }}
-                  className="w-full rounded px-4 py-3 text-left text-sm font-bold text-white hover:bg-[rgba(255,234,158,0.1)]"
+                  className={optionClass(option.id === selectedId)}
                 >
                   {option.label}
                 </button>
