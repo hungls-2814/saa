@@ -11,7 +11,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "db:seed": "tsx scripts/seed-kudos.ts"
+    "db:seed": "tsx --env-file-if-exists=.env.local scripts/seed-kudos.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.0",
