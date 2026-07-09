@@ -112,7 +112,7 @@ export function ComposeKudosModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby="compose-kudos-title"
-        className="flex w-full min-w-0 max-w-[752px] flex-col gap-8 rounded-3xl bg-[#FFF8E1] p-6 sm:p-10"
+        className="flex max-h-[calc(100dvh-2rem)] w-full min-w-0 max-w-[752px] flex-col gap-8 overflow-y-auto rounded-3xl bg-[#FFF8E1] p-6 sm:p-10"
       >
         <h2
           id="compose-kudos-title"
