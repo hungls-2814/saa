@@ -57,7 +57,7 @@ export default async function KudosPage() {
     >
       <SiteHeader user={user} active="kudos" />
       <main className="relative flex flex-1 flex-col">
-        <KudosBoardContainer initialData={boardData} />
+        <KudosBoardContainer initialData={boardData} currentUserId={user.id} />
       </main>
       <SiteFooter />
     </div>

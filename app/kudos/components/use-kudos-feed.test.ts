@@ -13,6 +13,8 @@ const mockLoadMoreFeedAction = vi.mocked(loadMoreFeedAction);
 
 const CARD: KudosCard = {
   id: "fd-5",
+  title: "",
+  isAnonymous: false,
   sender: { id: "s", fullName: "S", department: "D", avatarUrl: "", title: "", starTier: 0 },
   receiver: { id: "r", fullName: "R", department: "D", avatarUrl: "", title: "", starTier: 0 },
   content: "c",

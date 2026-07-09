@@ -17,6 +17,16 @@ vi.mock("./use-kudos-feed", () => ({
   useKudosFeed: vi.fn(() => ({ loadMore: vi.fn() })),
 }));
 
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ refresh: vi.fn() }),
+}));
+
+// The compose modal has its own dedicated tests; stub it here so these board
+// tests don't pull in the Supabase browser client / file-input wiring.
+vi.mock("./compose-kudos-container", () => ({
+  ComposeKudosContainer: () => null,
+}));
+
 import { applyFiltersAction, toggleHeartAction } from "@/lib/kudos/actions";
 
 const mockApplyFiltersAction = vi.mocked(applyFiltersAction);
@@ -63,14 +73,14 @@ describe("KudosBoardContainer", () => {
   });
 
   it("renders the board with the initial SSR data", () => {
-    render(<KudosBoardContainer initialData={mockBoardData} />);
+    render(<KudosBoardContainer initialData={mockBoardData} currentUserId="me" />);
     expect(screen.getAllByText("Huỳnh Dương Xuân Nhật").length).toBeGreaterThan(0);
   });
 
   describe("like toggle", () => {
     it("optimistically flips the heart then reconciles with the action result", async () => {
       mockToggleHeartAction.mockResolvedValue({ ok: true, liked: true, heartCount: 1001 });
-      render(<KudosBoardContainer initialData={mockBoardData} />);
+      render(<KudosBoardContainer initialData={mockBoardData} currentUserId="me" />);
 
       await clickFirstLikeButton();
 
@@ -81,7 +91,7 @@ describe("KudosBoardContainer", () => {
 
     it("reverts the optimistic update and shows a toast on self-like failure", async () => {
       mockToggleHeartAction.mockResolvedValue({ ok: false, error: "self_like" });
-      render(<KudosBoardContainer initialData={mockBoardData} />);
+      render(<KudosBoardContainer initialData={mockBoardData} currentUserId="me" />);
 
       await clickFirstLikeButton();
 
@@ -92,7 +102,7 @@ describe("KudosBoardContainer", () => {
 
     it("shows a generic error toast and reverts when the action throws", async () => {
       mockToggleHeartAction.mockRejectedValue(new Error("network down"));
-      render(<KudosBoardContainer initialData={mockBoardData} />);
+      render(<KudosBoardContainer initialData={mockBoardData} currentUserId="me" />);
 
       await clickFirstLikeButton();
 
@@ -109,7 +119,7 @@ describe("KudosBoardContainer", () => {
           }),
       );
       const user = userEvent.setup();
-      render(<KudosBoardContainer initialData={mockBoardData} />);
+      render(<KudosBoardContainer initialData={mockBoardData} currentUserId="me" />);
 
       const [likeButton] = screen.getAllByRole("button", { name: ORIGINAL_COUNT_TEXT });
       await user.click(likeButton);
@@ -124,7 +134,7 @@ describe("KudosBoardContainer", () => {
   describe("filter change", () => {
     it("replaces highlights and feed on a successful apply-filters call", async () => {
       mockApplyFiltersAction.mockResolvedValue({ ok: true, highlights: [], feed: [], nextCursor: null });
-      render(<KudosBoardContainer initialData={mockBoardData} />);
+      render(<KudosBoardContainer initialData={mockBoardData} currentUserId="me" />);
 
       await selectFirstHashtagFilterOption();
 
@@ -136,7 +146,7 @@ describe("KudosBoardContainer", () => {
 
     it("shows an error toast when apply-filters fails", async () => {
       mockApplyFiltersAction.mockResolvedValue({ ok: false, error: "unauthenticated" });
-      render(<KudosBoardContainer initialData={mockBoardData} />);
+      render(<KudosBoardContainer initialData={mockBoardData} currentUserId="me" />);
 
       await selectFirstHashtagFilterOption();
 
@@ -147,7 +157,7 @@ describe("KudosBoardContainer", () => {
   describe("copy link", () => {
     it("copies the kudos URL to the clipboard and shows a success toast", async () => {
       const user = setupClipboardUser();
-      render(<KudosBoardContainer initialData={mockBoardData} />);
+      render(<KudosBoardContainer initialData={mockBoardData} currentUserId="me" />);
 
       const [copyButton] = screen.getAllByText("copyLink");
       await user.click(copyButton);
@@ -161,7 +171,7 @@ describe("KudosBoardContainer", () => {
     it("shows an error toast when the clipboard write rejects", async () => {
       const user = setupClipboardUser();
       writeText.mockRejectedValueOnce(new Error("denied"));
-      render(<KudosBoardContainer initialData={mockBoardData} />);
+      render(<KudosBoardContainer initialData={mockBoardData} currentUserId="me" />);
 
       const [copyButton] = screen.getAllByText("copyLink");
       await user.click(copyButton);
@@ -173,7 +183,7 @@ describe("KudosBoardContainer", () => {
   describe("Mở Secret Box stub", () => {
     it("shows a coming-soon toast — the Secret Box dialog itself is out of scope", async () => {
       const user = userEvent.setup();
-      render(<KudosBoardContainer initialData={mockBoardData} />);
+      render(<KudosBoardContainer initialData={mockBoardData} currentUserId="me" />);
 
       await user.click(screen.getByText("openSecretBox"));
 

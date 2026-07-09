@@ -28,6 +28,10 @@ a route guard.
       (migrations + RLS + seed script); implementation + tests complete. Manual DB smoke
       (`supabase db push` + `db:seed` + anon-view REST check) still pending before production
       — no DB creds available at implementation time.
+- [x] F006 — Viết Kudo (Compose Kudos) — modal dialog (recipient autocomplete, title,
+      markdown content with toolbar, hashtags 1–5, image upload ≤5 to Storage, anonymous alias)
+      opened from FAB and board trigger; persists via server action; new kudos appear on board.
+      Extends F005 schema (columns + RLS policies + Storage bucket). 695 tests passing.
 - [ ] `/standards` — footer "Tiêu chuẩn chung" target page
 - [ ] Real Todo feature (data model, CRUD, persistence) behind the existing guard
 - [ ] Roles/permissions layer, if per-user authorization becomes necessary

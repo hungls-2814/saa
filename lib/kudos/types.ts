@@ -25,6 +25,14 @@ export interface DepartmentRef {
   name: string;
 }
 
+/** A Sunner option in the compose-Kudos recipient autocomplete (F006). */
+export interface RecipientOption {
+  id: string;
+  fullName: string;
+  department: string;
+  avatarUrl: string;
+}
+
 /** A Sunner as shown on a kudos card (sender or receiver). */
 export interface KudosPerson {
   id: string;
@@ -40,6 +48,17 @@ export interface KudosPerson {
 /** A single kudos post rendered as a card in the Highlight carousel or the feed. */
 export interface KudosCard {
   id: string;
+  /**
+   * The kudos's own award title ("danh hiệu" the sender grants the receiver) —
+   * shown as the card title. Empty for legacy F005 rows that predate compose.
+   */
+  title: string;
+  /**
+   * Sent anonymously. When true, `sender` carries the sender-chosen alias in
+   * `fullName` with a blank identity (the real author is never serialized into
+   * this client-facing card — see `map-card.ts`).
+   */
+  isAnonymous: boolean;
   sender: KudosPerson;
   receiver: KudosPerson;
   content: string;

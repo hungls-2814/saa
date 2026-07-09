@@ -8,7 +8,7 @@ import { RootFurtherSection } from "./components/root-further-section";
 import { AwardsSection } from "./components/awards-section";
 import { KudosSection } from "./components/kudos-section";
 import { SiteFooter } from "./components/site-footer";
-import { WidgetButton } from "./components/widget-button";
+import { HomeComposeWidget } from "./components/home-compose-widget";
 
 export const metadata: Metadata = {
   title: "Sun* Annual Awards 2025",
@@ -63,7 +63,7 @@ export default async function HomePage() {
         </div>
       </main>
       <SiteFooter />
-      <WidgetButton />
+      <HomeComposeWidget currentUserId={user?.id ?? null} />
     </div>
   );
 }

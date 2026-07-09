@@ -68,6 +68,8 @@ function kudos(
 ): KudosCard {
   return {
     id,
+    title: '',
+    isAnonymous: false,
     sender,
     receiver,
     content: CONTENT,

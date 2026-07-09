@@ -37,6 +37,9 @@ const KUDOS_CARD_FIELDS = `
   content,
   created_at,
   heart_count,
+  title,
+  is_anonymous,
+  anonymous_alias,
   sender:profiles!kudos_sender_id_fkey(id, full_name, avatar_url, title, department:departments(name)),
   kudos_hashtags(hashtag:hashtags(id, label)),
   kudos_images(url)

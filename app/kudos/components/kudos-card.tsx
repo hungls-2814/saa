@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import type { KudosCard as KudosCardType } from "@/lib/kudos/types";
 import { KudosPersonInfo } from "./kudos-person";
+import { MarkdownContent } from "./markdown-content";
 import { ArrowRightIcon, HeartIcon, LinkIcon } from "./icons";
 import {
   formatHeartCount,
@@ -65,27 +66,44 @@ export function KudosCard({
           {formatKudosTimestamp(kudos.createdAt)}
         </p>
 
+        {/* Danh hiệu (per-kudos award title) — the kudos heading, centered above
+            the content box per design; only rendered when the sender gave one. */}
+        {kudos.title && (
+          <h3 className="text-center text-xl font-extrabold tracking-[0.5px] text-[#00101A] sm:text-2xl">
+            {kudos.title}
+          </h3>
+        )}
+
         <div className="rounded-xl border border-[#FFEA9E] bg-[rgba(255,234,158,0.4)] p-4 sm:p-6">
-          <p
+          <MarkdownContent
+            content={kudos.content}
             className={`text-justify text-lg font-bold leading-relaxed text-[#00101A] sm:text-xl ${
               isHighlight ? "line-clamp-3" : "line-clamp-5"
             }`}
-          >
-            {kudos.content}
-          </p>
+          />
         </div>
 
         {!isHighlight && images.length > 0 && (
           <div className="flex flex-wrap gap-4">
-            {images.map((src, i) => (
-              <span
-                key={`${kudos.id}-img-${i}`}
-                aria-hidden
-                className="flex size-[88px] shrink-0 items-center justify-center rounded-[18px] border border-[#998C5F] bg-white text-xs text-[#998C5F]"
-              >
-                {i + 1}
-              </span>
-            ))}
+            {images.map((src, i) =>
+              src ? (
+                // eslint-disable-next-line @next/next/no-img-element -- user-uploaded Storage URL; next/image remote loader not configured for this bucket
+                <img
+                  key={`${kudos.id}-img-${i}`}
+                  src={src}
+                  alt=""
+                  className="size-[88px] shrink-0 rounded-[18px] border border-[#998C5F] object-cover"
+                />
+              ) : (
+                <span
+                  key={`${kudos.id}-img-${i}`}
+                  aria-hidden
+                  className="flex size-[88px] shrink-0 items-center justify-center rounded-[18px] border border-[#998C5F] bg-white text-xs text-[#998C5F]"
+                >
+                  {i + 1}
+                </span>
+              ),
+            )}
           </div>
         )}
 

@@ -7,6 +7,9 @@ function makeRow(overrides: Partial<KudosRow> = {}): KudosRow {
     content: 'Great work!',
     created_at: '2026-07-06T10:00:00.000Z',
     heart_count: 3,
+    title: null,
+    is_anonymous: false,
+    anonymous_alias: null,
     sender: {
       id: 'sender-1',
       full_name: 'Alice',
@@ -39,6 +42,8 @@ describe('mapKudosRowToCard', () => {
 
     expect(card).toEqual({
       id: 'kudos-1',
+      title: '',
+      isAnonymous: false,
       sender: {
         id: 'sender-1',
         fullName: 'Alice',
@@ -65,6 +70,42 @@ describe('mapKudosRowToCard', () => {
       ],
       images: ['img1', 'img2'],
     });
+  });
+
+  it('maps the award title (danh hiệu) onto the card', () => {
+    const card = mapKudosRowToCard(makeRow({ title: 'Người truyền động lực' }), {
+      likedByMe: new Set(),
+      receivedCounts: new Map(),
+    });
+    expect(card.title).toBe('Người truyền động lực');
+    expect(card.isAnonymous).toBe(false);
+  });
+
+  it('replaces the real sender with the alias when anonymous (never leaks identity)', () => {
+    const card = mapKudosRowToCard(
+      makeRow({ is_anonymous: true, anonymous_alias: 'Cổ động viên bí ẩn' }),
+      { likedByMe: new Set(), receivedCounts: new Map([['sender-1', 15]]) },
+    );
+    expect(card.isAnonymous).toBe(true);
+    expect(card.sender).toEqual({
+      id: '',
+      fullName: 'Cổ động viên bí ẩn',
+      department: '',
+      avatarUrl: '',
+      title: '',
+      starTier: 0,
+    });
+    // The real author ("Alice"/"sender-1") must appear nowhere on the client card.
+    expect(JSON.stringify(card)).not.toContain('Alice');
+    expect(JSON.stringify(card)).not.toContain('sender-1');
+  });
+
+  it('falls back to a generic label when anonymous with a blank alias', () => {
+    const card = mapKudosRowToCard(makeRow({ is_anonymous: true, anonymous_alias: '  ' }), {
+      likedByMe: new Set(),
+      receivedCounts: new Map(),
+    });
+    expect(card.sender.fullName).toBe('Người gửi ẩn danh');
   });
 
   it('folds likedByMe = true when the kudos id is in the liked set', () => {

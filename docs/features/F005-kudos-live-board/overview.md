@@ -117,5 +117,6 @@ FR1–FR11 above.
 - **SC12** DB migrations apply cleanly (tables + 2 views + RLS + CHECK + trigger); seed idempotent.
 
 ## Out of scope (this iteration)
-2nd rank-up leaderboard · Secret Box counters + "Mở quà" dialog · compose-Kudos dialog ·
+2nd rank-up leaderboard · Secret Box counters + "Mở quà" dialog ·
+compose-Kudos dialog (shipped as **F006** — see `docs/features/F006-viet-kudo/overview.md`) ·
 special-day +2 hearts · realtime/polling · user-profile & kudos-detail pages (link stubs only).
