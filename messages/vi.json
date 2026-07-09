@@ -94,7 +94,8 @@
     "widget": {
       "label": "Widget hành động nhanh",
       "writeKudos": "Viết Kudos",
-      "saaRules": "Thể lệ SAA"
+      "saaRules": "Thể lệ SAA",
+      "close": "Đóng"
     }
   },
   "Prelaunch": {
@@ -212,5 +213,52 @@
       "error": "Đã có lỗi xảy ra. Vui lòng thử lại.",
       "secretBoxComingSoon": "Tính năng Secret Box sẽ sớm ra mắt."
     }
+  },
+  "ComposeKudos": {
+    "title": "Gửi lời cám ơn và ghi nhận đến đồng đội",
+    "recipientLabel": "Người nhận",
+    "recipientPlaceholder": "Tìm kiếm",
+    "recipientEmpty": "Không tìm thấy Sunner nào",
+    "awardTitleLabel": "Danh hiệu",
+    "awardTitlePlaceholder": "Dành tặng một danh hiệu cho đồng đội",
+    "awardTitleHintExample": "Ví dụ: Người truyền động lực cho tôi.",
+    "awardTitleHintUsage": "Danh hiệu sẽ hiển thị làm tiêu đề Kudos của bạn.",
+    "contentPlaceholder": "Hãy gửi gắm lời cám ơn và ghi nhận đến đồng đội tại đây nhé!",
+    "mentionHint": "Bạn có thể \"@ + tên\" để nhắc tới đồng nghiệp khác",
+    "communityStandard": "Tiêu chuẩn cộng đồng",
+    "toolbar": {
+      "bold": "In đậm",
+      "italic": "In nghiêng",
+      "strike": "Gạch ngang",
+      "list": "Danh sách đánh số",
+      "link": "Chèn liên kết",
+      "quote": "Trích dẫn"
+    },
+    "hashtagLabel": "Hashtag",
+    "hashtagAdd": "Hashtag",
+    "hashtagMax": "Tối đa 5",
+    "hashtagPlaceholder": "Nhập hoặc chọn hashtag",
+    "imageLabel": "Image",
+    "imageAdd": "Image",
+    "imageMax": "Tối đa 5",
+    "anonymousLabel": "Gửi lời cám ơn và ghi nhận ẩn danh",
+    "anonymousAliasPlaceholder": "Nhập tên hiển thị ẩn danh",
+    "cancel": "Hủy",
+    "submit": "Gửi",
+    "linkPrompt": "Nhập đường dẫn (URL)",
+    "errors": {
+      "receiverRequired": "Vui lòng chọn người nhận",
+      "receiverSelf": "Bạn không thể gửi Kudo cho chính mình",
+      "titleRequired": "Không được để trống",
+      "contentRequired": "Không được để trống",
+      "hashtagsRequired": "Không được để trống",
+      "hashtagsTooMany": "Tối đa 5 hashtag",
+      "imagesTooMany": "Tối đa 5 ảnh",
+      "aliasRequired": "Vui lòng nhập tên ẩn danh",
+      "imageType": "Định dạng file không hợp lệ",
+      "imageSize": "Ảnh vượt quá 5MB",
+      "submitFailed": "Gửi Kudo thất bại. Vui lòng thử lại."
+    },
+    "success": "Đã gửi Kudo thành công!"
   }
 }

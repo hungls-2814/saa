@@ -94,7 +94,8 @@
     "widget": {
       "label": "Quick action widget",
       "writeKudos": "Write Kudos",
-      "saaRules": "SAA Rules"
+      "saaRules": "SAA Rules",
+      "close": "Close"
     }
   },
   "Prelaunch": {
@@ -212,5 +213,52 @@
       "error": "Something went wrong. Please try again.",
       "secretBoxComingSoon": "Secret Box is coming soon."
     }
+  },
+  "ComposeKudos": {
+    "title": "Send thanks and recognition to your teammate",
+    "recipientLabel": "Recipient",
+    "recipientPlaceholder": "Search",
+    "recipientEmpty": "No Sunner found",
+    "awardTitleLabel": "Title",
+    "awardTitlePlaceholder": "Give your teammate a title",
+    "awardTitleHintExample": "e.g. The one who motivates me.",
+    "awardTitleHintUsage": "The title is shown as your Kudos heading.",
+    "contentPlaceholder": "Share your thanks and recognition to your teammate here!",
+    "mentionHint": "You can \"@ + name\" to mention another colleague",
+    "communityStandard": "Community standards",
+    "toolbar": {
+      "bold": "Bold",
+      "italic": "Italic",
+      "strike": "Strikethrough",
+      "list": "Numbered list",
+      "link": "Insert link",
+      "quote": "Quote"
+    },
+    "hashtagLabel": "Hashtag",
+    "hashtagAdd": "Hashtag",
+    "hashtagMax": "Max 5",
+    "hashtagPlaceholder": "Type or pick a hashtag",
+    "imageLabel": "Image",
+    "imageAdd": "Image",
+    "imageMax": "Max 5",
+    "anonymousLabel": "Send thanks and recognition anonymously",
+    "anonymousAliasPlaceholder": "Enter an anonymous display name",
+    "cancel": "Cancel",
+    "submit": "Send",
+    "linkPrompt": "Enter a URL",
+    "errors": {
+      "receiverRequired": "Please choose a recipient",
+      "receiverSelf": "You cannot send a Kudo to yourself",
+      "titleRequired": "This field is required",
+      "contentRequired": "This field is required",
+      "hashtagsRequired": "This field is required",
+      "hashtagsTooMany": "Max 5 hashtags",
+      "imagesTooMany": "Max 5 images",
+      "aliasRequired": "Please enter an anonymous name",
+      "imageType": "Invalid file format",
+      "imageSize": "Image exceeds 5MB",
+      "submitFailed": "Failed to send Kudo. Please try again."
+    },
+    "success": "Kudo sent successfully!"
   }
 }
