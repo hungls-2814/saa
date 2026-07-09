@@ -47,8 +47,11 @@ Shared chrome: reused `SiteHeader` (active nav) + `SiteFooter`; a top banner + a
    limit 10; row = avatar + name (gold) + gift description. Empty: "Chưa có dữ liệu".
 
 Cross-cutting:
-- **FR7 — Like toggle** — persisted +1, one-per-user, self-like blocked; heart grey↔red +
-  count updates. (Special-day +2 DEFERRED.)
+- **FR7 — Like toggle** — persisted +1 (or +2 on a special day), one-per-user, self-like
+  blocked; heart grey↔red + count updates. Weight decided server-side at insert (`hearts.weight`,
+  trigger `set_heart_weight()`) — a like is worth 2 iff its calendar day (Asia/Ho_Chi_Minh) is
+  listed in `special_days`; frozen on the row once inserted. No client input, no UI change —
+  the count simply reflects the weighted sum.
 - **FR8 — Copy Link** — copies kudos link → toast "Link copied — ready to share!".
 - **FR9 — Auth gate** — `/kudos` in `PROTECTED_PATHS` (proxy) + server-page `getUser()` →
   `redirect('/login')` (defense-in-depth).
@@ -75,13 +78,17 @@ Tables: `departments(id, name)`, `profiles(id → auth.users, full_name, departm
 avatar_url, title, created_at)`, `kudos(id, sender_id → profiles, receiver_id → profiles, content,
 created_at)` with CHECK `sender_id <> receiver_id` (no self-kudos), `hashtags(id, label)`,
 `kudos_hashtags(kudos_id, hashtag_id)` join, `kudos_images(kudos_id, url)` (client caps at 5),
-`hearts(user_id, kudos_id, created_at)` PK`(user_id,kudos_id)`, `gifts(id, recipient_id, description,
-awarded_at)`.
+`hearts(user_id, kudos_id, created_at, weight smallint 1|2 default 1)` PK`(user_id,kudos_id)`,
+`special_days(day date primary key, label, created_at)` — data-driven calendar of "special" days
+(Asia/Ho_Chi_Minh); a like's weight is 2 iff its insert day is listed here, else 1 — decided by
+BEFORE INSERT trigger `set_heart_weight()` on `hearts` (unconditional, so clients can't forge +2),
+`gifts(id, recipient_id, description, awarded_at)`.
 
 Derived (not stored):
-- **`kudos_with_heart_count`** VIEW — `kudos` LEFT JOIN `hearts`, `COUNT` → `heart_count`.
+- **`kudos_with_heart_count`** VIEW — `kudos` LEFT JOIN `hearts`, `SUM(weight)` → `heart_count`.
 - **`profile_kudos_stats`** VIEW — per profile: `received_count`, `sent_count`, `hearts_received`
-  (serves both FR5 per-user stats and FR11 sender star-tier).
+  (= `SUM(weight)` of hearts on the profile's kudos; serves both FR5 per-user stats and FR11
+  sender star-tier).
 - star-tier = pure fn of `received_count` (10 / 20 / 50 → 1 / 2 / 3).
 
 RLS: reads require `authenticated` (board isn't per-tenant); `hearts` insert/delete only own rows,
@@ -119,4 +126,4 @@ FR1–FR11 above.
 ## Out of scope (this iteration)
 2nd rank-up leaderboard · Secret Box counters + "Mở quà" dialog ·
 compose-Kudos dialog (shipped as **F006** — see `docs/features/F006-viet-kudo/overview.md`) ·
-special-day +2 hearts · realtime/polling · user-profile & kudos-detail pages (link stubs only).
+realtime/polling · user-profile & kudos-detail pages (link stubs only).

@@ -88,3 +88,6 @@ export const GIFT_IDS = Array.from(
   { length: 10 },
   (_, i) => `d0a10000-0000-4000-8000-${i.toString().padStart(12, "0")}`,
 );
+
+/** F005 increment: seeded special day(s) — a like on this VN-calendar date is worth +2 hearts. */
+export const SPECIAL_DAYS = [{ day: "2026-12-26", label: "SAA 2025 gala" }];

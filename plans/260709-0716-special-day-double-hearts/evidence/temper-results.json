@@ -1,0 +1,32 @@
+{
+  "commands": [
+    {
+      "command": "npm run typecheck",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "tsc --noEmit — 0 errors across the changed lib/kudos + scripts and the rest of the tree.",
+      "ts": "2026-07-09T07:32:00.000Z"
+    },
+    {
+      "command": "npm test",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "vitest run — 753/753 tests passed across 60 files; lib/kudos/actions.test.ts 15/15 (actions.ts 100% stmts, 96.15% branches). No regressions.",
+      "ts": "2026-07-09T07:31:00.000Z"
+    },
+    {
+      "command": "docker exec supabase_db psql — apply migration + trigger proof (transaction, rolled back)",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "Live Postgres: SC-C normal-day forged weight=2 stored as 1 (sum base+1); SC-B special-day (today VN) asked weight=1 stored as 2 (sum base+2); SC-D un-like returns sum to base. Then rolled back and reverted — local DB left as found.",
+      "ts": "2026-07-09T07:40:00.000Z"
+    },
+    {
+      "command": "docker exec supabase_db psql — view-replace on HEAD schema (transaction, rolled back)",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "With F006 compose columns present, both CREATE OR REPLACE VIEW statements apply cleanly; kudos_with_heart_count keeps its 9-column order (…,heart_count,title,is_anonymous,anonymous_alias) and a weighted heart_count query runs. Confirms SC-A on repo-HEAD schema (raw local failure was pure DB staleness).",
+      "ts": "2026-07-09T07:42:00.000Z"
+    }
+  ]
+}

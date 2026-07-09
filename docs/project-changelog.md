@@ -26,6 +26,39 @@ design. Released as **0.3.0** (first minor bump — F006 is a new user-facing fe
 - Homepage FAB uses the real red Sun\* brand mark + design-accurate pill styling.
 - Storage bucket/policy block made idempotent + hosted-Supabase-safe.
 
+## 2026-07-09 — F005: Special-day double hearts (FR7 +2)
+
+Lift the F005 deferral: on a VN-calendar special day, a like is worth **+2** hearts instead of +1. Weight
+decided at insert-time by a DB trigger, frozen on the row — clients cannot forge a +2.
+
+### Added
+- **`special_days` table** — one row per VN-calendar special day (`day` date primary key, `label` text).
+  RLS grants to `authenticated` (select only) and `service_role` (full CRUD). Idempotent seed includes
+  `2026-12-26` (SAA 2025 gala).
+- **`hearts.weight` column** — smallint, default 1, constraint `weight in (1, 2)`. Populated by trigger.
+- **Weight trigger** (`set_heart_weight()`) — SECURITY DEFINER, checks if today (VN timezone, 
+  `Asia/Ho_Chi_Minh`) is in `special_days`, sets `weight := 2` if yes, else `1`. Runs before insert,
+  sole authority — even a compromised client cannot bypass it.
+- **Weighted views** — `kudos_with_heart_count` and `profile_kudos_stats` recomputed to sum
+  `hearts.weight` instead of counting rows, so heart_count reflects weighted values. Both views keep
+  `security_invoker=true` and anon revoke.
+- **Server action** (`toggleHeartAction`) — reads weighted count from `kudos_with_heart_count` view
+  instead of a raw COUNT, preserving all error handling + self-like block.
+
+### Verified (live-DB smoke test)
+- Forged weight=2 on normal day → stored 1 (trigger override)
+- Special-day insert → stored 2 (trigger active)
+- Un-like returns count to base (no orphan weight rows)
+
+### Tests
+- Full suite 753/753 passing; `actions.test.ts` 15/15 green; typecheck clean.
+- Vitest mocks seed scenarios; trigger behavior verified against live Postgres.
+
+### Notes
+- No UI change; feature is transparent to the board UI.
+- Timezone lives in SQL (`now() at time zone 'Asia/Ho_Chi_Minh'`) — no app-side date math.
+- See `plans/260709-0716-special-day-double-hearts/` for implementation details.
+
 ## 2026-07-08 — F006: Viết Kudo (Compose Kudos) — modal compose flow
 
 Compose-Kudos modal dialog for creating new kudos, opened from the homepage FAB ("Viết KUDOS")

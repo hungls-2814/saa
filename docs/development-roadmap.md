@@ -28,6 +28,10 @@ a route guard.
       (migrations + RLS + seed script); implementation + tests complete. Manual DB smoke
       (`supabase db push` + `db:seed` + anon-view REST check) still pending before production
       — no DB creds available at implementation time.
+      - [x] **FR7 +2: Special-day double hearts** — shipped 2026-07-09. Weighted hearts via DB
+            trigger (SECURITY DEFINER); `special_days` table + `hearts.weight` column; VN timezone
+            support (Asia/Ho_Chi_Minh). Weight frozen at insert by trigger — clients cannot forge +2.
+            Tests 753/753 green; live-DB verified.
 - [x] F006 — Viết Kudo (Compose Kudos) — modal dialog (recipient autocomplete, title,
       markdown content with toolbar, hashtags 1–5, image upload ≤5 to Storage, anonymous alias)
       opened from FAB and board trigger; persists via server action; new kudos appear on board.

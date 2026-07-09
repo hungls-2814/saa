@@ -1,0 +1,13 @@
+{
+  "task": "F005 increment — special-day double hearts (FR7 +2): on a special day (a VN-calendar date present in a new special_days DB table) a like is worth +2 hearts instead of +1. Weight decided by a DB trigger at insert-time and frozen on the row; no UI change (heart count reflects a weighted SUM).",
+  "mode": "interactive",
+  "acceptanceCriteria": [
+    "SC-A migration applies cleanly (weight column + special_days table/RLS/grants + trigger + both views recomputed to sum(weight)); idempotent seed adds the configured special day",
+    "SC-B on a special day one like moves heart_count by +2 and receiver hearts_received by +2; normal day by +1 (live-DB)",
+    "SC-C a forged insert with weight=2 on a normal day is overwritten to 1 by the trigger (live-DB)",
+    "SC-D self-like still blocked; un-like removes the full weight (count returns to base)",
+    "SC-E toggleHeartAction unit tests pass against the weighted view-read (mocked)"
+  ],
+  "blastRadius": "New migration supabase/migrations/20260709070000_special_day_hearts.sql (alter hearts + new special_days + trigger + replace 2 views). Edit lib/kudos/actions.ts (toggleHeartAction count-read → weighted view). Edit lib/kudos/actions.test.ts. Seed: scripts/seed-kudos-data.ts + seed-kudos-domain.ts + seed-kudos.ts. No UI, i18n, or app/ changes; queries-internal.ts/map-card.ts already read heart_count off the view so weighting flows through untouched.",
+  "contracts": "hearts.weight (smallint 1|2) is DB-owned — the BEFORE INSERT trigger set_heart_weight() is the sole authority; clients cannot forge +2. Views kudos_with_heart_count.heart_count and profile_kudos_stats.hearts_received keep their bigint type (sum(smallint)->bigint == count->bigint), so no TS consumer contract drifts."
+}

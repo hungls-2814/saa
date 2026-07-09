@@ -98,7 +98,11 @@ i18n/{request,config}.ts      # next-intl config + client-safe constants
 messages/{vi,en}.json         # translation catalogs
 supabase/migrations/          # Postgres schema (F005): tables + 2 views + RLS + signup trigger;
                                # (F006): compose columns (title, is_anonymous, anonymous_alias) +
-                               # insert/delete RLS + `kudos-images` Storage bucket + policies —
+                               # insert/delete RLS + `kudos-images` Storage bucket + policies;
+                               # (F005 FR7 +2): `hearts.weight` smallint(1|2) + `special_days`
+                               # table + BEFORE INSERT trigger `set_heart_weight()` (decides the
+                               # weight server-side, Asia/Ho_Chi_Minh calendar day) + both views
+                               # recomputed to SUM(weight) instead of COUNT —
                                # migrations-only; never hand-edit the DB
 scripts/seed-kudos*.ts        # service-role seed script (npm run db:seed) for the kudos data layer
 ```

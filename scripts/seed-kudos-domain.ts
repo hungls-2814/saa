@@ -11,6 +11,7 @@ import {
   HASHTAGS,
   KUDOS_IDS,
   KUDOS_TITLES,
+  SPECIAL_DAYS,
   SUNNERS,
   THANK_YOU_CONTENT,
 } from "./seed-kudos-data";
@@ -109,5 +110,15 @@ export async function upsertGifts(
     awarded_at: new Date(Date.now() - i * 60 * 60 * 1000).toISOString(),
   }));
   const { error } = await supabase.from("gifts").upsert(rows, { onConflict: "id" });
+  if (error) throw error;
+}
+
+/**
+ * F005 increment: seeds the special_days table with the real SAA gala date
+ * (2026-12-26). Likes made on that VN-calendar day are weighted +2. To exercise
+ * the +2 path on an arbitrary day, insert today's date into special_days.
+ */
+export async function upsertSpecialDays(supabase: SupabaseClient): Promise<void> {
+  const { error } = await supabase.from("special_days").upsert(SPECIAL_DAYS, { onConflict: "day" });
   if (error) throw error;
 }
