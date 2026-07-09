@@ -118,7 +118,7 @@ export function ComposeHashtagField({
               );
             })}
             {suggestions.length === 0 && (
-              <li className="px-4 py-3 text-sm font-bold text-white/60">{t("recipientEmpty")}</li>
+              <li className="px-4 py-3 text-sm font-bold text-white/60">{t("hashtagEmpty")}</li>
             )}
           </ul>
         )}

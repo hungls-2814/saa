@@ -279,7 +279,7 @@ describe('ComposeHashtagField', () => {
       const triggerButton = getByRole('button', { name: /hashtagAdd/ });
       await userEvent.click(triggerButton);
 
-      expect(screen.getByText('recipientEmpty')).toBeInTheDocument();
+      expect(screen.getByText('hashtagEmpty')).toBeInTheDocument();
     });
   });
 

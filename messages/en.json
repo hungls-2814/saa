@@ -264,6 +264,7 @@
     "linkContent": "Content",
     "linkUrl": "URL",
     "linkSave": "Save",
-    "imageUploading": "Uploading image"
+    "imageUploading": "Uploading image",
+    "hashtagEmpty": "No hashtags yet"
   }
 }

@@ -264,6 +264,7 @@
     "linkContent": "Nội dung",
     "linkUrl": "URL",
     "linkSave": "Lưu",
-    "imageUploading": "Đang tải ảnh lên"
+    "imageUploading": "Đang tải ảnh lên",
+    "hashtagEmpty": "Chưa có hashtag nào"
   }
 }
