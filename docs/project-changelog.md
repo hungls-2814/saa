@@ -3,6 +3,29 @@
 All notable changes to this project are recorded here. Format loosely follows
 [Keep a Changelog](https://keepachangelog.com/); dates are `YYYY-MM-DD`.
 
+## 2026-07-10 — CI/CD pipeline restructure: PR preview + merge-triggered deploy (0.4.2)
+
+Reworked the deploy triggers so production ships on merge, and PRs get a live preview. Config
+and docs only; no application-code changes.
+
+### Changed
+- **CD trigger** (`.github/workflows/cd.yml`) — now runs on **push to `main`** (a PR merge)
+  instead of chaining off CI via `workflow_run`. Runs the quality gates in-workflow (`deploy`
+  `needs: test`), so main is validated on the merged commit right before the Vercel Production
+  deploy. Deploy fires on merge, not merely because CI passed.
+- **CI scope** (`.github/workflows/ci.yml`) — narrowed to `pull_request` only (dropped
+  `push: main`), so `main` is no longer tested twice per merge.
+
+### Added
+- **PR Preview deploy** (`.github/workflows/ci.yml`) — gated `preview` job (`needs: test`) builds
+  a Vercel **Preview** after the quality gates pass and posts/updates the preview URL as a PR
+  comment.
+
+### Docs
+- **Vercel guide** (`docs/setup/vercel-deployment.md`) — updated flow, and noted the app env vars
+  must be set for the **Preview** environment too (plus adding preview URLs to Supabase OAuth
+  redirect allowlist).
+
 ## 2026-07-09 — CI/CD (Vercel) + README & environment docs (0.4.1)
 
 Project onboarding + deployment automation. No application-code changes; docs, config, and

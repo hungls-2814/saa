@@ -1,15 +1,13 @@
 name: CD
 
-# Deploys to Vercel (Production). Chained off the CI workflow: it only runs
-# after CI completes on main, and only deploys if that CI run passed — so a
-# failing lint/typecheck/test never reaches production.
+# Deploys to Vercel (Production) when main is updated (i.e. a PR is merged, or a
+# commit is pushed to main). Runs the quality gates first: the `deploy` job
+# `needs: test`, so a failing lint/typecheck/test never reaches production.
 #
 # Required repo secrets: VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID
 # See docs/setup/vercel-deployment.md for how to obtain them.
 on:
-  workflow_run:
-    workflows: [CI]
-    types: [completed]
+  push:
     branches: [main]
 
 concurrency:
@@ -17,19 +15,38 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  test:
+    name: Lint · Typecheck · Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test
+        run: npm test
+
   deploy:
     name: Deploy to Vercel (Production)
-    # Guard: only deploy when the triggering CI run succeeded.
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    # Gate: only deploy after the quality gates pass on the merged main commit.
+    needs: test
     runs-on: ubuntu-latest
     env:
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
     steps:
       - uses: actions/checkout@v4
-        with:
-          # workflow_run defaults to the default branch; pin to the exact commit CI validated.
-          ref: ${{ github.event.workflow_run.head_sha }}
 
       - uses: actions/setup-node@v4
         with:
