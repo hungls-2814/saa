@@ -20,6 +20,12 @@ vi.mock("next-intl", () => ({
           hours: "HOURS",
           minutes: "MINUTES",
         },
+        Prelaunch: {
+          previewHeading: "PREVIEW_HEADING",
+          previewNotice: "PREVIEW_NOTICE",
+          introHeading: "INTRO_HEADING",
+          introNotice: "INTRO_NOTICE",
+        },
       };
       return translations[namespace]?.[key] || key;
     };
@@ -146,6 +152,37 @@ describe("PrelaunchCountdown", () => {
 
     expect(screen.getAllByText("0")).toHaveLength(6);
     expect(mockReplace).toHaveBeenCalledWith("/");
+  });
+
+  it("renders the intro splash banner from i18n (not hardcoded copy)", () => {
+    vi.setSystemTime(new Date("2026-12-24T18:30:00+07:00"));
+    render(
+      <PrelaunchCountdown
+        targetIso="2026-12-26T20:31:00+07:00"
+        demoSeconds={10}
+        demoVariant="intro"
+      />,
+    );
+
+    expect(screen.getByText("INTRO_HEADING")).toBeInTheDocument();
+    // Notice text and the seconds are separate nodes; assert the translated
+    // notice plus the countdown value both show.
+    expect(screen.getByText(/INTRO_NOTICE/)).toBeInTheDocument();
+    expect(screen.getByText("10s")).toBeInTheDocument();
+  });
+
+  it("renders the preview banner variant from i18n", () => {
+    vi.setSystemTime(new Date("2026-12-24T18:30:00+07:00"));
+    render(
+      <PrelaunchCountdown
+        targetIso="2026-12-26T20:31:00+07:00"
+        demoSeconds={10}
+        demoVariant="preview"
+      />,
+    );
+
+    expect(screen.getByText("PREVIEW_HEADING")).toBeInTheDocument();
+    expect(screen.getByText(/PREVIEW_NOTICE/)).toBeInTheDocument();
   });
 
   it("displays consistent labels across re-renders", () => {

@@ -99,7 +99,11 @@
     }
   },
   "Prelaunch": {
-    "title": "Sự kiện sẽ bắt đầu sau"
+    "title": "Sự kiện sẽ bắt đầu sau",
+    "previewHeading": "⚠️ Chế độ Preview",
+    "previewNotice": "Trang này sẽ tự chuyển sang trang chủ sau",
+    "introHeading": "🎉 Chào mừng",
+    "introNotice": "Đang chuyển tới trang chủ sau"
   },
   "AwardsPage": {
     "hero": {

@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { getTranslations } from "next-intl/server";
 import { resolveEventTargetIso } from "@/lib/event/countdown";
+import { PREVIEW_COOKIE } from "@/lib/prelaunch/cookies";
 import { montserrat } from "./fonts";
 import { PrelaunchCountdown } from "./components/prelaunch-countdown";
+
+// Length of both the reviewer-preview demo and the first-visit intro splash.
+const SPLASH_SECONDS = 10;
 
 export const metadata: Metadata = {
   title: "Sun* Annual Awards 2025",
@@ -19,8 +24,22 @@ export const metadata: Metadata = {
  * the design's gradient cover (node 2268:35130) for text contrast. Title +
  * countdown are centered over it.
  */
-export default async function PrelaunchPage() {
+export default async function PrelaunchPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ preview?: string; intro?: string }>;
+}) {
   const t = await getTranslations("Prelaunch");
+  const [cookieStore, params] = await Promise.all([cookies(), searchParams]);
+  // Reviewer preview: on via the just-set query param (first hit, cookie not
+  // yet in the request) or the persisted cookie (subsequent navigations).
+  const isPreview =
+    params.preview === "1" || cookieStore.get(PREVIEW_COOKIE)?.value === "1";
+  // First-visit intro splash: proxy.ts sends the home route here with
+  // `?intro=1` once per session (after launch). Cookie is NOT consulted here —
+  // its presence means "already seen", i.e. do NOT replay the splash.
+  const isIntro = !isPreview && params.intro === "1";
+  const splash = isPreview || isIntro;
 
   return (
     <div
@@ -44,7 +63,11 @@ export default async function PrelaunchPage() {
         <p className="text-2xl leading-8 font-bold text-white sm:text-3xl sm:leading-10 lg:text-4xl lg:leading-[48px]">
           {t("title")}
         </p>
-        <PrelaunchCountdown targetIso={resolveEventTargetIso()} />
+        <PrelaunchCountdown
+          targetIso={resolveEventTargetIso()}
+          demoSeconds={splash ? SPLASH_SECONDS : undefined}
+          demoVariant={isPreview ? "preview" : "intro"}
+        />
       </div>
     </div>
   );

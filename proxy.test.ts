@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { proxy } from './proxy';
 
 // Mock updateSession
@@ -24,11 +24,15 @@ describe('proxy(request)', () => {
     // Default the whole suite to "after launch" so existing route-guard
     // expectations hold; the prelaunch-gate block overrides this to a future date.
     process.env.NEXT_PUBLIC_EVENT_DATETIME = PAST_LAUNCH;
+    // Default to production so the gate is fully active and auto-preview is
+    // OFF; the auto-preview block overrides this to a non-production env.
+    process.env.VERCEL_ENV = 'production';
     mockUpdateSession = vi.mocked(updateSession);
   });
 
   afterEach(() => {
     delete process.env.NEXT_PUBLIC_EVENT_DATETIME;
+    delete process.env.VERCEL_ENV;
   });
 
   describe('authenticated user on login page (/login)', () => {
@@ -150,7 +154,10 @@ describe('proxy(request)', () => {
     });
 
     it('allows access to / (home) when unauthenticated', async () => {
-      const request = new NextRequest('http://localhost:3000/');
+      // Returning visitor: intro already seen this session, so no splash.
+      const request = new NextRequest('http://localhost:3000/', {
+        headers: { cookie: 'saa_intro_seen=1' },
+      });
       const response = await proxy(request);
 
       expect(response.status).toBe(200);
@@ -240,11 +247,118 @@ describe('proxy(request)', () => {
       expect(response.status).toBe(200);
     });
 
+    it('strips a stray ?intro=1 before launch so the post-launch splash cannot render', async () => {
+      const request = new NextRequest('http://localhost:3000/prelaunch?intro=1');
+      const response = await proxy(request);
+
+      expect(response.status).toBe(307);
+      const location = new URL(response.headers.get('location')!);
+      expect(location.pathname).toBe('/prelaunch');
+      expect(location.searchParams.get('intro')).toBeNull();
+    });
+
     it('does not call updateSession on the redirect hot path', async () => {
       const request = new NextRequest('http://localhost:3000/home');
       await proxy(request);
 
       expect(mockUpdateSession).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('reviewer preview bypass', () => {
+    beforeEach(() => {
+      // Before launch, so the gate would normally lock everything down.
+      process.env.NEXT_PUBLIC_EVENT_DATETIME = FUTURE_LAUNCH;
+      mockUpdateSession.mockResolvedValue({
+        // NextResponse so proxy can attach the preview cookie.
+        supabaseResponse: NextResponse.next(),
+        user: null,
+      });
+    });
+
+    it('serves a public route when ?preview=1 is present, instead of gating to /prelaunch', async () => {
+      const request = new NextRequest('http://localhost:3000/home?preview=1');
+      const response = await proxy(request);
+
+      expect(response.status).toBe(200);
+    });
+
+    it('sets the saa_preview cookie on ?preview=1 so the opt-in persists', async () => {
+      const request = new NextRequest('http://localhost:3000/home?preview=1');
+      const response = await proxy(request);
+
+      expect(response.cookies.get('saa_preview')?.value).toBe('1');
+    });
+
+    it('bypasses the gate on subsequent routes when the saa_preview cookie is set', async () => {
+      const request = new NextRequest('http://localhost:3000/home', {
+        headers: { cookie: 'saa_preview=1' },
+      });
+      const response = await proxy(request);
+
+      expect(response.status).toBe(200);
+    });
+
+    it('does not gate /prelaunch itself in preview mode', async () => {
+      const request = new NextRequest('http://localhost:3000/prelaunch', {
+        headers: { cookie: 'saa_preview=1' },
+      });
+      const response = await proxy(request);
+
+      expect(response.status).toBe(200);
+    });
+
+    it('still redirects to /prelaunch before launch when no preview opt-in is present', async () => {
+      const request = new NextRequest('http://localhost:3000/home');
+      const response = await proxy(request);
+
+      expect(response.status).toBe(307);
+      expect(new URL(response.headers.get('location')!).pathname).toBe('/prelaunch');
+    });
+  });
+
+  describe('auto-preview (non-production)', () => {
+    beforeEach(() => {
+      process.env.NEXT_PUBLIC_EVENT_DATETIME = FUTURE_LAUNCH;
+      // Non-production: a Vercel preview deployment (reviewers land here).
+      process.env.VERCEL_ENV = 'preview';
+      mockUpdateSession.mockResolvedValue({
+        supabaseResponse: NextResponse.next(),
+        user: null,
+      });
+    });
+
+    it('auto-redirects a bare /prelaunch hit to /prelaunch?preview=1', async () => {
+      const request = new NextRequest('http://localhost:3000/prelaunch');
+      const response = await proxy(request);
+
+      expect(response.status).toBe(307);
+      const location = new URL(response.headers.get('location')!);
+      expect(location.pathname).toBe('/prelaunch');
+      expect(location.searchParams.get('preview')).toBe('1');
+    });
+
+    it('does not loop: /prelaunch?preview=1 is served, not re-redirected', async () => {
+      const request = new NextRequest('http://localhost:3000/prelaunch?preview=1');
+      const response = await proxy(request);
+
+      expect(response.status).toBe(200);
+    });
+
+    it('is disabled in production — bare /prelaunch stays the real countdown', async () => {
+      process.env.VERCEL_ENV = 'production';
+      const request = new NextRequest('http://localhost:3000/prelaunch');
+      const response = await proxy(request);
+
+      expect(response.status).toBe(200);
+    });
+
+    it('does not auto-preview other routes — they still gate to /prelaunch', async () => {
+      const request = new NextRequest('http://localhost:3000/home');
+      const response = await proxy(request);
+
+      expect(response.status).toBe(307);
+      expect(new URL(response.headers.get('location')!).pathname).toBe('/prelaunch');
     });
   });
 
@@ -257,12 +371,74 @@ describe('proxy(request)', () => {
       });
     });
 
-    it('redirects /prelaunch to / once the countdown has ended', async () => {
-      const request = new NextRequest('http://localhost:3000/prelaunch');
+    it('redirects /prelaunch to / once the countdown has ended (intro already seen)', async () => {
+      const request = new NextRequest('http://localhost:3000/prelaunch', {
+        headers: { cookie: 'saa_intro_seen=1' },
+      });
       const response = await proxy(request);
 
       expect(response.status).toBe(307);
       expect(new URL(response.headers.get('location')!).pathname).toBe('/');
+    });
+  });
+
+  describe('first-visit intro splash (after launch)', () => {
+    beforeEach(() => {
+      // After launch + production, so the intro (not the hard gate) governs.
+      process.env.NEXT_PUBLIC_EVENT_DATETIME = PAST_LAUNCH;
+      process.env.VERCEL_ENV = 'production';
+      mockUpdateSession.mockResolvedValue({
+        supabaseResponse: NextResponse.next(),
+        user: null,
+      });
+    });
+
+    it('sends a first-time visit to / over to /prelaunch?intro=1', async () => {
+      const request = new NextRequest('http://localhost:3000/');
+      const response = await proxy(request);
+
+      expect(response.status).toBe(307);
+      const location = new URL(response.headers.get('location')!);
+      expect(location.pathname).toBe('/prelaunch');
+      expect(location.searchParams.get('intro')).toBe('1');
+    });
+
+    it('normalizes a bare /prelaunch hit to /prelaunch?intro=1 when not yet seen', async () => {
+      const request = new NextRequest('http://localhost:3000/prelaunch');
+      const response = await proxy(request);
+
+      expect(response.status).toBe(307);
+      const location = new URL(response.headers.get('location')!);
+      expect(location.pathname).toBe('/prelaunch');
+      expect(location.searchParams.get('intro')).toBe('1');
+    });
+
+    it('serves /prelaunch?intro=1 and stamps a session (non-persistent) intro cookie', async () => {
+      const request = new NextRequest('http://localhost:3000/prelaunch?intro=1');
+      const response = await proxy(request);
+
+      expect(response.status).toBe(200);
+      const cookie = response.cookies.get('saa_intro_seen');
+      expect(cookie?.value).toBe('1');
+      // Session cookie: no explicit lifetime.
+      expect(cookie?.maxAge).toBeUndefined();
+      expect(cookie?.expires).toBeUndefined();
+    });
+
+    it('lets a returning visitor (cookie set) reach / without the splash', async () => {
+      const request = new NextRequest('http://localhost:3000/', {
+        headers: { cookie: 'saa_intro_seen=1' },
+      });
+      const response = await proxy(request);
+
+      expect(response.status).toBe(200);
+    });
+
+    it('does not hijack deep routes — only / and /prelaunch trigger the intro', async () => {
+      const request = new NextRequest('http://localhost:3000/about');
+      const response = await proxy(request);
+
+      expect(response.status).toBe(200);
     });
   });
 });

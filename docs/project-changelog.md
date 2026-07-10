@@ -3,6 +3,34 @@
 All notable changes to this project are recorded here. Format loosely follows
 [Keep a Changelog](https://keepachangelog.com/); dates are `YYYY-MM-DD`.
 
+## 2026-07-10 — Prelaunch: reviewer preview bypass + first-visit intro splash (0.4.3)
+
+Made the `/prelaunch` launch gate reviewable and added a one-time intro splash, all in the
+Next 16 route guard (`proxy.ts`). No change to the real launch-gate behavior for production
+visitors before the event.
+
+### Added
+- **Reviewer preview bypass** (`proxy.ts`, `app/prelaunch/`) — `?preview=1` sets an httpOnly
+  `saa_preview` cookie that bypasses the prelaunch launch gate, so reviewers can browse the whole
+  app AND still view `/prelaunch` before the event date. Auto-enabled OUTSIDE production only
+  (`VERCEL_ENV !== "production"`, i.e. local dev + Vercel Preview) by redirecting bare
+  `/prelaunch` → `/prelaunch?preview=1`; the production domain never auto-previews (manual
+  `?preview=1` still works). Auth guards are unaffected — preview only bypasses the launch gate.
+- **First-visit intro splash** (`proxy.ts`, `app/prelaunch/`) — AFTER launch, the first hit to
+  `/` in a browsing session is routed through `/prelaunch?intro=1`, which shows a 10s countdown
+  then redirects home. A session cookie `saa_intro_seen` (no expiry) plays it once per session.
+  Only `/` and `/prelaunch` are involved; deep/auth routes are never hijacked.
+
+### Changed
+- **Prelaunch countdown** (`app/prelaunch/components/prelaunch-countdown.tsx`) — a visible splash
+  timer + prominent notice; `demoVariant` selects reviewer ("⚠️ Chế độ Preview") vs real-visitor
+  ("🎉 Chào mừng") copy over the same 10s → home transition.
+
+### Tests
+- **`proxy.test.ts`** — added coverage for preview bypass, non-production auto-preview, and the
+  after-launch first-visit intro (redirect chain, session-cookie stamping, no-hijack of deep
+  routes). Full suite: 839 passing.
+
 ## 2026-07-10 — CI/CD pipeline restructure: PR preview + merge-triggered deploy (0.4.2)
 
 Reworked the deploy triggers so production ships on merge, and PRs get a live preview. Config
