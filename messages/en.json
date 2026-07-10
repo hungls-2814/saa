@@ -99,7 +99,11 @@
     }
   },
   "Prelaunch": {
-    "title": "Event starts in"
+    "title": "Event starts in",
+    "previewHeading": "⚠️ Preview mode",
+    "previewNotice": "This page will redirect to the homepage in",
+    "introHeading": "🎉 Welcome",
+    "introNotice": "Redirecting to the homepage in"
   },
   "AwardsPage": {
     "hero": {
