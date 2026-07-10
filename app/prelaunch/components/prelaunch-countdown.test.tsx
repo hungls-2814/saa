@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, act } from "@testing-library/react";
 import { PrelaunchCountdown } from "./prelaunch-countdown";
 
 // Mock next/navigation
@@ -57,10 +57,12 @@ describe("PrelaunchCountdown", () => {
   beforeEach(() => {
     vi.useFakeTimers();
     vi.clearAllMocks();
+    sessionStorage.clear();
   });
 
   afterEach(() => {
     vi.useRealTimers();
+    sessionStorage.clear();
   });
 
   it("renders three CountdownUnit components (days, hours, minutes)", () => {
@@ -169,6 +171,29 @@ describe("PrelaunchCountdown", () => {
     // notice plus the countdown value both show.
     expect(screen.getByText(/INTRO_NOTICE/)).toBeInTheDocument();
     expect(screen.getByText("10s")).toBeInTheDocument();
+  });
+
+  it("marks the intro done (sessionStorage) and redirects home when the splash finishes", () => {
+    // Future target so the real countdown is NOT ended — only the demo timer
+    // drives the redirect.
+    vi.setSystemTime(new Date("2026-12-24T18:30:00+07:00"));
+    render(
+      <PrelaunchCountdown
+        targetIso="2026-12-26T20:31:00+07:00"
+        demoSeconds={1}
+        demoVariant="intro"
+      />,
+    );
+
+    expect(sessionStorage.getItem("saa_intro_done")).toBeNull();
+
+    // Advance past the 1s demo tick so demoRemaining reaches 0.
+    act(() => {
+      vi.advanceTimersByTime(1100);
+    });
+
+    expect(sessionStorage.getItem("saa_intro_done")).toBe("1");
+    expect(mockReplace).toHaveBeenCalledWith("/");
   });
 
   it("renders the preview banner variant from i18n", () => {

@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { cookies } from "next/headers";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale } from "next-intl/server";
+import { PREVIEW_COOKIE } from "@/lib/prelaunch/cookies";
+import { IntroGate } from "./components/intro-gate";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -26,6 +29,10 @@ export default async function RootLayout({
 }>) {
   // Locale is resolved from the NEXT_LOCALE cookie via i18n/request.ts.
   const locale = await getLocale();
+  // Reviewer preview: read the httpOnly cookie server-side (client JS cannot)
+  // so IntroGate can exempt reviewers from the forced intro splash.
+  const previewActive =
+    (await cookies()).get(PREVIEW_COOKIE)?.value === "1";
 
   return (
     <html
@@ -37,7 +44,11 @@ export default async function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         {/* NextIntlClientProvider auto-infers locale + messages from the request config. */}
-        <NextIntlClientProvider>{children}</NextIntlClientProvider>
+        <NextIntlClientProvider>
+          {/* Tab-scoped first-visit intro gate on `/` (see IntroGate). */}
+          <IntroGate previewActive={previewActive} />
+          {children}
+        </NextIntlClientProvider>
       </body>
     </html>
   );
