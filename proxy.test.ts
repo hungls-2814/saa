@@ -24,15 +24,15 @@ describe('proxy(request)', () => {
     // Default the whole suite to "after launch" so existing route-guard
     // expectations hold; the prelaunch-gate block overrides this to a future date.
     process.env.NEXT_PUBLIC_EVENT_DATETIME = PAST_LAUNCH;
-    // Default to production so the gate is fully active and auto-preview is
-    // OFF; the auto-preview block overrides this to a non-production env.
-    process.env.VERCEL_ENV = 'production';
+    // Default: auto-preview flag OFF, so the gate is fully active; the
+    // auto-preview block flips PRELAUNCH_AUTO_PREVIEW on.
+    delete process.env.PRELAUNCH_AUTO_PREVIEW;
     mockUpdateSession = vi.mocked(updateSession);
   });
 
   afterEach(() => {
     delete process.env.NEXT_PUBLIC_EVENT_DATETIME;
-    delete process.env.VERCEL_ENV;
+    delete process.env.PRELAUNCH_AUTO_PREVIEW;
   });
 
   describe('authenticated user on login page (/login)', () => {
@@ -154,10 +154,9 @@ describe('proxy(request)', () => {
     });
 
     it('allows access to / (home) when unauthenticated', async () => {
-      // Returning visitor: intro already seen this session, so no splash.
-      const request = new NextRequest('http://localhost:3000/', {
-        headers: { cookie: 'saa_intro_seen=1' },
-      });
+      // After launch the server serves `/` directly; the first-visit intro is
+      // handled client-side (IntroGate), not by a server redirect.
+      const request = new NextRequest('http://localhost:3000/');
       const response = await proxy(request);
 
       expect(response.status).toBe(200);
@@ -247,16 +246,6 @@ describe('proxy(request)', () => {
       expect(response.status).toBe(200);
     });
 
-    it('strips a stray ?intro=1 before launch so the post-launch splash cannot render', async () => {
-      const request = new NextRequest('http://localhost:3000/prelaunch?intro=1');
-      const response = await proxy(request);
-
-      expect(response.status).toBe(307);
-      const location = new URL(response.headers.get('location')!);
-      expect(location.pathname).toBe('/prelaunch');
-      expect(location.searchParams.get('intro')).toBeNull();
-    });
-
     it('does not call updateSession on the redirect hot path', async () => {
       const request = new NextRequest('http://localhost:3000/home');
       await proxy(request);
@@ -317,18 +306,18 @@ describe('proxy(request)', () => {
     });
   });
 
-  describe('auto-preview (non-production)', () => {
+  describe('auto-preview (PRELAUNCH_AUTO_PREVIEW flag)', () => {
     beforeEach(() => {
       process.env.NEXT_PUBLIC_EVENT_DATETIME = FUTURE_LAUNCH;
-      // Non-production: a Vercel preview deployment (reviewers land here).
-      process.env.VERCEL_ENV = 'preview';
+      // Explicit opt-in flag on — any environment can enable it.
+      process.env.PRELAUNCH_AUTO_PREVIEW = 'true';
       mockUpdateSession.mockResolvedValue({
         supabaseResponse: NextResponse.next(),
         user: null,
       });
     });
 
-    it('auto-redirects a bare /prelaunch hit to /prelaunch?preview=1', async () => {
+    it('auto-redirects a bare /prelaunch hit to /prelaunch?preview=1 when the flag is on', async () => {
       const request = new NextRequest('http://localhost:3000/prelaunch');
       const response = await proxy(request);
 
@@ -345,8 +334,16 @@ describe('proxy(request)', () => {
       expect(response.status).toBe(200);
     });
 
-    it('is disabled in production — bare /prelaunch stays the real countdown', async () => {
-      process.env.VERCEL_ENV = 'production';
+    it('is disabled when the flag is off — bare /prelaunch stays the real countdown', async () => {
+      delete process.env.PRELAUNCH_AUTO_PREVIEW;
+      const request = new NextRequest('http://localhost:3000/prelaunch');
+      const response = await proxy(request);
+
+      expect(response.status).toBe(200);
+    });
+
+    it('treats any non-"true" flag value as off', async () => {
+      process.env.PRELAUNCH_AUTO_PREVIEW = '1';
       const request = new NextRequest('http://localhost:3000/prelaunch');
       const response = await proxy(request);
 
@@ -371,70 +368,38 @@ describe('proxy(request)', () => {
       });
     });
 
-    it('redirects /prelaunch to / once the countdown has ended (intro already seen)', async () => {
-      const request = new NextRequest('http://localhost:3000/prelaunch', {
-        headers: { cookie: 'saa_intro_seen=1' },
-      });
+    it('serves /prelaunch after launch (client shows the intro splash, no server redirect)', async () => {
+      const request = new NextRequest('http://localhost:3000/prelaunch');
       const response = await proxy(request);
 
-      expect(response.status).toBe(307);
-      expect(new URL(response.headers.get('location')!).pathname).toBe('/');
+      expect(response.status).toBe(200);
     });
   });
 
-  describe('first-visit intro splash (after launch)', () => {
+  describe('after launch: no server-side intro gate (client-driven per tab)', () => {
     beforeEach(() => {
-      // After launch + production, so the intro (not the hard gate) governs.
       process.env.NEXT_PUBLIC_EVENT_DATETIME = PAST_LAUNCH;
-      process.env.VERCEL_ENV = 'production';
       mockUpdateSession.mockResolvedValue({
-        supabaseResponse: NextResponse.next(),
+        supabaseResponse: new Response(null, { status: 200 }),
         user: null,
       });
     });
 
-    it('sends a first-time visit to / over to /prelaunch?intro=1', async () => {
+    it('serves / directly — the intro redirect is IntroGate (client), not the proxy', async () => {
       const request = new NextRequest('http://localhost:3000/');
       const response = await proxy(request);
 
-      expect(response.status).toBe(307);
-      const location = new URL(response.headers.get('location')!);
-      expect(location.pathname).toBe('/prelaunch');
-      expect(location.searchParams.get('intro')).toBe('1');
+      expect(response.status).toBe(200);
     });
 
-    it('normalizes a bare /prelaunch hit to /prelaunch?intro=1 when not yet seen', async () => {
+    it('serves /prelaunch directly (no ?intro normalization, no cookie stamping)', async () => {
       const request = new NextRequest('http://localhost:3000/prelaunch');
       const response = await proxy(request);
 
-      expect(response.status).toBe(307);
-      const location = new URL(response.headers.get('location')!);
-      expect(location.pathname).toBe('/prelaunch');
-      expect(location.searchParams.get('intro')).toBe('1');
-    });
-
-    it('serves /prelaunch?intro=1 and stamps a session (non-persistent) intro cookie', async () => {
-      const request = new NextRequest('http://localhost:3000/prelaunch?intro=1');
-      const response = await proxy(request);
-
-      expect(response.status).toBe(200);
-      const cookie = response.cookies.get('saa_intro_seen');
-      expect(cookie?.value).toBe('1');
-      // Session cookie: no explicit lifetime.
-      expect(cookie?.maxAge).toBeUndefined();
-      expect(cookie?.expires).toBeUndefined();
-    });
-
-    it('lets a returning visitor (cookie set) reach / without the splash', async () => {
-      const request = new NextRequest('http://localhost:3000/', {
-        headers: { cookie: 'saa_intro_seen=1' },
-      });
-      const response = await proxy(request);
-
       expect(response.status).toBe(200);
     });
 
-    it('does not hijack deep routes — only / and /prelaunch trigger the intro', async () => {
+    it('does not gate deep routes', async () => {
       const request = new NextRequest('http://localhost:3000/about');
       const response = await proxy(request);
 

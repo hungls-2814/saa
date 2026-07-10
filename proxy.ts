@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { updateSession } from "@/lib/supabase/middleware";
 import { isBeforeLaunch } from "@/lib/event/countdown";
-import { PREVIEW_COOKIE, INTRO_COOKIE } from "@/lib/prelaunch/cookies";
+import { PREVIEW_COOKIE } from "@/lib/prelaunch/cookies";
 
 // Next 16 renamed middleware.ts -> proxy.ts (exported `proxy`, nodejs runtime).
 // Refreshes the Supabase session and enforces route guards.
@@ -13,8 +13,8 @@ const PROTECTED_PATHS: string[] = ["/he-thong-giai", "/kudos", "/profile"];
 const AUTH_PATHS = ["/login"];
 // The public countdown page. Until SAA opens, every route funnels here.
 const PRELAUNCH_PATH = "/prelaunch";
-// Cookie names (PREVIEW_COOKIE / INTRO_COOKIE) are shared with the page via
-// @/lib/prelaunch/cookies so the writer here and the reader there stay in sync.
+// PREVIEW_COOKIE is shared with the page via @/lib/prelaunch/cookies so the
+// writer here and the reader there stay in sync.
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -26,26 +26,18 @@ export async function proxy(request: NextRequest) {
   const previewActive =
     optInPreview || request.cookies.get(PREVIEW_COOKIE)?.value === "1";
   const beforeLaunch = isBeforeLaunch(new Date());
-  // First-visit intro state (only consulted after launch, below).
-  const introSeen = request.cookies.get(INTRO_COOKIE)?.value === "1";
-  const introParam = request.nextUrl.searchParams.get("intro") === "1";
-  // Serving the intro splash this request -> stamp the session cookie below.
-  const servingIntro =
-    !previewActive &&
-    !beforeLaunch &&
-    pathname === PRELAUNCH_PATH &&
-    introParam &&
-    !introSeen;
 
-  // Auto-preview: OUTSIDE production only, drop reviewers straight into preview
-  // when they land on the countdown page — no need to know the `?preview=1`
-  // flag. Local dev and Vercel preview deployments (VERCEL_ENV != "production")
-  // opt in. NOTE: this env check gates only the AUTO-redirect below. The manual
-  // `?preview=1` opt-in (see `previewActive`) works in EVERY environment,
-  // including production — a deliberate, accepted escape hatch, not a secret.
-  // The pre-launch embargo therefore relies on `/prelaunch` being unadvertised,
-  // not on `?preview=1` being unreachable in production.
-  const autoPreview = process.env.VERCEL_ENV !== "production";
+  // Auto-preview: an explicit opt-in flag (PRELAUNCH_AUTO_PREVIEW=true) drops
+  // reviewers straight into preview when they land on the countdown page — no
+  // need to know the `?preview=1` flag. This is a plain server env var (not
+  // NEXT_PUBLIC_, so it is read at runtime and can be toggled per environment
+  // without a rebuild), decoupled from VERCEL_ENV so any environment can turn
+  // it on/off independently. NOTE: this flag gates only the AUTO-redirect
+  // below. The manual `?preview=1` opt-in (see `previewActive`) works in EVERY
+  // environment regardless of this flag — a deliberate, accepted escape hatch,
+  // not a secret. The pre-launch embargo relies on `/prelaunch` being
+  // unadvertised, not on `?preview=1` being unreachable.
+  const autoPreview = process.env.PRELAUNCH_AUTO_PREVIEW === "true";
   if (autoPreview && beforeLaunch && pathname === PRELAUNCH_PATH && !previewActive) {
     const url = request.nextUrl.clone();
     url.searchParams.set("preview", "1");
@@ -57,50 +49,17 @@ export async function proxy(request: NextRequest) {
   // own background image) are already excluded by `config.matcher`, so the
   // OAuth callback and page assets keep working. Preview mode skips this on
   // both sides.
-  if (!previewActive) {
-    if (beforeLaunch) {
-      if (pathname !== PRELAUNCH_PATH) {
-        const url = request.nextUrl.clone();
-        url.pathname = PRELAUNCH_PATH;
-        url.search = "";
-        return NextResponse.redirect(url);
-      }
-      if (introParam) {
-        // No intro splash before launch — strip the stray `?intro=1` so the
-        // page renders the real countdown, not the post-launch welcome. (The
-        // page only ever sees the request via this guard.)
-        const url = request.nextUrl.clone();
-        url.searchParams.delete("intro");
-        return NextResponse.redirect(url);
-      }
-    } else {
-      // After launch: play the first-visit intro splash once per session on the
-      // home route, then let normal routing resume. Only `/` and `/prelaunch`
-      // are involved — deep links and auth routes are never hijacked.
-      if (pathname === PRELAUNCH_PATH) {
-        if (introSeen) {
-          // Already seen -> the countdown page has no purpose; go home.
-          const url = request.nextUrl.clone();
-          url.pathname = "/";
-          url.search = "";
-          return NextResponse.redirect(url);
-        }
-        if (!introParam) {
-          // Normalize so the page receives the splash signal (`?intro=1`).
-          const url = request.nextUrl.clone();
-          url.searchParams.set("intro", "1");
-          return NextResponse.redirect(url);
-        }
-        // `/prelaunch?intro=1`, not yet seen -> fall through to serve the
-        // splash; the session cookie is stamped after updateSession.
-      } else if (pathname === "/" && !introSeen) {
-        const url = request.nextUrl.clone();
-        url.pathname = PRELAUNCH_PATH;
-        url.searchParams.set("intro", "1");
-        return NextResponse.redirect(url);
-      }
-    }
+  if (!previewActive && beforeLaunch && pathname !== PRELAUNCH_PATH) {
+    const url = request.nextUrl.clone();
+    url.pathname = PRELAUNCH_PATH;
+    url.search = "";
+    return NextResponse.redirect(url);
   }
+  // After launch there is no server gate: the first-visit intro splash is
+  // driven client-side per browser TAB (sessionStorage) by `IntroGate`, since
+  // a cookie cannot be tab-scoped (it is shared across tabs and survives a tab
+  // close). Serving `/` and `/prelaunch` normally lets that gate redirect
+  // `/ -> /prelaunch` on a fresh tab without the server and client looping.
 
   const { supabaseResponse, user } = await updateSession(request);
 
@@ -109,16 +68,6 @@ export async function proxy(request: NextRequest) {
   // code (the prelaunch page reads it server-side).
   if (optInPreview) {
     supabaseResponse.cookies.set(PREVIEW_COOKIE, "1", {
-      httpOnly: true,
-      sameSite: "lax",
-      path: "/",
-    });
-  }
-
-  // Mark the intro as seen for the rest of this session (no maxAge/expires ->
-  // session cookie, cleared when the browser closes).
-  if (servingIntro) {
-    supabaseResponse.cookies.set(INTRO_COOKIE, "1", {
       httpOnly: true,
       sameSite: "lax",
       path: "/",

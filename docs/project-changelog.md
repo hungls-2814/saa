@@ -3,6 +3,40 @@
 All notable changes to this project are recorded here. Format loosely follows
 [Keep a Changelog](https://keepachangelog.com/); dates are `YYYY-MM-DD`.
 
+## 2026-07-10 — Prelaunch: explicit auto-preview flag + per-tab intro splash (0.4.4)
+
+Reworks two prelaunch behaviors from the 0.4.3 baseline: auto-preview is now an explicit env
+flag, and the first-visit intro replays per browser tab instead of once per session.
+
+### Changed
+- **Auto-preview flag** (`proxy.ts`, `.env.local.example`) — the auto-redirect into preview now
+  keys off an explicit server env var `PRELAUNCH_AUTO_PREVIEW=true` instead of `VERCEL_ENV`, so
+  any environment can opt in/out independently. Plain (non-`NEXT_PUBLIC_`) server var → read at
+  runtime, no rebuild to toggle. Manual `?preview=1` still works everywhere regardless.
+- **First-visit intro is now per browser TAB** (`app/components/intro-gate.tsx` [new],
+  `app/layout.tsx`, `app/prelaunch/`) — after launch, every fresh/reopened tab that lands on `/`
+  is sent to `/prelaunch` for a 10s welcome, then home. The "seen" flag moved from a session
+  COOKIE to `sessionStorage` (tab-scoped, cleared on tab close), so closing and reopening a tab
+  replays the intro — which a cookie (shared across tabs) could not do.
+
+### Added
+- **`IntroGate`** (`app/components/intro-gate.tsx`) — client gate mounted in the root layout;
+  on `/`, redirects to `/prelaunch` unless `sessionStorage["saa_intro_done"]` is set. Only `/` is
+  gated; deep links and auth routes are untouched. Reviewers in preview mode are exempt — the
+  root layout reads the httpOnly preview cookie server-side and passes `previewActive` in, so the
+  intro never hijacks the preview-bypass workflow. Storage access is try/caught so privacy mode
+  never traps a visitor.
+
+### Fixed
+- **Redirect loop** (`prelaunch-countdown.tsx`) — after launch the real countdown target is in the
+  past (`ended`), which previously fired an instant redirect to `/` and, with `IntroGate` bouncing
+  back, looped `/ ↔ /prelaunch`. The `value.ended` redirect is now skipped while the demo/intro
+  timer owns the transition (`demoSeconds != null`).
+
+### Removed
+- Server-side intro gating from `proxy.ts` (the `saa_intro_seen` cookie and `?intro=1` handling) —
+  superseded by the client, tab-scoped `IntroGate`.
+
 ## 2026-07-10 — Prelaunch: reviewer preview bypass + first-visit intro splash (0.4.3)
 
 Made the `/prelaunch` launch gate reviewable and added a one-time intro splash, all in the

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { getCountdown, parseEventDate } from "@/lib/event/countdown";
+import { INTRO_STORAGE_KEY } from "@/lib/prelaunch/cookies";
 import { CountdownUnit, useCountdownClock } from "@/app/components/countdown-unit";
 
 /**
@@ -13,11 +14,12 @@ import { CountdownUnit, useCountdownClock } from "@/app/components/countdown-uni
  * just the client-side nudge for anyone already sitting on `/prelaunch`.
  *
  * When `demoSeconds` is set (reviewer preview OR the first-visit intro splash),
- * the real countdown is still shown, but a short visible timer counts down from
- * `demoSeconds` and then redirects to `/`. proxy.ts has already unlocked
- * routing (preview cookie / intro-seen cookie), so the redirect lands on the
- * homepage instead of bouncing back here. `demoVariant` only picks the copy:
- * a "preview" warning for reviewers vs a friendly "welcome" for real visitors.
+ * a short visible timer counts down from `demoSeconds`, then marks the intro as
+ * done for this browser tab (sessionStorage) and redirects to `/`. The
+ * sessionStorage flag stops `IntroGate` from bouncing `/` straight back here,
+ * while remaining tab-scoped so a fresh/reopened tab replays the splash.
+ * `demoVariant` only picks the copy: a "preview" warning for reviewers vs a
+ * friendly "welcome" for real visitors.
  */
 export function PrelaunchCountdown({
   targetIso,
@@ -39,15 +41,26 @@ export function PrelaunchCountdown({
     : { days: 0, hours: 0, minutes: 0, ended: false };
 
   useEffect(() => {
+    // In splash mode the demo timer below owns the redirect (and stamps the
+    // per-tab flag). After launch the real target is already in the past, so
+    // without this guard `value.ended` would redirect instantly and the splash
+    // would never show — and, with IntroGate sending `/` back here, loop.
+    if (demoSeconds != null) return;
     if (value.ended) {
       router.replace("/");
     }
-  }, [value.ended, router]);
+  }, [value.ended, router, demoSeconds]);
 
   const [demoRemaining, setDemoRemaining] = useState(demoSeconds ?? 0);
   useEffect(() => {
     if (demoSeconds == null) return;
     if (demoRemaining <= 0) {
+      // Mark done for THIS tab so IntroGate won't bounce `/` back here; then go.
+      try {
+        sessionStorage.setItem(INTRO_STORAGE_KEY, "1");
+      } catch {
+        // sessionStorage unavailable (e.g. privacy mode) — redirect anyway.
+      }
       router.replace("/");
       return;
     }

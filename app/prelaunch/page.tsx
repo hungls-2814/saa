@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { getTranslations } from "next-intl/server";
-import { resolveEventTargetIso } from "@/lib/event/countdown";
+import { isBeforeLaunch, resolveEventTargetIso } from "@/lib/event/countdown";
 import { PREVIEW_COOKIE } from "@/lib/prelaunch/cookies";
 import { montserrat } from "./fonts";
 import { PrelaunchCountdown } from "./components/prelaunch-countdown";
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
 export default async function PrelaunchPage({
   searchParams,
 }: {
-  searchParams: Promise<{ preview?: string; intro?: string }>;
+  searchParams: Promise<{ preview?: string }>;
 }) {
   const t = await getTranslations("Prelaunch");
   const [cookieStore, params] = await Promise.all([cookies(), searchParams]);
@@ -35,10 +35,11 @@ export default async function PrelaunchPage({
   // yet in the request) or the persisted cookie (subsequent navigations).
   const isPreview =
     params.preview === "1" || cookieStore.get(PREVIEW_COOKIE)?.value === "1";
-  // First-visit intro splash: proxy.ts sends the home route here with
-  // `?intro=1` once per session (after launch). Cookie is NOT consulted here —
-  // its presence means "already seen", i.e. do NOT replay the splash.
-  const isIntro = !isPreview && params.intro === "1";
+  // First-visit intro splash: AFTER launch the countdown page has no real
+  // target, so it becomes the 10s welcome splash that transitions home. Before
+  // launch it stays the real countdown (unless preview). The once-per-tab
+  // gating is handled client-side by IntroGate via sessionStorage.
+  const isIntro = !isPreview && !isBeforeLaunch(new Date());
   const splash = isPreview || isIntro;
 
   return (
