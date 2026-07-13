@@ -53,11 +53,17 @@ describe("CountdownUnit", () => {
       <CountdownUnit value={12} label="MINUTES" />,
     );
 
-    // Find all digit boxes: they have the specific classes and styling
+    // Find all digit boxes by their mobile-first base size (they scale up to
+    // h-[82px] w-[51px] at the sm: breakpoint — see responsive countdown-unit).
     const digitBoxes = container.querySelectorAll(
-      "div.h-\\[82px\\].w-\\[51px\\]",
+      "div.h-\\[60px\\].w-\\[38px\\]",
     );
     expect(digitBoxes).toHaveLength(2); // Two digits
+    // Lock in the responsive scale-up so the desktop size can't silently regress.
+    digitBoxes.forEach((box) => {
+      expect(box.className).toContain("sm:h-[82px]");
+      expect(box.className).toContain("sm:w-[51px]");
+    });
   });
 
   it("renders the label text below the digits", () => {
@@ -65,8 +71,9 @@ describe("CountdownUnit", () => {
 
     const labelElement = screen.getByText("DAYS");
     expect(labelElement).toBeInTheDocument();
-    // Label should be in a span with specific styling
-    expect(labelElement.className).toContain("text-2xl");
+    // Label is mobile-first text-lg, scaling to text-2xl at sm:.
+    expect(labelElement.className).toContain("text-lg");
+    expect(labelElement.className).toContain("sm:text-2xl");
     expect(labelElement.className).toContain("font-bold");
   });
 

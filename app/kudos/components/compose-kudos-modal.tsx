@@ -102,7 +102,7 @@ export function ComposeKudosModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-[#00101A]/80 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-[#00101A]/80 sm:p-4"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
@@ -111,7 +111,11 @@ export function ComposeKudosModal({
         role="dialog"
         aria-modal="true"
         aria-labelledby="compose-kudos-title"
-        className="flex max-h-[calc(100dvh-2rem)] w-full min-w-0 max-w-[752px] flex-col gap-8 overflow-y-auto rounded-3xl bg-[#FFF8E1] p-6 sm:p-10"
+        // Full-screen on <sm (no inset, square corners, viewport-height
+        // scroll area) for a native mobile-compose feel; sm+ reverts to the
+        // centered card (752px max-width, rounded corners, 2rem viewport
+        // inset matching the outer `sm:p-4`).
+        className="flex h-dvh max-h-dvh w-full min-w-0 max-w-[752px] flex-col gap-8 overflow-y-auto bg-[#FFF8E1] p-6 sm:h-auto sm:max-h-[calc(100dvh-2rem)] sm:rounded-3xl sm:p-10"
       >
         <h2
           id="compose-kudos-title"

@@ -86,4 +86,12 @@ describe("SiteHeader", () => {
     render(await SiteHeader({ user: null }));
     expect(screen.getByText("Login")).toBeInTheDocument();
   });
+
+  it("renders the mobile-nav hamburger toggle (collapsed by default)", async () => {
+    // getTranslations mock returns the key verbatim, so the toggle's aria-label
+    // resolves to the raw "nav.menu" key.
+    render(await SiteHeader({ user: null }));
+    const toggle = screen.getByRole("button", { name: "nav.menu" });
+    expect(toggle).toHaveAttribute("aria-expanded", "false");
+  });
 });

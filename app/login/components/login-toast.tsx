@@ -31,7 +31,7 @@ export function LoginToast() {
   return (
     <div
       role="alert"
-      className="fixed left-1/2 top-6 z-50 flex -translate-x-1/2 items-center gap-3 rounded-lg border border-red-400/30 bg-[#2A1416] px-5 py-3 text-sm font-semibold text-red-100 shadow-xl"
+      className="fixed left-1/2 top-6 z-50 flex max-w-[90vw] -translate-x-1/2 items-center gap-3 rounded-lg border border-red-400/30 bg-[#2A1416] px-5 py-3 text-sm font-semibold text-red-100 shadow-xl"
     >
       <span>{t("errorToast")}</span>
       <button

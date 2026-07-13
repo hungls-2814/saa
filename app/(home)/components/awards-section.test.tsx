@@ -47,9 +47,9 @@ describe("AwardsSection", () => {
     expect(section).toHaveClass("bg-[#00101A]");
   });
 
-  it("uses grid layout (2 cols on tablet, 3 cols on desktop)", async () => {
+  it("uses grid layout (1 col mobile, 2 cols on tablet, 3 cols on desktop)", async () => {
     const { container } = render(await AwardsSection());
     const grid = container.querySelector(".grid");
-    expect(grid).toHaveClass("grid-cols-2", "sm:grid-cols-2", "lg:grid-cols-3");
+    expect(grid).toHaveClass("grid-cols-1", "sm:grid-cols-2", "lg:grid-cols-3");
   });
 });

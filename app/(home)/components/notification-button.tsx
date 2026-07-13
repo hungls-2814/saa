@@ -5,11 +5,11 @@ import { useTranslations } from "next-intl";
 
 /**
  * Notification bell (signed-in only). Opens a presentational placeholder
- * panel — no real notification data/backend exists yet. The unread badge is
- * a static placeholder dot per the design; wiring it to real unread state is
- * future work once a notifications backend exists.
+ * panel — no real notification data/backend exists yet. The red unread dot
+ * renders only when `unreadCount > 0`; with no backend the default is 0, so
+ * the bell shows no dot until real unread state is wired in.
  */
-export function NotificationButton() {
+export function NotificationButton({ unreadCount = 0 }: { unreadCount?: number }) {
   const t = useTranslations("Home.header");
   const [open, setOpen] = useState(false);
 
@@ -33,11 +33,14 @@ export function NotificationButton() {
         className="relative flex size-10 items-center justify-center rounded transition-colors duration-200 ease-out hover:bg-white/5"
       >
         <BellIcon className="size-6 text-white" />
-        {/* Placeholder unread indicator — real state pending a notifications backend. */}
-        <span
-          aria-hidden
-          className="absolute right-2 top-2 size-2 rounded-full bg-[#D4271D]"
-        />
+        {/* Unread indicator — shown only when there are unread notifications.
+            No backend yet, so unreadCount defaults to 0 and no dot renders. */}
+        {unreadCount > 0 && (
+          <span
+            aria-hidden
+            className="absolute right-2 top-2 size-2 rounded-full bg-[#D4271D]"
+          />
+        )}
       </button>
 
       {open && (
@@ -50,7 +53,7 @@ export function NotificationButton() {
           <div
             role="dialog"
             aria-label={t("notificationsLabel")}
-            className="absolute right-0 top-full z-20 mt-2 w-72 rounded-lg border border-white/10 bg-[#0B0F12] p-4 shadow-xl"
+            className="absolute right-0 top-full z-20 mt-2 w-72 max-w-[calc(100vw-2rem)] rounded-lg border border-white/10 bg-[#0B0F12] p-4 shadow-xl"
           >
             <p className="text-sm text-white/60">{t("notificationsEmpty")}</p>
           </div>

@@ -42,12 +42,15 @@ export function KudosCard({
   return (
     <article
       className={`flex w-full flex-col gap-4 rounded-3xl bg-[#FFF8E1] p-6 pb-4 ${
-        // Fixed height (design: 528x525, width stays responsive via the
-        // carousel's own max-w wrapper) so every highlight frame is
-        // identical while navigating — a card with no height of its own
-        // used to resize the whole row per-content on every click.
+        // Min-height (design: 528x525, width stays responsive via the
+        // carousel's own max-w wrapper) so every highlight frame matches the
+        // design's height while navigating, but can still grow on narrow
+        // cards where the sender/receiver names wrap to more lines than the
+        // 525px design height allows — a plain fixed `h-[525px]` clipped
+        // that overflow instead of letting the card grow (line-clamp-3 on
+        // the content box below already caps the one variable-height field).
         isHighlight
-          ? "h-[525px] overflow-hidden border-4 border-[#FFEA9E]"
+          ? "min-h-[525px] overflow-hidden border-4 border-[#FFEA9E]"
           : ""
       }`}
     >

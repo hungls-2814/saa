@@ -28,7 +28,10 @@ export function Countdown({ targetIso }: { targetIso: string | undefined }) {
           {t("comingSoon")}
         </p>
       )}
-      <div className="flex items-center gap-10">
+      {/* flex-wrap so a 3-digit days value (e.g. "365") can't push the row past
+          a narrow viewport — units wrap to the next line instead of overflowing
+          (mirrors prelaunch-countdown). Gaps restore at sm:/lg:. */}
+      <div className="flex flex-wrap items-center gap-6 sm:gap-10">
         <CountdownUnit value={value.days} label={t("days")} />
         <CountdownUnit value={value.hours} label={t("hours")} />
         <CountdownUnit value={value.minutes} label={t("minutes")} />

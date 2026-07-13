@@ -16,7 +16,7 @@ export async function HeroSection() {
 
   return (
     <section
-      className="relative flex min-h-[779px] w-full items-start px-6 pt-28 pb-16 sm:px-10 lg:pt-[184px] lg:pb-24"
+      className="relative flex min-h-[600px] w-full items-start px-6 pt-28 pb-16 sm:px-10 lg:min-h-[779px] lg:pt-[184px] lg:pb-24"
     >
       <div className="relative z-[1] mx-auto flex w-full max-w-[1224px] flex-col items-start">
       <div className="flex w-full max-w-[680px] flex-col gap-10">

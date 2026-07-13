@@ -28,7 +28,10 @@ export function KudosPersonInfo({ person }: { person: KudosPersonType }) {
         >
           {person.fullName}
         </Link>
-        <div className="flex items-center gap-2.5 text-sm font-bold tracking-[0.1px] text-[#999]">
+        {/* flex-wrap: in the narrow sender/receiver column of a Kudos card, the
+            wide Hero badge (~115px) can't sit beside the department on one line
+            without leaking past the card — let it wrap to its own line instead. */}
+        <div className="flex flex-wrap items-center justify-center gap-2.5 text-sm font-bold tracking-[0.1px] text-[#999]">
           {stars && <span className="text-[#998C5F]">{stars}</span>}
           <span>{person.department}</span>
           {person.heroBadge !== "none" && (

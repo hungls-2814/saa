@@ -42,14 +42,14 @@ export function CountdownUnit({
 }) {
   const padded = String(Math.max(0, value)).padStart(2, "0");
   return (
-    <div className="flex flex-col items-start gap-3.5">
-      <div className="flex items-center gap-3.5">
+    <div className="flex flex-col items-start gap-2 sm:gap-3.5">
+      <div className="flex items-center gap-2 sm:gap-3.5">
         {padded.split("").map((digit, i) => (
           <div
             key={i}
-            className="relative flex h-[82px] w-[51px] items-center justify-center overflow-hidden rounded-lg border-[0.5px] border-white/10 bg-gradient-to-b from-[#23272d] to-[#15181c] shadow-[0_1px_0_0_rgba(255,255,255,0.06)_inset]"
+            className="relative flex h-[60px] w-[38px] items-center justify-center overflow-hidden rounded-lg border-[0.5px] border-white/10 bg-gradient-to-b from-[#23272d] to-[#15181c] shadow-[0_1px_0_0_rgba(255,255,255,0.06)_inset] sm:h-[82px] sm:w-[51px]"
           >
-            <span className="text-[40px] font-bold leading-[63px] text-white">
+            <span className="text-[28px] font-bold leading-[45px] text-white sm:text-[40px] sm:leading-[63px]">
               {digit}
             </span>
             {/* Flip-clock mid-split line */}
@@ -57,7 +57,7 @@ export function CountdownUnit({
           </div>
         ))}
       </div>
-      <span className="text-2xl font-bold leading-8 tracking-normal text-white">
+      <span className="text-lg font-bold leading-6 tracking-normal text-white sm:text-2xl sm:leading-8">
         {label}
       </span>
     </div>

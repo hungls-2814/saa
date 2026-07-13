@@ -82,7 +82,7 @@ export function ProfileHeader({
         <Avatar
           name={fullName}
           avatarUrl={avatarUrl}
-          sizeClassName="size-[200px]"
+          sizeClassName="size-[140px] sm:size-[200px]"
           textSizeClassName="text-5xl"
         />
 
@@ -92,7 +92,7 @@ export function ProfileHeader({
           <h1 className="text-2xl font-bold leading-tight text-[#FFEA9E] sm:text-3xl lg:text-[36px] lg:leading-[44px]">
             {fullName}
           </h1>
-          <div className="flex items-center gap-2.5 text-lg font-bold leading-7 text-white lg:text-[22px]">
+          <div className="flex flex-wrap items-center justify-center gap-2.5 text-lg font-bold leading-7 text-white lg:text-[22px]">
             {stars && <span className="text-[#998C5F]">{stars}</span>}
             <span>{department}</span>
             {heroBadge !== "none" && (
@@ -111,13 +111,13 @@ export function ProfileHeader({
          * `I362:5066;3053:10046`) — no data, no click handler.
          */}
         <div className="flex flex-col items-center gap-8">
-          <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4">
             {Array.from({ length: LOCKED_ICON_COUNT }, (_, index) => (
               <span
                 key={index}
                 data-testid="locked-icon"
                 aria-hidden
-                className="size-16 shrink-0 rounded-full border-2 border-white bg-[#323231]"
+                className="size-12 shrink-0 rounded-full border-2 border-white bg-[#323231] sm:size-16"
               />
             ))}
           </div>

@@ -24,7 +24,7 @@ export async function KudosSection() {
             <p className="text-2xl font-bold leading-8 text-white">
               {t("eyebrow")}
             </p>
-            <h2 className="text-[57px] font-bold leading-[64px] tracking-[-0.25px] text-[#FFEA9E]">
+            <h2 className="text-4xl font-bold leading-[44px] tracking-[-0.25px] text-[#FFEA9E] sm:text-[57px] sm:leading-[64px]">
               {t("title")}
             </h2>
             <p className="text-justify text-base font-bold leading-6 tracking-[0.5px] text-white">

@@ -93,7 +93,12 @@ export function KudosBanner({ onOpenCompose, onSearchSunner }: KudosBannerProps)
 
   return (
     <div
-      className="relative h-[280px] w-full overflow-hidden bg-[#00101A] bg-cover bg-left bg-no-repeat sm:h-[360px] lg:h-auto lg:aspect-[45/16]"
+      // Mobile height raised from the design's flat 280px to 460px so the
+      // top-anchored stack fits below the fixed 80px SiteHeader without
+      // crowding: eyebrow heading (pt-24, ~96px) -> KUDOS wordmark
+      // (top-[176px]) -> the two function pills anchored to the bottom edge.
+      // sm/lg keep their own heights (their positions clear the header too).
+      className="relative h-[460px] w-full overflow-hidden bg-[#00101A] bg-cover bg-left bg-no-repeat sm:h-[360px] lg:h-auto lg:aspect-[45/16]"
       style={{ backgroundImage: "url(/kudos/kv-background.png)" }}
     >
       {/* Design's "Cover" darkening overlay, full-size — gradient
@@ -113,7 +118,14 @@ export function KudosBanner({ onOpenCompose, onSearchSunner }: KudosBannerProps)
        * only the heading/wordmark/pills are constrained to it, so they stay
        * pixel-exact at 1440px and aligned with the body content past it. */}
       <div className="relative mx-auto h-full w-full max-w-[1440px]">
-        <div className="flex h-full w-full flex-col items-start justify-center px-6 sm:px-10 lg:justify-start lg:px-36 lg:pt-[184px]">
+        {/* Heading is top-anchored at every breakpoint (progressive top
+         * padding), not vertically centered on mobile/tablet. Two constraints
+         * set the mobile/tablet padding: (1) it must clear the fixed 80px
+         * `SiteHeader` that overlays the top of this banner — pt < 80px let the
+         * header sit on top of the eyebrow; (2) it must stay above the
+         * absolutely-positioned KUDOS wordmark below. `pt-24` (96px) clears the
+         * 80px header with breathing room; lg keeps its own `pt-[184px]`. */}
+        <div className="flex h-full w-full flex-col items-start justify-start px-6 pt-24 sm:px-10 sm:pt-24 lg:px-36 lg:pt-[184px]">
           <h1 className="relative text-2xl font-bold leading-tight text-[#FFEA9E] sm:text-3xl lg:text-[36px] lg:leading-[44px]">
             {t("eyebrow")}
           </h1>
@@ -126,7 +138,7 @@ export function KudosBanner({ onOpenCompose, onSearchSunner }: KudosBannerProps)
           src="/kudos/kudos-wordmark.svg"
           alt=""
           aria-hidden="true"
-          className="pointer-events-none absolute left-6 top-[130px] w-[324px] sm:left-10 sm:top-[167px] sm:w-[417px] lg:left-36 lg:top-[238px] lg:w-[593px]"
+          className="pointer-events-none absolute left-6 top-[176px] w-[324px] sm:left-10 sm:top-[167px] sm:w-[417px] lg:left-36 lg:top-[238px] lg:w-[593px]"
         />
         <p className="sr-only">KUDOS</p>
 

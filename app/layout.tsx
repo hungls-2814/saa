@@ -42,7 +42,7 @@ export default async function RootLayout({
       // hydrates; suppress the resulting benign attribute-mismatch warning.
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col overflow-x-hidden">
         {/* NextIntlClientProvider auto-infers locale + messages from the request config. */}
         <NextIntlClientProvider>
           {/* Tab-scoped first-visit intro gate on `/` (see IntroGate). */}

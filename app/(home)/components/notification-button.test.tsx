@@ -14,9 +14,16 @@ describe("NotificationButton", () => {
     expect(button).toBeInTheDocument();
   });
 
-  it("shows unread indicator badge", () => {
+  it("shows no unread dot by default (no notifications)", () => {
     const { container } = render(<NotificationButton />);
-    const badge = container.querySelector("span[aria-hidden]");
+    const badge = container.querySelector("span.bg-\\[\\#D4271D\\]");
+    expect(badge).toBeNull();
+  });
+
+  it("shows the unread dot only when unreadCount > 0", () => {
+    const { container } = render(<NotificationButton unreadCount={3} />);
+    const badge = container.querySelector("span.bg-\\[\\#D4271D\\]");
+    expect(badge).not.toBeNull();
     expect(badge).toHaveClass("bg-[#D4271D]");
   });
 

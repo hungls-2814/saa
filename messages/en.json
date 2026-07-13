@@ -17,7 +17,8 @@
     "nav": {
       "aboutSaa": "About SAA 2025",
       "awardsInformation": "Awards Information",
-      "sunKudos": "Sun* Kudos"
+      "sunKudos": "Sun* Kudos",
+      "menu": "Menu"
     },
     "header": {
       "notificationsLabel": "Notifications",

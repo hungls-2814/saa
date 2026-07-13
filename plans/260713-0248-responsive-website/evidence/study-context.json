@@ -1,0 +1,25 @@
+{
+  "task": "Make the SAA website responsive across mobile (~375px), tablet (~768px), and desktop (1440px) without changing the existing desktop appearance.",
+  "mode": "code",
+  "acceptanceCriteria": [
+    "No horizontal scroll at 375, 768, and 1440px on any page",
+    "Primary navigation reachable on mobile via hamburger",
+    "All interactive overlays stay within the viewport",
+    "No regression in existing test suite; typecheck and lint clean"
+  ],
+  "touchpoints": [
+    "app/components/countdown-unit.tsx",
+    "app/(home)/components/site-header.tsx",
+    "app/(home)/components/mobile-nav-menu.tsx",
+    "app/(home)/components/countdown.tsx",
+    "app/kudos/components/kudos-person.tsx",
+    "app/kudos/components/kudos-banner.tsx",
+    "app/profile/components/profile-header.tsx",
+    "app/he-thong-giai/components/award-detail-section.tsx",
+    "app/layout.tsx",
+    "messages/en.json",
+    "messages/vi.json"
+  ],
+  "blastRadius": "UI/layout only: Tailwind breakpoint classes plus one new client-side mobile-nav component. No data models, APIs, auth, or business logic touched.",
+  "contracts": "No API or data-contract changes. Added i18n key nav.menu to en.json and vi.json (additive)."
+}

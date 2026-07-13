@@ -12,6 +12,15 @@
 - **i18n:** next-intl, cookie-based (`NEXT_LOCALE`), no locale URL prefix. Locales: `vi` (default), `en`.
 - **Tests:** vitest + @testing-library/react (jsdom).
 
+## Responsive breakpoints
+Mobile-first: unprefixed classes are the mobile (~375px) base, then override upward —
+`sm:` 640px, `md:` 768px (tablet — also the nav breakpoint: hamburger `<md`, full nav `md:flex`),
+`lg:` 1024px (desktop — current pixel-accurate design target, 1440px canvas), `xl:`/`2xl:` for
+large screens. Two idioms reused project-wide: gutter padding `px-6 sm:px-10 lg:px-36`, and
+multi-column collapse `flex-col lg:flex-row`. Prefer `w-full max-w-[Npx]` over a bare `w-[Npx]`
+so content isn't forced to a fixed width below the cap. `app/layout.tsx`'s `<body>` carries a
+site-level `overflow-x-hidden` guard against accidental horizontal scroll from edge-case content.
+
 ## Auth architecture (Supabase SSR)
 Three Supabase client surfaces (`@supabase/ssr` App Router pattern):
 - **Browser client** (`lib/supabase/client.ts`) — client components (login button) start `signInWithOAuth`.
@@ -57,6 +66,8 @@ app/
                                # saa-rules-modal.tsx (F007) — the "Thể lệ" (Rules) panel covering
                                # Hero-badge tiers, the 6-icon collectible reward, and "Kudos Quốc
                                # Dân"; its own "Viết KUDOS" footer button hands off to compose
+                               # mobile-nav-menu.tsx — `<md` hamburger drawer (site-header.tsx's
+                               # own nav is `hidden md:flex`); Escape/backdrop/link-click all close
     data/awards-data.ts        # award category content (slugs, copy)
   he-thong-giai/              # Awards System detail page (F003) — auth-gated, renders at `/he-thong-giai`
     page.tsx                  # server component; getUser() → redirect("/login") if unauthenticated

@@ -1,0 +1,21 @@
+{
+  "score": 9,
+  "criticalCount": 0,
+  "decision": "SEALED",
+  "acceptanceCovered": [
+    "No horizontal scroll at 375, 768, and 1440px on any page — Playwright offender + documentElement horizontal-scroll check across all 6 pages (home/login/prelaunch/kudos/profile/he-thong-giai); 0 true leaks after fixing the home countdown 3-digit overflow and the kudos hero-badge row leak",
+    "Primary navigation reachable on mobile via hamburger — verified the drawer opens at 375px with all 3 links (/,/he-thong-giai,/kudos) and closes on link/Escape/backdrop",
+    "All interactive overlays stay within the viewport — mobile-nav panel right edge equals viewport width; notification panel guarded with max-w-[calc(100vw-2rem)]; notification unread dot now renders only when unreadCount > 0",
+    "No regression in existing test suite; typecheck and lint clean — 855/855 tests pass, typecheck clean, eslint clean on all touched files"
+  ],
+  "regressionChecked": [
+    "Desktop (>=lg) appearance unchanged — reviewer verified all touched files restore original values at sm:/lg:; home desktop nav visible at 1440px",
+    "Tablet 768px verified on all 6 pages — no horizontal scroll",
+    "Kudos banner: header/heading/wordmark/pills stack with no overlap at 375 and 768 (measured bounding rects)",
+    "Shared countdown-unit primitive verified in both consumers (home hero + prelaunch)"
+  ],
+  "contractStatus": "PASS",
+  "refuted": [],
+  "unproven": [],
+  "reachableRegressions": []
+}
