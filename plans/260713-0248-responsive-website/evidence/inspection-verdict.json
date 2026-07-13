@@ -3,18 +3,19 @@
   "criticalCount": 0,
   "decision": "SEALED",
   "acceptanceCovered": [
-    "No horizontal scroll at 375, 768, and 1440px on any page — Playwright offender + documentElement horizontal-scroll check across all 6 pages (home/login/prelaunch/kudos/profile/he-thong-giai); 0 true leaks after fixing the home countdown 3-digit overflow and the kudos hero-badge row leak",
-    "Primary navigation reachable on mobile via hamburger — verified the drawer opens at 375px with all 3 links (/,/he-thong-giai,/kudos) and closes on link/Escape/backdrop",
-    "All interactive overlays stay within the viewport — mobile-nav panel right edge equals viewport width; notification panel guarded with max-w-[calc(100vw-2rem)]; notification unread dot now renders only when unreadCount > 0",
-    "No regression in existing test suite; typecheck and lint clean — 855/855 tests pass, typecheck clean, eslint clean on all touched files"
+    "No horizontal scroll at 375, 768, and 1440px on any page — verified in prior full review (reviewer-260713-0327-responsive-website.md) plus body overflow-x-hidden backstop in app/layout.tsx; visual QA captures at 375px in plan visuals/.",
+    "Primary navigation reachable on mobile via hamburger — mobile-nav-menu.tsx drawer wired into site-header.tsx below md, confirmed in prior review.",
+    "All interactive overlays stay within the viewport — compose modal, notification button, and login toast tuned mobile-first; confirmed in prior review.",
+    "No regression in existing test suite; typecheck and lint clean — 855 tests pass across 69 files, tsc --noEmit clean, npm run lint 0 errors (this ship's temper run).",
+    "Favicon change (this ship): app/favicon.ico and app/icon.png are valid images placed per Next.js App Router file-convention, no code changes required, no secrets embedded."
   ],
   "regressionChecked": [
-    "Desktop (>=lg) appearance unchanged — reviewer verified all touched files restore original values at sm:/lg:; home desktop nav visible at 1440px",
-    "Tablet 768px verified on all 6 pages — no horizontal scroll",
-    "Kudos banner: header/heading/wordmark/pills stack with no overlap at 375 and 768 (measured bounding rects)",
-    "Shared countdown-unit primitive verified in both consumers (home hero + prelaunch)"
+    "app/layout.tsx has no explicit metadata.icons that would conflict with file-convention auto-detection",
+    "favicon.ico renders correctly as cropped Sun* mark at 32x32; icon.png at 256x256",
+    "committed responsive work (8049e5d) file list matches prior full review with 0 critical findings",
+    "eslint.config.mjs .vercel/** ignore change: lint re-run green, no source files affected"
   ],
-  "contractStatus": "PASS",
+  "contractStatus": "OK",
   "refuted": [],
   "unproven": [],
   "reachableRegressions": []

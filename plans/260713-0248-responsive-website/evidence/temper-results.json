@@ -1,18 +1,25 @@
 {
   "commands": [
     {
-      "command": "npm run test",
+      "command": "npm run typecheck",
       "exitCode": 0,
       "status": "pass",
-      "summary": "855 tests across 69 files passed, 0 failures (includes mobile-nav-menu, responsive countdown-unit, and updated notification-button tests)",
-      "ts": "2026-07-13T06:24:08Z"
+      "summary": "tsc --noEmit clean, no type errors",
+      "ts": "2026-07-13T08:57:00.000Z"
     },
     {
-      "command": "npm run build",
+      "command": "npm run lint",
       "exitCode": 0,
       "status": "pass",
-      "summary": "Next.js 16 production build succeeded, all routes generated, no SSR/type errors",
-      "ts": "2026-07-13T06:25:00Z"
+      "summary": "0 errors, 16 non-blocking warnings (fixed: .vercel/** added to eslint globalIgnores)",
+      "ts": "2026-07-13T08:57:30.000Z"
+    },
+    {
+      "command": "npm test",
+      "exitCode": 0,
+      "status": "pass",
+      "summary": "69 files, 855 tests passed, 0 failed (44.89s)",
+      "ts": "2026-07-13T08:58:00.000Z"
     }
   ]
 }
