@@ -34,7 +34,7 @@ export function AwardCard({ award }: { award: AwardCategory }) {
       </div>
 
       <div className="flex flex-col gap-1">
-        <h3 className="text-2xl font-normal leading-8 text-[#FFEA9E]">
+        <h3 className="text-xl font-normal leading-8 text-[#FFEA9E] sm:text-2xl">
           {t(award.titleKey)}
         </h3>
         <p className="line-clamp-2 text-base font-normal leading-6 tracking-[0.5px] text-white">

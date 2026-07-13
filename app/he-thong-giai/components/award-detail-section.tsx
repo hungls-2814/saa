@@ -30,8 +30,14 @@ export async function AwardDetailSection({
         orbOnRight ? "lg:flex-row-reverse" : ""
       }`}
     >
-      <div className="relative mx-auto h-[336px] w-[336px] shrink-0 overflow-hidden rounded-3xl border border-[#FFEA9E] shadow-[0_4px_4px_rgba(0,0,0,0.25),0_0_6px_#FAE287] lg:mx-0">
-        <Image src={detail.orbSrc} alt={t("title")} fill className="object-cover" sizes="336px" />
+      <div className="relative mx-auto aspect-square w-full max-w-[220px] shrink-0 overflow-hidden rounded-3xl border border-[#FFEA9E] shadow-[0_4px_4px_rgba(0,0,0,0.25),0_0_6px_#FAE287] sm:max-w-[336px] lg:mx-0">
+        <Image
+          src={detail.orbSrc}
+          alt={t("title")}
+          fill
+          className="object-cover"
+          sizes="(max-width: 640px) 220px, 336px"
+        />
       </div>
 
       <div className="flex flex-1 flex-col gap-6">

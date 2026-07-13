@@ -36,8 +36,8 @@ export function SidebarStats({ stats, onOpenSecretBox }: SidebarStatsProps) {
 
   const renderRow = (row: { key: keyof PerUserStats; label: string }) => (
     <div key={row.key} className="flex items-center justify-between gap-2">
-      <span className="text-right text-[22px] font-bold text-white">{row.label}</span>
-      <span className="text-[32px] font-bold text-[#FFEA9E]">{stats[row.key]}</span>
+      <span className="text-right text-lg font-bold text-white sm:text-[22px]">{row.label}</span>
+      <span className="text-2xl font-bold text-[#FFEA9E] sm:text-[32px]">{stats[row.key]}</span>
     </div>
   );
 
@@ -53,7 +53,7 @@ export function SidebarStats({ stats, onOpenSecretBox }: SidebarStatsProps) {
       <button
         type="button"
         onClick={() => onOpenSecretBox?.()}
-        className="flex h-[60px] w-full items-center justify-center gap-2 rounded-lg bg-[#FFEA9E] px-4 text-[22px] font-bold text-[#00101A] transition-colors duration-200 ease-out hover:bg-[#FFEA9E]/80"
+        className="flex h-[60px] w-full items-center justify-center gap-2 rounded-lg bg-[#FFEA9E] px-4 text-lg font-bold text-[#00101A] transition-colors duration-200 ease-out hover:bg-[#FFEA9E]/80 sm:text-[22px]"
       >
         {t("openSecretBox")}
         <GiftIcon className="size-6" />

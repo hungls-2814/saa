@@ -20,7 +20,7 @@ export async function AwardsSection() {
           </h2>
         </header>
 
-        <div className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-[108px] lg:gap-y-20">
+        <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-[108px] lg:gap-y-20">
           {AWARD_CATEGORIES.map((award) => (
             <AwardCard key={award.slug} award={award} />
           ))}

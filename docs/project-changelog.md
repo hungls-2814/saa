@@ -3,6 +3,55 @@
 All notable changes to this project are recorded here. Format loosely follows
 [Keep a Changelog](https://keepachangelog.com/); dates are `YYYY-MM-DD`.
 
+## 0.4.5 — 2026-07-13 — Responsive website: mobile + tablet breakpoint hardening pass
+
+Cross-cutting hardening pass making every page adapt cleanly to mobile (~375px), tablet
+(~768px), and the existing desktop (1440px) design. The site was already substantially
+mobile-first (`px-6 sm:px-10 lg:px-36` gutters, `max-w-[Npx]` caps, `flex-col lg:flex-row`
+collapses); this fixes the remaining hard breaks and tunes rough edges. Behavior unchanged —
+layout only. No new FR/SC (spec-waived; see `plans/260713-0248-responsive-website/plan.md`).
+
+### Added
+- **Mobile hamburger nav** (`app/(home)/components/mobile-nav-menu.tsx`) — `<md` drawer wired
+  into `site-header.tsx` (which had `hidden md:flex` with no prior mobile fallback). Escape key,
+  backdrop click, and each link's own click all close the drawer; toggle/close buttons and the
+  `<nav>` panel carry `aria-label`s.
+- **Site-level overflow guard** (`app/layout.tsx`) — `overflow-x-hidden` on `<body>`, a backstop
+  against accidental horizontal scroll from edge-case content.
+- **i18n** — `nav.menu` ("Menu") added to `messages/{en,vi}.json` for the hamburger's label.
+
+### Changed
+- **Hard breaks fixed:** `countdown-unit.tsx`'s fixed `h-[82px] w-[51px]` is now responsive
+  (fixes both the prelaunch countdown and the home hero countdown); `profile-header.tsx`'s
+  6-icon row + `size-[200px]` avatar now wrap/shrink on mobile instead of overflowing.
+- **UX tuning** across ~20 components (award cards, awards grid, hero sections, kudos banner/
+  card/person, sidebar stats, compose modal, notification button, login toast, login hero) —
+  mobile-first shrink at the base breakpoint, restored to the original desktop value at `sm:`
+  or `lg:` so desktop (≥1024px) renders pixel-identical to before.
+
+### Fixed (post-review browser QA)
+- **Home hero countdown overflow** — the DAYS unit can be 3 digits, widening the row past
+  narrow viewports; `countdown.tsx` now uses `flex-wrap` so units wrap instead of overflowing.
+- **Kudos hero-badge row leak** — the wide Hero badge in `kudos-person.tsx`'s meta row leaked
+  past narrow cards; the row now wraps (`flex-wrap`).
+- **Kudos banner header overlap** — the top-anchored eyebrow heading sat under the fixed 80px
+  header on mobile/tablet; heading padding raised to `pt-24` (clears the header) and the mobile
+  wordmark lowered to stay below it.
+- **Award-detail orb overflow** — a fixed `336px` orb overflowed at 375px; now
+  `w-full max-w-[220px] sm:max-w-[336px]`.
+- **Notification bell dot** — the red unread dot was hardcoded always-on; it now renders only
+  when `unreadCount > 0` (defaults to 0, so no dot until a notifications backend exists).
+
+### Verified
+- 855 tests passing; `next build` clean; Playwright confirmed zero horizontal overflow across
+  all 6 pages (`/`, `/kudos`, `/profile`, `/login`, `/he-thong-giai`, `/prelaunch`) at all 3
+  widths (375 / 768 / 1440px), and no header/heading/wordmark overlap on the kudos banner.
+
+### Notes
+- See `docs/system/architecture.md` → "Responsive breakpoints" for the project's mobile-first
+  breakpoint convention (now written down as a standard, not just an observed pattern).
+- See `plans/260713-0248-responsive-website/` for the full plan and phase files.
+
 ## 2026-07-10 — Prelaunch: explicit auto-preview flag + per-tab intro splash (0.4.4)
 
 Reworks two prelaunch behaviors from the 0.4.3 baseline: auto-preview is now an explicit env

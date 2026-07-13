@@ -45,7 +45,7 @@ export function LoginHero() {
   }, []);
 
   return (
-    <section className="relative flex min-h-[845px] w-full items-start overflow-hidden bg-[#00101A] px-6 pt-32 pb-24 sm:px-10 lg:px-36 lg:pt-[200px]">
+    <section className="relative flex min-h-[600px] w-full items-start overflow-hidden bg-[#00101A] px-6 pt-32 pb-24 sm:px-10 lg:min-h-[845px] lg:px-36 lg:pt-[200px]">
       {/*
        * Keyvisual: clean art (node 662:14389) beneath the design's two gradient
        * covers — Rectangle 57 (90deg → darkens the left text column) and Cover
@@ -72,7 +72,7 @@ export function LoginHero() {
         />
       </div>
 
-      <div className="relative z-[1] flex max-w-[520px] flex-col items-start gap-20">
+      <div className="relative z-[1] flex max-w-[520px] flex-col items-start gap-10 sm:gap-20">
         <Image
           src="/login/root-further-wordmark.png"
           alt="ROOT FURTHER"

@@ -5,6 +5,7 @@ import type { User } from "@supabase/supabase-js";
 import { LanguageSelector } from "@/app/components/language-selector";
 import { NotificationButton } from "./notification-button";
 import { AccountMenu } from "./account-menu";
+import { MobileNavMenu } from "./mobile-nav-menu";
 
 /**
  * Fixed top navigation: logo, primary nav links, notification bell (signed-in
@@ -21,6 +22,15 @@ const NAV_ACTIVE =
 const NAV_NORMAL =
   "rounded px-4 py-4 text-sm font-bold tracking-[0.1px] text-white transition-colors duration-200 ease-out hover:bg-white/5";
 
+// Single source of the primary nav items — mapped into BOTH the desktop bar
+// (`md:flex`) and the mobile drawer (`MobileNavMenu`, `md:hidden`), so the two
+// can never drift apart (DRY). `labelKey` resolves against the `Home` namespace.
+const NAV_ITEMS: { key: NavKey; href: string; labelKey: string }[] = [
+  { key: "home", href: "/", labelKey: "nav.aboutSaa" },
+  { key: "awards", href: "/he-thong-giai", labelKey: "nav.awardsInformation" },
+  { key: "kudos", href: "/kudos", labelKey: "nav.sunKudos" },
+];
+
 export async function SiteHeader({
   user,
   active = "home",
@@ -31,6 +41,13 @@ export async function SiteHeader({
 }) {
   const t = await getTranslations("Home");
   const cls = (key: NavKey) => (active === key ? NAV_ACTIVE : NAV_NORMAL);
+
+  // Resolve the shared NAV_ITEMS once; the mobile drawer takes the same list.
+  const navLinks = NAV_ITEMS.map((item) => ({
+    href: item.href,
+    label: t(item.labelKey),
+    active: active === item.key,
+  }));
 
   return (
     <header className="absolute inset-x-0 top-0 z-20 flex h-20 items-center bg-[rgba(16,20,23,0.8)]">
@@ -51,22 +68,19 @@ export async function SiteHeader({
           </Link>
 
           <nav className="hidden items-center gap-6 md:flex">
-            <Link href="/" className={cls("home")}>
-              {t("nav.aboutSaa")}
-            </Link>
-            <Link href="/he-thong-giai" className={cls("awards")}>
-              {t("nav.awardsInformation")}
-            </Link>
-            <Link href="/kudos" className={cls("kudos")}>
-              {t("nav.sunKudos")}
-            </Link>
+            {NAV_ITEMS.map((item) => (
+              <Link key={item.key} href={item.href} className={cls(item.key)}>
+                {t(item.labelKey)}
+              </Link>
+            ))}
           </nav>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
           {user && <NotificationButton />}
           <LanguageSelector />
           <AccountMenu user={user} />
+          <MobileNavMenu links={navLinks} menuLabel={t("nav.menu")} />
         </div>
       </div>
     </header>
