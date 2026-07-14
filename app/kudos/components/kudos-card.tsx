@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import type { KudosCard as KudosCardType } from "@/lib/kudos/types";
 import { KudosPersonInfo } from "./kudos-person";
 import { MarkdownContent } from "./markdown-content";
-import { ArrowRightIcon, HeartIcon, LinkIcon } from "./icons";
+import { ArrowUpRightIcon, HeartIcon, LinkIcon, PaperPlaneIcon } from "./icons";
 import {
   formatHeartCount,
   formatKudosTimestamp,
@@ -41,30 +41,34 @@ export function KudosCard({
 
   return (
     <article
-      className={`flex w-full flex-col gap-4 rounded-3xl bg-[#FFF8E1] p-6 pb-4 ${
-        // Min-height (design: 528x525, width stays responsive via the
-        // carousel's own max-w wrapper) so every highlight frame matches the
-        // design's height while navigating, but can still grow on narrow
-        // cards where the sender/receiver names wrap to more lines than the
-        // 525px design height allows — a plain fixed `h-[525px]` clipped
-        // that overflow instead of letting the card grow (line-clamp-3 on
-        // the content box below already caps the one variable-height field).
+      className={`flex w-full flex-col gap-4 rounded-2xl bg-[#FFF8E1] p-6 pb-4 ${
+        // Highlight cards: `h-full` fills the carousel's stretched wrapper so
+        // all three cards share one height (equal-height, per design B.2);
+        // `min-h-[525px]` is the design floor for a row of short cards. Total
+        // height stays variable (not a hard `h-[525px]`, which clips real
+        // content at our larger fonts) — the `flex-1` middle region below
+        // absorbs the slack so the action bar always pins to the bottom.
         isHighlight
-          ? "min-h-[525px] overflow-hidden border-4 border-[#FFEA9E]"
+          ? "h-full min-h-[525px] overflow-hidden border-4 border-[#FFEA9E]"
           : ""
       }`}
     >
       <div className="flex items-start justify-between gap-4">
         <KudosPersonInfo person={kudos.sender} />
-        <div className="flex h-[123px] shrink-0 items-center justify-center px-1">
-          <ArrowRightIcon className="size-8 text-[#00101A]" />
+        {/* Top-aligned (design: 16px top pad in a 123px column) so the pennant
+            sits level with the sender/receiver avatars, not the names. */}
+        <div className="flex h-[123px] shrink-0 items-start justify-center px-1 pt-4">
+          <PaperPlaneIcon className="size-8 text-[#00101A]" />
         </div>
         <KudosPersonInfo person={kudos.receiver} />
       </div>
 
       <hr className="border-t border-[#FFEA9E]" />
 
-      <div className="flex flex-col gap-4">
+      {/* Highlight: grow to fill the card's extra height and center the block
+          (design B.4 "Nội dung lời cảm ơn": justify-center in a fixed region),
+          so the action bar below stays pinned to the bottom on every card. */}
+      <div className={`flex flex-col gap-4 ${isHighlight ? "flex-1 justify-center" : ""}`}>
         <p className="text-base font-bold tracking-[0.5px] text-[#999]">
           {formatKudosTimestamp(kudos.createdAt)}
         </p>
@@ -156,7 +160,7 @@ export function KudosCard({
               className="flex items-center gap-1 rounded px-4 py-4 text-base font-bold text-[#00101A] transition-colors duration-200 ease-out hover:bg-black/5"
             >
               {t("detail")}
-              <ArrowRightIcon className="size-6" />
+              <ArrowUpRightIcon className="size-6" />
             </Link>
           )}
         </div>

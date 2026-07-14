@@ -48,7 +48,10 @@ export function HighlightCarousel({
 
   return (
     <div className="flex w-full flex-col items-center gap-10">
-      <div className="relative flex w-full items-center justify-center gap-6 overflow-hidden">
+      {/* items-stretch (not items-center) so the active card and both peek
+          neighbors share one height — the tallest card's — instead of each
+          growing to its own content (design B.2: all highlight cards equal). */}
+      <div className="relative flex w-full items-stretch justify-center gap-6 overflow-hidden">
         {prev && (
           <div
             aria-hidden

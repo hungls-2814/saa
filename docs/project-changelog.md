@@ -3,6 +3,25 @@
 All notable changes to this project are recorded here. Format loosely follows
 [Keep a Changelog](https://keepachangelog.com/); dates are `YYYY-MM-DD`.
 
+## 0.4.7 — 2026-07-14 — Highlight Kudos: design-accurate icons + equal-height cards
+
+### Fixed
+- **Sender → receiver separator icon** — swapped the plain horizontal arrow (→) for the
+  design's outlined right-pointing paper-plane / pennant (`PaperPlaneIcon`, matching MoMorph
+  node "Icon sent"), top-aligned with the avatars. Applies to both Highlight and All-Kudos
+  cards.
+- **"Xem chi tiết" link icon** — highlight card now uses the design's diagonal ↗ arrow
+  (`ArrowUpRightIcon`) instead of a horizontal arrow.
+- **Card corner radius** — `rounded-3xl` (24px) → `rounded-2xl` (16px) to match the design.
+- **Equal-height highlight cards** — the carousel now stretches the active card and both peek
+  neighbors to a single height (`items-stretch` + `h-full`), and the card's middle region grows
+  and centers (`flex-1 justify-center`) so the action bar pins to the bottom on every card —
+  reproducing the design's fixed 525px card / centered content region without clipping content
+  at the app's larger fonts.
+
+### Removed
+- Unused `ArrowRightIcon` export from the Kudos icon set (superseded by the two icons above).
+
 ## 0.4.6 — 2026-07-13 — Browser-tab favicon: Sun* "S" mark
 
 ### Changed
