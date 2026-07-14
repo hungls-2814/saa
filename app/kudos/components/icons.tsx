@@ -46,7 +46,12 @@ export function LinkIcon({ className }: IconProps) {
   );
 }
 
-export function ArrowRightIcon({ className }: IconProps) {
+/**
+ * Right-pointing paper-plane / pennant used as the sender → receiver separator
+ * inside a Kudos card (design node "Icon sent" / "B.3.4_Icon mũi tên") — an
+ * outlined "send" glyph, NOT a plain arrow.
+ */
+export function PaperPlaneIcon({ className }: IconProps) {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -58,7 +63,26 @@ export function ArrowRightIcon({ className }: IconProps) {
       strokeLinejoin="round"
       aria-hidden
     >
-      <path d="M5 12h14M13 6l6 6-6 6" />
+      <path d="M4.5 4.5 20 12 4.5 19.5 9.5 12Z" />
+    </svg>
+  );
+}
+
+/** Diagonal (north-east) arrow for the highlight card's "Xem chi tiết" link. */
+export function ArrowUpRightIcon({ className }: IconProps) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <path d="M6 18 18 6" />
+      <path d="M9 6h9v9" />
     </svg>
   );
 }
